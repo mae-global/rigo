@@ -169,7 +169,10 @@ func (ctx *Context) DepthOfField(fstop,focallength,focaldistance RtFloat) error 
 	return ctx.write(fmt.Sprintf("DepthOfField %s %s %s\n",fstop,focallength,focaldistance))
 }
 
-
+/* Shutter; sets the times at which the shutter opens and closes. */
+func (ctx *Context) Shutter(min,max RtFloat) error {
+	return ctx.write(fmt.Sprintf("Shutter %s %s\n",min,max))
+}
 
 
 

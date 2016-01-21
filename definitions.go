@@ -28,33 +28,16 @@ func (s RtString) String() string {
 	return fmt.Sprintf("\"%s\"",string(s))
 }
 
-type RtFilterFunc interface {
-	Filter(RtFloat,RtFloat,RtFloat,RtFloat)
-}
-
-type RtErrorHandler interface {
-	Handle(RtInt,RtInt,string)
-}
-
-type RtProcSubdivFunc interface {
-	Subdiv(interface{},RtFloat)
-}
-
-type RtProcFreeFunc interface {
-	Free(interface{})
-}
-
-type RtArchiveCallback interface {
-	Archive(RtToken,string,...interface{})
-}
-
-type RtObjectHandle interface{}
-type RtLightHandle interface{}
-type RtContextHandle interface{}
-
 
 const (
 	Perspective RtToken = "perspective"
 	Orthographic RtToken = "orthographic"
 )
 
+const (
+	BoxFilter RtToken = "box"
+	TriangleFilter RtToken = "triangle"
+	CatmullRomFilter RtToken = "catmull-rom"
+	GaussianFilter RtToken = "gaussian"
+	SincFilter RtToken = "sinc"
+)
