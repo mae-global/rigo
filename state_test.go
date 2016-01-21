@@ -5,48 +5,64 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
 	"bytes"
+	"os"
 )
+
+type buffered struct {
+	buf *bytes.Buffer
+}
+
+func (buf *buffered) Bytes() []byte {
+	return buf.buf.Bytes()
+}
+
+func (buf *buffered) Close() error {
+	return nil
+}
+
+func (buf *buffered) Write(content []byte) (int,error) {
+	return buf.buf.Write(content)
+}
+
+func newbuffered() *buffered {
+	return &buffered{bytes.NewBuffer(nil)}
+}
+
 
 func Test_State(t *testing.T) {
 
-	Convey("Begin",t,func() {
-		Convey("twice with same name",func() {
+	Convey("Context",t,func() {
 
-			So(Begin("test.rib"),ShouldBeNil)
-			So(Begin("test.rib"),ShouldEqual,ErrContextAlreadyExists)			
-		})
+		ctx := New(nil)
+		So(ctx,ShouldNotBeNil)
+
+		/* try a test.rib file */
+		So(ctx.Begin("test.rib"),ShouldBeNil)
+		So(ctx.End(),ShouldBeNil)
+
+		So(ctx.End(),ShouldEqual,ErrNoActiveContext)
+
+		info,err := os.Stat("test.rib")
+		So(err,ShouldBeNil)
+		So(info.IsDir(),ShouldBeFalse)
+
+		os.Remove("test.rib")
 	})
 
-	Convey("End",t,func() {
-		Convey("end twice",func() {
-			
-			So(End(),ShouldBeNil)
-			So(End(),ShouldEqual,ErrNoActiveContext)
-		})
+	Convey("Context - buffered file",t,func() {
+
+		buf := newbuffered()
+		ctx := New(buf)
+		So(ctx,ShouldNotBeNil)
+
+		So(ctx.Begin("test.rib"),ShouldBeNil)
+		So(ctx.FrameBegin(1),ShouldBeNil)
+		So(ctx.FrameEnd(),ShouldBeNil)
+		So(ctx.End(),ShouldBeNil)
+
+		So(len(buf.Bytes()),ShouldNotEqual,0)
+
 	})
 
-	Convey("BeginWriter/end",t,func() {
-		buf := bytes.NewBuffer(nil)
-		So(BeginWriter("test.rib",buf),ShouldBeNil)
-		So(End(),ShouldBeNil)
-		So(len(buf.Bytes()),ShouldNotEqual,0)	
-	})	
-
-
-	Convey("GetContext",t,func() {
-		Convey("get the active context",func() {
-
-			So(GetContext(),ShouldBeNil)
-		})
-
-		Convey("get valid context",func() {
-			
-			So(Begin("test.rib"),ShouldBeNil)
-			ctx := GetContext()
-			So(ctx,ShouldNotBeNil)
-			
-			So(Context(ctx),ShouldBeNil)
-		})
-	})
 }		
 
