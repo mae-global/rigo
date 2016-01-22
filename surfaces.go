@@ -22,3 +22,14 @@ func (ctx *Context) Curves(typeof RtToken,ncurves RtInt,nvertices RtIntArray,wra
 
 	return ctx.writef("Curves",out...)
 }
+
+/* Blobby */
+func (ctx *Context) Blobby(nleaf,ncode RtInt,code RtIntArray,nfloats RtInt,floats RtFloatArray,nstrings RtInt,strings RtStringArray,parameterlist ...Rter) error {
+
+	var out = []Rter{nleaf,floats,strings}
+	out = append(out,parameterlist...)
+
+	return ctx.writef("Blobby",out...)
+}
+
+

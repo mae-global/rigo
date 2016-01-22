@@ -176,6 +176,19 @@ func (s RtString) Serialise() string {
 	return fmt.Sprintf("\"%s\"",string(s))
 }
 
+type RtStringArray []RtString
+
+func (a RtStringArray) Serialise() string {
+	out := ""
+	for i := 0; i < len(a); i++ {
+		out += a[i].Serialise()
+		if i < len(a) - 1 {
+			out += " "
+		}
+	}
+	return fmt.Sprintf("[%s]",out)
+}
+
 
 type RtLightHandle uint
 
@@ -186,6 +199,18 @@ func (l RtLightHandle) String() string {
 func (l RtLightHandle) Serialise() string {
 	return fmt.Sprintf("%d",uint(l))
 } 
+
+type RtProcSubdivFunc string
+
+func (s RtProcSubdivFunc) Serialise() string {
+	return fmt.Sprintf("\"%s\"",string(s))
+}
+
+type RtProcFreeFunc string
+
+func (s RtProcFreeFunc) Serialise() string {
+	return fmt.Sprintf("\"%s\"",string(s))
+}
 
 const (
 	Perspective RtToken = "perspective"
@@ -208,5 +233,11 @@ const (
 	N RtToken = "N"
 	Cs RtToken = "Cs"
 	Os RtToken = "Os"
+
+	ProcDelayedReadArchive RtProcSubdivFunc = "DelayedReadArchive"
+	ProcRunProgram RtProcSubdivFunc = "RunProgram"
+	ProcDynamicLoad RtProcSubdivFunc = "DynamicLoad"
 	
+	ProcFree RtProcFreeFunc = "free"
+
 )
