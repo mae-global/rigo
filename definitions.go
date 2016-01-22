@@ -9,6 +9,12 @@ type Rter interface { /* TODO: add String() */
 	Serialise() string
 }
 
+type RtName string
+
+func (s RtName) Serialise() string {
+	return string(s)
+}
+
 type RtBoolean bool
 type RtInt int
 
@@ -55,11 +61,32 @@ func (a RtFloatArray) Serialise() string {
 
 type RtToken string
 
+func (s RtToken) String() string {
+	return s.Serialise()
+}
+
 func (s RtToken) Serialise() string {
 	return fmt.Sprintf("\"%s\"",string(s))
 }
 
-type RtColor [3]RtFloat
+type RtColor []RtFloat
+
+func (c RtColor) String() string {
+	return c.Serialise()
+}
+
+func (c RtColor) Serialise() string {
+	out := ""
+	for i,r := range c {
+		out += fmt.Sprintf("%f",float64(r))
+		if i < (len(c) - 1) {
+			out += " "
+		}
+	}
+	return fmt.Sprintf("[%s]",out)
+}
+
+
 type RtPoint [3]RtFloat
 type RtVector [3]RtFloat
 type RtNormal [3]RtFloat
@@ -73,6 +100,16 @@ func (s RtString) Serialise() string {
 	return fmt.Sprintf("\"%s\"",string(s))
 }
 
+
+type RtLightHandle uint
+
+func (l RtLightHandle) String() string {
+	return l.Serialise()
+}
+
+func (l RtLightHandle) Serialise() string {
+	return fmt.Sprintf("%d",uint(l))
+} 
 
 const (
 	Perspective RtToken = "perspective"
