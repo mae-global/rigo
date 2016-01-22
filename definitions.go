@@ -81,6 +81,19 @@ func (s RtToken) Serialise() string {
 	return fmt.Sprintf("\"%s\"",string(s))
 }
 
+type RtTokenArray []RtToken
+
+func (a RtTokenArray) Serialise() string {
+	out := ""
+	for i := 0; i < len(a); i++ {
+		out += a[i].Serialise()
+		if i < (len(a) - 1) {
+			out += " "
+		}
+	}
+	return fmt.Sprintf("[%s]",out)
+}
+
 type RtColor []RtFloat
 
 func (c RtColor) String() string {
