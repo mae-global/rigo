@@ -38,6 +38,17 @@ func (ctx *Context) LightSource(shadername RtToken,parameterlist ...Rter) (RtLig
 
 	return lh,ctx.writef("LightSource",out...)
 }
+
+/* AreaLightSource */
+func (ctx *Context) AreaLightSource(shadername RtToken,parameterlist ...Rter) (RtLightHandle,error) {
+	lh := RtLightHandle(ctx.lights)
+	ctx.lights++
+
+	var out = []Rter{shadername,lh}
+	out = append(out,parameterlist...)
+
+	return lh,ctx.writef("AreaLightSource",out...)
+}
 	
 /* Illuminate If onoff is true and the light source referred to by the light is not
  * currently in the4 current light source list, then add it to that list */

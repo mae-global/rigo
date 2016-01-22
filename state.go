@@ -9,10 +9,11 @@ import (
 )
 
 var (
-	ErrInvalidContextHandle error = fmt.Errorf("Invalid Context Handle")
-	ErrContextAlreadyExists error = fmt.Errorf("Context Already Exists")
-	ErrNoActiveContext      error = fmt.Errorf("No Active Context")
-	ErrParameterlistMismatch error = fmt.Errorf("Parameterlist Mismatch")
+	ErrInvalidContextHandle  = fmt.Errorf("Invalid Context Handle")
+	ErrContextAlreadyExists  = fmt.Errorf("Context Already Exists")
+	ErrNoActiveContext       = fmt.Errorf("No Active Context")
+	ErrParameterlistMismatch = fmt.Errorf("Parameterlist Mismatch")
+	ErrObjectHandleInvalid   = fmt.Errorf("Object Handle Invalid")
 )
 
 type Writer interface {
@@ -59,6 +60,7 @@ type Context struct {
 	depth int /* for pretty printing */
 
 	lights uint
+	objects uint
 
 	filters map[RtName]Filterer
 }

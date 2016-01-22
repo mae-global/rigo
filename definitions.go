@@ -200,6 +200,18 @@ func (l RtLightHandle) Serialise() string {
 	return fmt.Sprintf("%d",uint(l))
 } 
 
+type RtObjectHandle uint
+
+func (l RtObjectHandle) String() string {
+	return l.Serialise()
+}
+
+func (l RtObjectHandle) Serialise() string {
+	return fmt.Sprintf("%d",uint(l))
+} 
+
+
+
 type RtProcSubdivFunc string
 
 func (s RtProcSubdivFunc) Serialise() string {
