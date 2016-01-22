@@ -16,6 +16,18 @@ func (s RtName) Serialise() string {
 }
 
 type RtBoolean bool
+
+func (s RtBoolean) String() string {
+	return s.Serialise()
+}
+
+func (s RtBoolean) Serialise() string {
+	if bool(s) {
+		return "1"
+	}
+	return "0"
+}
+
 type RtInt int
 
 func (i RtInt) Serialise() string {
@@ -94,6 +106,12 @@ type RtHpoint [4]RtFloat
 type RtMatrix [4][4]RtFloat
 type RtBasis  [4][4]RtFloat
 type RtBound  [6]RtFloat
+
+func (b RtBound) Serialise() string {
+	return fmt.Sprintf("[%f %f %f %f %f %f]",b[0],b[1],b[2],b[3],b[4],b[5])
+}
+
+
 type RtString string
 
 func (s RtString) Serialise() string {
