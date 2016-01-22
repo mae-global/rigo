@@ -79,7 +79,7 @@ func (ctx *Context) writef(name RtName,parameterlist ...Rter) error {
 	if ctx.writer == nil {
 		return ErrNoActiveContext
 	}
-	return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s %s\n",name,serialise_s(parameterlist...)))
+	return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s %s\n",name,serialiseToString(parameterlist...)))
 }
 
 func (ctx *Context) Filter(name RtName,filter Filterer) {

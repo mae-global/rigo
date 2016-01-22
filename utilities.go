@@ -18,7 +18,7 @@ func serialise(parameterlist ...Rter) (string,error) {
 	return out,nil
 }
 
-func serialise_s(parameterlist ...Rter) string {
+func serialiseToString(parameterlist ...Rter) string {
 	out := ""
 	for i,p := range parameterlist {
 		out += p.Serialise()
