@@ -135,7 +135,21 @@ func (m RtMatrix) Serialise() string {
 	return fmt.Sprintf("[%s]",out)
 }
 
-type RtBasis  [4][4]RtFloat
+type RtBasis  [16]RtFloat
+
+func (b RtBasis) Serialise() string {
+	out := ""
+	for i := 0; i < 16; i++ {
+		out += fmt.Sprintf("%f",b[i])
+		if i < 15 {
+			out += " "
+		}	
+	}
+	return fmt.Sprintf("[%s]",out)
+}
+
+
+
 type RtBound  [6]RtFloat
 
 func (b RtBound) Serialise() string {
@@ -171,6 +185,8 @@ const (
 	CatmullRomFilter RtToken = "catmull-rom"
 	GaussianFilter RtToken = "gaussian"
 	SincFilter RtToken = "sinc"
+	Bilinear RtToken = "bilinear"
+	Bicubic RtToken = "bicubic"
 
 	RGBA RtToken = "RGBA"
 	P RtToken = "P"
