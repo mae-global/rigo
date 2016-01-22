@@ -41,6 +41,11 @@ func Test_Attributes(t *testing.T) {
 		So(ctx.Matte(true),ShouldBeNil)
 		So(ctx.Bound(RtBound{0,.5,0,.5,.9,1}),ShouldBeNil)
 		So(ctx.Detail(RtBound{10,20,42,69,0,1}),ShouldBeNil)
+		So(ctx.DetailRange(0,0,10,20),ShouldBeNil)
+		So(ctx.GeometricApproximation("flatness",2.5),ShouldBeNil)
+		So(ctx.Orientation("lh"),ShouldBeNil)
+		So(ctx.ReverseOrientation(),ShouldBeNil)
+		So(ctx.Sides(2),ShouldBeNil)
 
 		So(ctx.AttributeEnd(),ShouldBeNil)
 		So(ctx.End(),ShouldBeNil)

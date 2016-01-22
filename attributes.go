@@ -117,6 +117,30 @@ func (ctx *Context) Detail(bound RtBound) error {
 	return ctx.writef("Detail",bound)
 }
 
+/* DetailRange set the current detail range */
+func (ctx *Context) DetailRange(minvisible,lowertransition,uppertransition,maxvisible RtFloat) error {
+	return ctx.writef("DetailRange",RtFloatArray{minvisible,lowertransition,uppertransition,maxvisible})
+}
+
+/* GeometricApproximation */
+func (ctx *Context) GeometricApproximation(typeof RtToken,value RtFloat) error {
+	return ctx.writef("GeometricApproximation",typeof,value)
+}
+
+/* Orientation This procedure sets the current orientation to be either "outside", "inside","lh","rh" */
+func (ctx *Context) Orientation(orientation RtToken) error {
+	return ctx.writef("Orientation",orientation)
+}
+
+/* ReverseOrientation causes the current orientation to be toggled */
+func (ctx *Context) ReverseOrientation() error {
+	return ctx.writef("ReverseOrientation")
+}
+
+/* Sides if sides is 2, subsequent surfaces are considered two-sided */
+func (ctx *Context) Sides(sides RtInt) error {
+	return ctx.writef("Sides",sides)
+}
 
 
 

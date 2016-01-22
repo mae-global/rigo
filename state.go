@@ -79,6 +79,12 @@ func (ctx *Context) writef(name RtName,parameterlist ...Rter) error {
 	if ctx.writer == nil {
 		return ErrNoActiveContext
 	}
+	
+	
+	if len(parameterlist) == 0 {
+		return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s\n",name))
+	}
+
 	return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s %s\n",name,serialiseToString(parameterlist...)))
 }
 
