@@ -100,10 +100,41 @@ func (c RtColor) Serialise() string {
 
 
 type RtPoint [3]RtFloat
+
+func (p RtPoint) Serialise() string {
+	return fmt.Sprintf("%f %f %f",p[0],p[1],p[2])
+}
+
+type RtPointArray []RtPoint
+
+func (p RtPointArray) Serialise() string {
+	out := ""
+	for i := 0; i < len(p); i++ {
+		out += p[i].Serialise()
+		if i < len(p) - 1 {
+			out += " "
+		}
+	}
+	return fmt.Sprintf("[%s]",out)
+}
+
 type RtVector [3]RtFloat
 type RtNormal [3]RtFloat
 type RtHpoint [4]RtFloat
-type RtMatrix [4][4]RtFloat
+type RtMatrix [16]RtFloat
+
+func (m RtMatrix) Serialise() string {
+	out := ""
+	for i := 0; i < 16; i++ {
+		out += fmt.Sprintf("%f",m[i])
+		if i < 15 {
+			out += " "
+		}
+	}
+	
+	return fmt.Sprintf("[%s]",out)
+}
+
 type RtBasis  [4][4]RtFloat
 type RtBound  [6]RtFloat
 
@@ -142,4 +173,11 @@ const (
 	SincFilter RtToken = "sinc"
 
 	RGBA RtToken = "RGBA"
+	P RtToken = "P"
+	Pz RtToken = "Pz"
+	Pw RtToken = "Pw"
+	N RtToken = "N"
+	Cs RtToken = "Cs"
+	Os RtToken = "Os"
+	
 )

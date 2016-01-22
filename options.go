@@ -8,3 +8,12 @@ func (ctx *Context) Option(name RtToken,parameterlist ...Rter) error {
 
 	return ctx.writef("Option",out...)
 }
+
+/* Attribute Set the paramters of the attribute name. Implementation-specific */
+func (ctx *Context) Attribute(name RtToken,parameterlist ...Rter) error {
+	
+	var out = []Rter{name}
+	out = append(out,parameterlist...)
+
+	return ctx.writef("Attribute",out...)
+}

@@ -16,6 +16,8 @@ func Test_Options(t *testing.T) {
 		So(ctx.Begin("output/options.rib"),ShouldBeNil)
 		So(ctx.Comment("output from rigo, options_test.go"),ShouldBeNil)
 		So(ctx.Option(RtToken("foo"),RtToken("fov"),RtFloat(3.4),RtToken("color"),RtFloatArray{.4,.4,.4},RtToken("normal"),RtIntArray{1,1,0}),ShouldBeNil)
+		So(ctx.Attribute(RtToken("displacementbound"),RtToken("sphere"),RtFloat(2.0)),ShouldBeNil)
+
 
 		So(ctx.End(),ShouldBeNil)
 	})
