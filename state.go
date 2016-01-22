@@ -70,13 +70,6 @@ func (ctx *Context) filter(name RtName,parameterlist ...Rter) error {
 	return nil
 }
 
-func (ctx *Context) write(out string) error {
-		if ctx.writer == nil {
-		return ErrNoActiveContext
-	}
-	return ctx.writer.Write(ctx.depth,out)
-}
-
 func (ctx *Context) writef(name RtName,parameterlist ...Rter) error {
 	if f,exists := ctx.filters[name]; exists {
 		if err := f.Filter(name,parameterlist...); err != nil {
