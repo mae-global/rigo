@@ -210,6 +210,11 @@ func (l RtObjectHandle) Serialise() string {
 	return fmt.Sprintf("%d",uint(l))
 } 
 
+type RtFilterFunc string
+
+func (s RtFilterFunc) Serialise() string {
+	return fmt.Sprintf("\"%s\"",string(s))
+}
 
 
 type RtProcSubdivFunc string
@@ -230,11 +235,12 @@ const (
 )
 
 const (
-	BoxFilter RtToken = "box"
-	TriangleFilter RtToken = "triangle"
-	CatmullRomFilter RtToken = "catmull-rom"
-	GaussianFilter RtToken = "gaussian"
-	SincFilter RtToken = "sinc"
+	BoxFilter RtFilterFunc = "box"
+	TriangleFilter RtFilterFunc = "triangle"
+	CatmullRomFilter RtFilterFunc = "catmull-rom"
+	GaussianFilter RtFilterFunc = "gaussian"
+	SincFilter RtFilterFunc = "sinc"
+
 	Bilinear RtToken = "bilinear"
 	Bicubic RtToken = "bicubic"
 

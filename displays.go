@@ -12,7 +12,7 @@ func (ctx *Context) PixelSamples(xsamples,ysamples RtFloat) error {
 
 /* PixelFilter antialiasing is performed by filtering the geometry (or supersampling) and then
  * sampling at pixel locations. */
-func (ctx *Context) PixelFilter(filterfunc RtToken,xwidth,ywidth RtFloat) error {
+func (ctx *Context) PixelFilter(filterfunc RtFilterFunc,xwidth,ywidth RtFloat) error {
 	return ctx.writef("PixelFilter",filterfunc,xwidth,ywidth)
 }
 

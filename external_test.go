@@ -1,0 +1,24 @@
+package ri
+
+import (
+	. "github.com/smartystreets/goconvey/convey"
+	"testing"
+)
+
+
+func Test_External(t *testing.T) {
+
+	Convey("All External",t,func() {
+
+		ctx := New(nil)
+		So(ctx,ShouldNotBeNil)
+
+		So(ctx.Begin("output/external.rib"),ShouldBeNil)
+		So(ctx.Comment("output from rigo, external_test.go"),ShouldBeNil)
+	
+		So(ctx.MakeTexture("globe.pic","globe.tx","periodic","clamp",GaussianFilter,2.0,2.0),ShouldBeNil)
+		So(ctx.MakeLatLongEnvironment("long.pic","long.tx",CatmullRomFilter,3,3),ShouldBeNil)
+
+		So(ctx.End(),ShouldBeNil)
+	})
+}
