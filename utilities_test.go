@@ -3,6 +3,7 @@ package ri
 import (
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+	"fmt"
 )
 
 
@@ -29,6 +30,17 @@ func Test_Utilities(t *testing.T) {
 		})
 
 	})
+
+	list := []Rter{RtToken("test"),RtFloat(1.2),RtFloatArray{.1,.2,.3,.4}}
+	if t,ok := list[0].(RtToken); ok {
+		fmt.Printf("token %s\n",t)
+	}
+	if t,ok := list[1].(RtFloat); ok {
+		fmt.Printf("float %s\n",t)
+	}
+	if t,ok := list[2].(RtFloatArray); ok {
+		fmt.Printf("float array len=%d %s\n",len(t),t)
+	}
 
 
 }

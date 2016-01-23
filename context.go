@@ -4,7 +4,6 @@ package ri
 import (
 
 	"fmt"
-	"io"
 	"os"
 )
 
@@ -14,116 +13,109 @@ var (
 	ErrNoActiveContext       = fmt.Errorf("No Active Context")
 )
 
-type Writer interface {
-	Write(int,string) error	
+type Piper interface {
+	Write(RtName,[]Rter,Info) error
 }
 
-
-type Filer interface {
-	Writer
-	io.Closer
+type Info struct {
+	Name string
+	Depth int
+	Lights uint
+	Objects uint
+	Entity bool
 }
 
-type File struct {
+type DefaultFilePipe struct {
 	file *os.File
-	annotation string
-	started bool
 }
 
-func (f *File) Write(depth int,out string) error {
-	if f.file == nil {
+func (p *DefaultFilePipe) Write(name RtName,list []Rter,info Info) error {
+	if name == "Begin" {
+		if p.file != nil {
+			return ErrProtocolBotch
+		}
+		file := "out.rib"
+		if len(list) > 0 {
+			if t,ok := list[0].(RtString); ok {
+				file = string(t)
+			}
+		}
+
+		f,err := os.Create(file)
+		if err != nil {
+			return err
+		}
+		p.file = f
+
+		postfix := "\n"
+		if info.Entity {
+			postfix = " Entity\n"
+		}
+		_,err = p.file.Write([]byte("##RenderMan RIB-Structure 1.1" + postfix))
+		return err
+	}
+
+	if name == "End" {
+		if p.file == nil {
+			return ErrProtocolBotch
+		}
+		return p.file.Close()
+	}
+
+	if p.file == nil {
 		return ErrNoActiveContext
 	}
 
-	content := "" 
-	for i := 0; i < depth; i++ {
-		content += "\t"
-	}
+	if name != "##" { 
 
-	if len(f.annotation) > 0 {
-		f.file.Write([]byte("\t" + f.annotation))
-		f.annotation = ""
+		prefix := "" 
+		for i := 0; i < info.Depth; i++ {
+			prefix += "\t"
+		}
+
+		_,err := p.file.Write([]byte(prefix + name.Serialise() + " " + Serialise(list) + "\n"))
+		return err
 	}
 	
+	/* FIXME: structural needs work */
 
-	_,err := f.file.Write([]byte(content + out + "\n"))
+	_,err := p.file.Write([]byte("##" + Serialise(list) + "\n"))
 	return err
 }
 
-
-
-func (f *File) Close() error {
-	return f.file.Close()
-}
-
-type Filterer interface {
-	Filter(name RtName,parameterlist ...Rter) error
-}
-
-
-
 type Context struct {
+	pipe Piper
 	name string
-	writer Filer
+	
 	entity bool
-	depth int /* for pretty printing */
+	depth int 
 
 	lights uint
 	objects uint
-
-	filters map[RtName]Filterer
 }
 
-func (ctx *Context) IsEntity() bool {
-	return ctx.entity
-}
-
-func (ctx *Context) filter(name RtName,parameterlist ...Rter) error {
-	if f,exists := ctx.filters[name]; exists {
-			return f.Filter(name,parameterlist...)
-	}
-	return nil
-}
-
-
-func (ctx *Context) write(parameterlist ...Rter) error {
-	/* TODO: add general filter here */
-	if ctx.writer == nil {
-		return ErrNoActiveContext
-	}
-
-	return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s",serialiseToString(parameterlist...)))
+func (ctx *Context) info() Info {
+	return Info{ctx.name,ctx.depth,ctx.lights,ctx.objects,ctx.entity}
 }
 
 func (ctx *Context) writef(name RtName,parameterlist ...Rter) error {
-	if f,exists := ctx.filters[name]; exists {
-		if err := f.Filter(name,parameterlist...); err != nil {
-			return err
-		}
-	}
-	if ctx.writer == nil {
-		return ErrNoActiveContext
-	}
-		
-	if len(parameterlist) == 0 {
-		return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s",name))
+	return ctx.pipe.Write(name,parameterlist,ctx.info())
+}
+
+func New(writer Piper) *Context {
+	if writer == nil {
+		writer = &DefaultFilePipe{}
 	}
 
-	return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s %s",name,serialiseToString(parameterlist...)))
+	return &Context{name:"",pipe:writer}
+}
+
+func NewEntity(writer Piper) *Context {
+	if writer == nil {
+		writer = &DefaultFilePipe{}
+	}
+	return &Context{name:"",pipe:writer,entity:true}
 }
 
 
-
-func (ctx *Context) Filter(name RtName,filter Filterer) {
-	ctx.filters[name] = filter
-}
-
-
-func New(writer Filer) *Context {
-	return &Context{name:"",writer:writer}
-}
-
-func NewEntity(writer Filer) *Context {
-	return &Context{name:"",writer:writer,entity:true}
-}
 

@@ -40,3 +40,14 @@ func parseAnnotations(annotations ...RtAnnotation) []Rter {
 	}
 	return out
 }
+
+func Serialise(list []Rter) string {
+	out := ""
+	for i,p := range list {
+		out += p.Serialise()
+		if i < len(list) - 1 {
+			out += " "
+		}
+	}
+	return out
+}

@@ -1,9 +1,7 @@
 package ri
 
-import (
-	"os"
-)
 
+/*
 func (ctx *Context) Begin(name string) error {
 	if ctx.writer == nil {
 		if f,err := os.Create(name); err != nil {
@@ -20,7 +18,12 @@ func (ctx *Context) Begin(name string) error {
 
 	return ctx.write(out...)
 }
+*/
 
+func (ctx *Context) Begin(name RtString) error {
+	return ctx.writef("Begin",name)
+}
+/*
 func (ctx *Context) End() error {
 	if ctx.writer == nil {
 		return ErrNoActiveContext
@@ -31,6 +34,12 @@ func (ctx *Context) End() error {
 	ctx.writer = nil
 	return nil
 }	
+*/
+
+func (ctx *Context) End() error {
+	return ctx.writef("End")
+}
+
 
 /* FrameBegin mark the beginning of a single frame of an animated sequenece */
 func (ctx *Context) FrameBegin(frame RtInt) error { 
