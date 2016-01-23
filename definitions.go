@@ -234,6 +234,12 @@ const (
 	Orthographic RtToken = "orthographic"
 )
 
+type RtArchiveCallbackFunc string
+
+func (s RtArchiveCallbackFunc) Serialise() string {
+	return fmt.Sprintf("\"%s\"",string(s))
+}
+
 const (
 	BoxFilter RtFilterFunc = "box"
 	TriangleFilter RtFilterFunc = "triangle"
@@ -241,9 +247,10 @@ const (
 	GaussianFilter RtFilterFunc = "gaussian"
 	SincFilter RtFilterFunc = "sinc"
 
+	ReadArchiveCallback RtArchiveCallbackFunc = "ReadArchive"
+
 	Bilinear RtToken = "bilinear"
 	Bicubic RtToken = "bicubic"
-
 	RGBA RtToken = "RGBA"
 	P RtToken = "P"
 	Pz RtToken = "Pz"
