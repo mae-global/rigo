@@ -188,7 +188,7 @@ func (n RtNormal) String() string {
 }
 
 func (n RtNormal) Serialise() string {
-	return fmt.Sprintf("[%f %f %f]",v[0],v[1],v[2])
+	return fmt.Sprintf("[%f %f %f]",n[0],n[1],n[2])
 }
 
 /* RtHpoint */
@@ -199,7 +199,7 @@ func (h RtHpoint) String() string {
 }
 
 func (h RtHpoint) Serialise() string {
-	return fmt.Sprintf("[%f %f %f %f]",v[0],v[1],v[2],v[3])
+	return fmt.Sprintf("[%f %f %f %f]",h[0],h[1],h[2],h[3])
 }
 
 /* RtMatrix */

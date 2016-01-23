@@ -12,8 +12,6 @@ var (
 	ErrInvalidContextHandle  = fmt.Errorf("Invalid Context Handle")
 	ErrContextAlreadyExists  = fmt.Errorf("Context Already Exists")
 	ErrNoActiveContext       = fmt.Errorf("No Active Context")
-	ErrParameterlistMismatch = fmt.Errorf("Parameterlist Mismatch")
-	ErrObjectHandleInvalid   = fmt.Errorf("Object Handle Invalid")
 )
 
 type Writer interface {

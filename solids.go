@@ -29,7 +29,7 @@ func (ctx *Context) ObjectEnd() error {
 /* ObjectInstance */
 func (ctx *Context) ObjectInstance(handle RtObjectHandle) error {
 	if uint(handle) >= ctx.objects {
-		return ErrObjectHandleInvalid
+		return ErrBadHandle
 	}
 	return ctx.writef("ObjectInstance",handle)
 }

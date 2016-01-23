@@ -5,7 +5,7 @@ func serialise(parameterlist ...Rter) (string,error) {
 	out := ""
 	if len(parameterlist) > 0 {
 		if len(parameterlist) % 2 != 0 {
-			return "",ErrParameterlistMismatch
+			return "",ErrBadParamlist
 		}
 		for i,p := range parameterlist {
 			out += p.Serialise()
