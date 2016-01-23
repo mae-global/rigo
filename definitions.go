@@ -373,6 +373,7 @@ const (
 	
 	ProcFree RtProcFreeFunc = "free"
 
+	StructuralHint RtName = "##"
 )
 
 var (
