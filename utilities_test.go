@@ -29,6 +29,17 @@ func Test_Utilities(t *testing.T) {
 			So(serialiseToString(out...),ShouldEqual,"#hello there Alice")
 		})
 
+		Convey("reduce",func() {
+			So(reduce(0.5),ShouldEqual,".5")
+			So(reduce(-0.5),ShouldEqual,"-.5")
+			So(reduce(5.00010),ShouldEqual,"5.0001")
+			So(reduce(0.0),ShouldEqual,"0")
+		})
+
+		Convey("reducev",func() {
+			So(reducev([]RtFloat{0.05,1.0500,0.0,-.1}),ShouldEqual,".05 1.05 0 -.1")
+		}) 
+
 	})
 
 	list := []Rter{RtToken("test"),RtFloat(1.2),RtFloatArray{.1,.2,.3,.4}}

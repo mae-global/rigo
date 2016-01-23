@@ -72,7 +72,7 @@ func (f RtFloat) String() string {
 }
 
 func (f RtFloat) Serialise() string {
-	return fmt.Sprintf("%f",float64(f))
+	return fmt.Sprintf("%s",reduce(f))
 }
 
 /* RtFloatArray float64 array */
@@ -85,7 +85,7 @@ func (a RtFloatArray) String() string {
 func (a RtFloatArray) Serialise() string {
 	out := ""
 	for i,r := range a {
-		out += fmt.Sprintf("%f",float64(r))
+		out += fmt.Sprintf("%s",reduce(r))
 		if i < (len(a) - 1) {
 			out += " "
 		}
@@ -132,7 +132,7 @@ func (c RtColor) String() string {
 func (c RtColor) Serialise() string {
 	out := ""
 	for i,r := range c {
-		out += fmt.Sprintf("%f",float64(r))
+		out += fmt.Sprintf("%s",reduce(r))
 		if i < (len(c) - 1) {
 			out += " "
 		}
@@ -148,7 +148,7 @@ func (p RtPoint) String() string {
 }
 
 func (p RtPoint) Serialise() string {
-	return fmt.Sprintf("%f %f %f",p[0],p[1],p[2])
+	return fmt.Sprintf("%s %s %s",reduce(p[0]),reduce(p[1]),reduce(p[2]))
 }
 
 /* RtPointArray */
@@ -177,7 +177,7 @@ func (v RtVector) String() string {
 }
 
 func (v RtVector) Serialise() string {
-	return fmt.Sprintf("[%f %f %f]",v[0],v[1],v[2])
+	return fmt.Sprintf("[%s %s %s]",reduce(v[0]),reduce(v[1]),reduce(v[2]))
 }
 
 /* RtNormal */
@@ -188,7 +188,7 @@ func (n RtNormal) String() string {
 }
 
 func (n RtNormal) Serialise() string {
-	return fmt.Sprintf("[%f %f %f]",n[0],n[1],n[2])
+	return fmt.Sprintf("[%s %s %s]",reduce(n[0]),reduce(n[1]),reduce(n[2]))
 }
 
 /* RtHpoint */
@@ -199,7 +199,7 @@ func (h RtHpoint) String() string {
 }
 
 func (h RtHpoint) Serialise() string {
-	return fmt.Sprintf("[%f %f %f %f]",h[0],h[1],h[2],h[3])
+	return fmt.Sprintf("[%s %s %s %s]",reduce(h[0]),reduce(h[1]),reduce(h[2]),reduce(h[3]))
 }
 
 /* RtMatrix */
@@ -212,7 +212,7 @@ func (m RtMatrix) String() string {
 func (m RtMatrix) Serialise() string {
 	out := ""
 	for i := 0; i < 16; i++ {
-		out += fmt.Sprintf("%f",m[i])
+		out += fmt.Sprintf("%d",reduce(m[i]))
 		if i < 15 {
 			out += " "
 		}
@@ -231,7 +231,7 @@ func (m RtBasis) String() string {
 func (b RtBasis) Serialise() string {
 	out := ""
 	for i := 0; i < 16; i++ {
-		out += fmt.Sprintf("%f",b[i])
+		out += fmt.Sprintf("%s",reduce(b[i]))
 		if i < 15 {
 			out += " "
 		}	
@@ -248,7 +248,7 @@ func (b RtBound) String() string {
 }
 
 func (b RtBound) Serialise() string {
-	return fmt.Sprintf("[%f %f %f %f %f %f]",b[0],b[1],b[2],b[3],b[4],b[5])
+	return fmt.Sprintf("[%s %s %s %s %s %s]",reduce(b[0]),reduce(b[1]),reduce(b[2]),reduce(b[3]),reduce(b[4]),reduce(b[5]))
 }
 
 /* RtString */
