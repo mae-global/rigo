@@ -15,7 +15,7 @@ var (
 )
 
 type Writer interface {
-	Write(int,string) error
+	Write(int,string) error	
 }
 
 
@@ -26,6 +26,8 @@ type Filer interface {
 
 type File struct {
 	file *os.File
+	annotation string
+	started bool
 }
 
 func (f *File) Write(depth int,out string) error {
@@ -33,14 +35,22 @@ func (f *File) Write(depth int,out string) error {
 		return ErrNoActiveContext
 	}
 
-	content := "" /* TODO: replace with compact version */
+	content := "" 
 	for i := 0; i < depth; i++ {
 		content += "\t"
 	}
 
-	_,err := f.file.Write([]byte(content + out))
+	if len(f.annotation) > 0 {
+		f.file.Write([]byte("\t" + f.annotation))
+		f.annotation = ""
+	}
+	
+
+	_,err := f.file.Write([]byte(content + out + "\n"))
 	return err
 }
+
+
 
 func (f *File) Close() error {
 	return f.file.Close()
@@ -75,13 +85,14 @@ func (ctx *Context) filter(name RtName,parameterlist ...Rter) error {
 	return nil
 }
 
+
 func (ctx *Context) write(parameterlist ...Rter) error {
 	/* TODO: add general filter here */
 	if ctx.writer == nil {
 		return ErrNoActiveContext
 	}
 
-	return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s\n",serialiseToString(parameterlist...)))
+	return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s",serialiseToString(parameterlist...)))
 }
 
 func (ctx *Context) writef(name RtName,parameterlist ...Rter) error {
@@ -93,14 +104,15 @@ func (ctx *Context) writef(name RtName,parameterlist ...Rter) error {
 	if ctx.writer == nil {
 		return ErrNoActiveContext
 	}
-	
-	
+		
 	if len(parameterlist) == 0 {
-		return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s\n",name))
+		return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s",name))
 	}
 
-	return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s %s\n",name,serialiseToString(parameterlist...)))
+	return ctx.writer.Write(ctx.depth,fmt.Sprintf("%s %s",name,serialiseToString(parameterlist...)))
 }
+
+
 
 func (ctx *Context) Filter(name RtName,filter Filterer) {
 	ctx.filters[name] = filter

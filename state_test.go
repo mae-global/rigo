@@ -25,6 +25,10 @@ func (buf *buffered) Write(depth int,content string) error {
 	return err
 }
 
+func (buf *buffered) Annotate(a string) error {
+	return nil
+}
+
 func newbuffered() *buffered {
 	return &buffered{bytes.NewBuffer(nil)}
 }

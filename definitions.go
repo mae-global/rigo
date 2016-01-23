@@ -346,6 +346,20 @@ func (s RtArchiveCallbackFunc) Serialise() string {
 	return fmt.Sprintf("\"%s\"",string(s))
 }
 
+/* RtAnnotation */
+type RtAnnotation string
+
+func (s RtAnnotation) String() string {
+	return s.Serialise()
+}
+
+func (s RtAnnotation) Serialise() string {
+	if len(s) == 0 {
+		return ""
+	}
+	return "#" + string(s)
+}
+
 const (
 	BoxFilter RtFilterFunc = "box"
 	TriangleFilter RtFilterFunc = "triangle"

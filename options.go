@@ -1,6 +1,11 @@
 package ri
 
-/* Option; render programs may have additional implementation-specific options. */
+/* Declare Declare the name and type of a variable */
+func (ctx *Context) Declare(name,declaration RtString) error {
+	return ctx.writef("Declare",name,declaration)
+}
+
+/* Option render programs may have additional implementation-specific options. */
 func (ctx *Context) Option(name RtToken,parameterlist ...Rter) error {
 	out := make([]Rter,0)
 	out = append(out,name)

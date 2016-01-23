@@ -9,7 +9,7 @@ func (ctx *Context) Begin(name string) error {
 		if f,err := os.Create(name); err != nil {
 			return err
 		} else {
-			ctx.writer = &File{f}
+			ctx.writer = &File{f,"",false}
 		}
 	}
 
@@ -45,15 +45,21 @@ func (ctx *Context) FrameEnd() error {
 }
 
 /* WorldBegin is invoked, all rendering options are frozen */
-func (ctx *Context) WorldBegin() error {
+func (ctx *Context) WorldBegin(args ...RtAnnotation) error {
 	defer func() { ctx.depth++ }()
-	return ctx.writef("WorldBegin")
+	if len(args) > 1 {
+		return ErrBadParamlist
+	}
+	return ctx.writef("WorldBegin",parseAnnotations(args...)...)
 }
 
 /* WorldEnd */
-func (ctx *Context) WorldEnd() error {
-	ctx.depth--	
-	return ctx.writef("WorldEnd")
+func (ctx *Context) WorldEnd(args ...RtAnnotation) error {
+	ctx.depth--
+	if len(args) > 1 {
+		return ErrBadParamlist
+	}	
+	return ctx.writef("WorldEnd",parseAnnotations(args...)...)
 }
 
 /* Comment */

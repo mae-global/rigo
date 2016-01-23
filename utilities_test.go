@@ -21,5 +21,14 @@ func Test_Utilities(t *testing.T) {
 			So(err,ShouldBeNil)
 			So(out,ShouldEqual,"1 2 3 4")
 		})
+
+		Convey("check annotation parsing",func() {
+			out := parseAnnotations(RtAnnotation("hello"),RtAnnotation("there"),RtAnnotation("Alice"))
+			So(len(out),ShouldEqual,3)
+			So(serialiseToString(out...),ShouldEqual,"#hello there Alice")
+		})
+
 	})
+
+
 }

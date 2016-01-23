@@ -1,16 +1,22 @@
 package ri
 
 
-/* AttributeBegin push the current set of attributes. */
-func (ctx *Context) AttributeBegin() error {
+/* AttributeBegin push the current set of attributes, you can add a single annotation */
+func (ctx *Context) AttributeBegin(args ...RtAnnotation) error {
 	defer func() {ctx.depth++}()
-	return ctx.writef("AttributeBegin")
+	if len(args) > 1 {
+		return ErrBadParamlist
+	}
+	return ctx.writef("AttributeBegin",parseAnnotations(args...)...)
 }
 
 /* AttributeEnd pop the current set of attributes */
-func (ctx *Context) AttributeEnd() error {
+func (ctx *Context) AttributeEnd(args ...RtAnnotation) error {
 	ctx.depth--
-	return ctx.writef("AttributeEnd")
+	if len(args) > 1 {
+		return ErrBadParamlist
+	}
+	return ctx.writef("AttributeEnd",parseAnnotations(args...)...)
 }
 
 /* Color set the current color */
