@@ -1,57 +1,55 @@
 package ri
 
 import (
+	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
-	"fmt"
 )
-
 
 func Test_Utilities(t *testing.T) {
 
-	Convey("Utilities",t,func() {
+	Convey("Utilities", t, func() {
 
-		Convey("check for mismatch error",func() {
-			out,err := serialise(RtInt(1),RtInt(2),RtInt(3))
-			So(err,ShouldEqual,ErrBadParamlist)
-			So(out,ShouldBeEmpty)
+		Convey("check for mismatch error", func() {
+			out, err := serialise(RtInt(1), RtInt(2), RtInt(3))
+			So(err, ShouldEqual, ErrBadParamlist)
+			So(out, ShouldBeEmpty)
 		})
 
-		Convey("check correct serialisation",func() {
-			out,err := serialise(RtInt(1),RtInt(2),RtInt(3),RtInt(4))
-			So(err,ShouldBeNil)
-			So(out,ShouldEqual,"1 2 3 4")
+		Convey("check correct serialisation", func() {
+			out, err := serialise(RtInt(1), RtInt(2), RtInt(3), RtInt(4))
+			So(err, ShouldBeNil)
+			So(out, ShouldEqual, "1 2 3 4")
 		})
 
-		Convey("check annotation parsing",func() {
-			out := parseAnnotations(RtAnnotation("hello"),RtAnnotation("there"),RtAnnotation("Alice"))
-			So(len(out),ShouldEqual,3)
-			So(serialiseToString(out...),ShouldEqual,"#hello there Alice")
+		Convey("check annotation parsing", func() {
+			out := parseAnnotations(RtAnnotation("hello"), RtAnnotation("there"), RtAnnotation("Alice"))
+			So(len(out), ShouldEqual, 3)
+			So(serialiseToString(out...), ShouldEqual, "#hello there Alice")
 		})
 
-		Convey("reduce",func() {
-			So(reduce(0.5),ShouldEqual,".5")
-			So(reduce(-0.5),ShouldEqual,"-.5")
-			So(reduce(5.00010),ShouldEqual,"5.0001")
-			So(reduce(0.0),ShouldEqual,"0")
+		Convey("reduce", func() {
+			So(reduce(0.5), ShouldEqual, ".5")
+			So(reduce(-0.5), ShouldEqual, "-.5")
+			So(reduce(5.00010), ShouldEqual, "5.0001")
+			So(reduce(0.0), ShouldEqual, "0")
 		})
 
-		Convey("reducev",func() {
-			So(reducev([]RtFloat{0.05,1.0500,0.0,-.1}),ShouldEqual,".05 1.05 0 -.1")
-		}) 
+		Convey("reducev", func() {
+			So(reducev([]RtFloat{0.05, 1.0500, 0.0, -.1}), ShouldEqual, ".05 1.05 0 -.1")
+		})
 
 	})
 
-	list := []Rter{RtToken("test"),RtFloat(1.2),RtFloatArray{.1,.2,.3,.4}}
-	if t,ok := list[0].(RtToken); ok {
-		fmt.Printf("token %s\n",t)
+	list := []Rter{RtToken("test"), RtFloat(1.2), RtFloatArray{.1, .2, .3, .4}}
+	if t, ok := list[0].(RtToken); ok {
+		fmt.Printf("token %s\n", t)
 	}
-	if t,ok := list[1].(RtFloat); ok {
-		fmt.Printf("float %s\n",t)
+	if t, ok := list[1].(RtFloat); ok {
+		fmt.Printf("float %s\n", t)
 	}
-	if t,ok := list[2].(RtFloatArray); ok {
-		fmt.Printf("float array len=%d %s\n",len(t),t)
+	if t, ok := list[2].(RtFloatArray); ok {
+		fmt.Printf("float array len=%d %s\n", len(t), t)
 	}
-
 
 }

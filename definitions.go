@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-type Rter interface { 
+type Rter interface {
 	String() string
 	Serialise() string
 }
@@ -43,7 +43,7 @@ func (i RtInt) String() string {
 }
 
 func (i RtInt) Serialise() string {
-	return fmt.Sprintf("%d",int(i))
+	return fmt.Sprintf("%d", int(i))
 }
 
 /* RtIntArray integer array */
@@ -55,13 +55,13 @@ func (a RtIntArray) String() string {
 
 func (a RtIntArray) Serialise() string {
 	out := ""
-	for i,r := range a {
-		out += fmt.Sprintf("%d",int(r))
+	for i, r := range a {
+		out += fmt.Sprintf("%d", int(r))
 		if i < (len(a) - 1) {
 			out += " "
 		}
 	}
-	return fmt.Sprintf("[%s]",out)
+	return fmt.Sprintf("[%s]", out)
 }
 
 /* RtFloat float64 value */
@@ -72,7 +72,7 @@ func (f RtFloat) String() string {
 }
 
 func (f RtFloat) Serialise() string {
-	return fmt.Sprintf("%s",reduce(f))
+	return fmt.Sprintf("%s", reduce(f))
 }
 
 /* RtFloatArray float64 array */
@@ -84,13 +84,13 @@ func (a RtFloatArray) String() string {
 
 func (a RtFloatArray) Serialise() string {
 	out := ""
-	for i,r := range a {
-		out += fmt.Sprintf("%s",reduce(r))
+	for i, r := range a {
+		out += fmt.Sprintf("%s", reduce(r))
 		if i < (len(a) - 1) {
 			out += " "
 		}
 	}
-	return fmt.Sprintf("[%s]",out)
+	return fmt.Sprintf("[%s]", out)
 }
 
 /* RtToken */
@@ -101,7 +101,7 @@ func (s RtToken) String() string {
 }
 
 func (s RtToken) Serialise() string {
-	return fmt.Sprintf("\"%s\"",string(s))
+	return fmt.Sprintf("\"%s\"", string(s))
 }
 
 /* RtToken array */
@@ -119,7 +119,7 @@ func (a RtTokenArray) Serialise() string {
 			out += " "
 		}
 	}
-	return fmt.Sprintf("[%s]",out)
+	return fmt.Sprintf("[%s]", out)
 }
 
 /* RtColor implemented as an array */
@@ -131,13 +131,13 @@ func (c RtColor) String() string {
 
 func (c RtColor) Serialise() string {
 	out := ""
-	for i,r := range c {
-		out += fmt.Sprintf("%s",reduce(r))
+	for i, r := range c {
+		out += fmt.Sprintf("%s", reduce(r))
 		if i < (len(c) - 1) {
 			out += " "
 		}
 	}
-	return fmt.Sprintf("[%s]",out)
+	return fmt.Sprintf("[%s]", out)
 }
 
 /* RtPoint */
@@ -148,7 +148,7 @@ func (p RtPoint) String() string {
 }
 
 func (p RtPoint) Serialise() string {
-	return fmt.Sprintf("%s %s %s",reduce(p[0]),reduce(p[1]),reduce(p[2]))
+	return fmt.Sprintf("%s %s %s", reduce(p[0]), reduce(p[1]), reduce(p[2]))
 }
 
 /* RtPointArray */
@@ -162,11 +162,11 @@ func (p RtPointArray) Serialise() string {
 	out := ""
 	for i := 0; i < len(p); i++ {
 		out += p[i].Serialise()
-		if i < len(p) - 1 {
+		if i < len(p)-1 {
 			out += " "
 		}
 	}
-	return fmt.Sprintf("[%s]",out)
+	return fmt.Sprintf("[%s]", out)
 }
 
 /* RtVector */
@@ -177,7 +177,7 @@ func (v RtVector) String() string {
 }
 
 func (v RtVector) Serialise() string {
-	return fmt.Sprintf("[%s %s %s]",reduce(v[0]),reduce(v[1]),reduce(v[2]))
+	return fmt.Sprintf("[%s %s %s]", reduce(v[0]), reduce(v[1]), reduce(v[2]))
 }
 
 /* RtNormal */
@@ -188,7 +188,7 @@ func (n RtNormal) String() string {
 }
 
 func (n RtNormal) Serialise() string {
-	return fmt.Sprintf("[%s %s %s]",reduce(n[0]),reduce(n[1]),reduce(n[2]))
+	return fmt.Sprintf("[%s %s %s]", reduce(n[0]), reduce(n[1]), reduce(n[2]))
 }
 
 /* RtHpoint */
@@ -199,7 +199,7 @@ func (h RtHpoint) String() string {
 }
 
 func (h RtHpoint) Serialise() string {
-	return fmt.Sprintf("[%s %s %s %s]",reduce(h[0]),reduce(h[1]),reduce(h[2]),reduce(h[3]))
+	return fmt.Sprintf("[%s %s %s %s]", reduce(h[0]), reduce(h[1]), reduce(h[2]), reduce(h[3]))
 }
 
 /* RtMatrix */
@@ -212,17 +212,17 @@ func (m RtMatrix) String() string {
 func (m RtMatrix) Serialise() string {
 	out := ""
 	for i := 0; i < 16; i++ {
-		out += fmt.Sprintf("%d",reduce(m[i]))
+		out += fmt.Sprintf("%d", reduce(m[i]))
 		if i < 15 {
 			out += " "
 		}
 	}
-	
-	return fmt.Sprintf("[%s]",out)
+
+	return fmt.Sprintf("[%s]", out)
 }
 
 /* RtBasis */
-type RtBasis  [16]RtFloat
+type RtBasis [16]RtFloat
 
 func (m RtBasis) String() string {
 	return m.Serialise()
@@ -231,24 +231,23 @@ func (m RtBasis) String() string {
 func (b RtBasis) Serialise() string {
 	out := ""
 	for i := 0; i < 16; i++ {
-		out += fmt.Sprintf("%s",reduce(b[i]))
+		out += fmt.Sprintf("%s", reduce(b[i]))
 		if i < 15 {
 			out += " "
-		}	
+		}
 	}
-	return fmt.Sprintf("[%s]",out)
+	return fmt.Sprintf("[%s]", out)
 }
 
-
 /* RtBound */
-type RtBound  [6]RtFloat
+type RtBound [6]RtFloat
 
 func (b RtBound) String() string {
 	return b.Serialise()
 }
 
 func (b RtBound) Serialise() string {
-	return fmt.Sprintf("[%s %s %s %s %s %s]",reduce(b[0]),reduce(b[1]),reduce(b[2]),reduce(b[3]),reduce(b[4]),reduce(b[5]))
+	return fmt.Sprintf("[%s %s %s %s %s %s]", reduce(b[0]), reduce(b[1]), reduce(b[2]), reduce(b[3]), reduce(b[4]), reduce(b[5]))
 }
 
 /* RtString */
@@ -259,7 +258,7 @@ func (s RtString) String() string {
 }
 
 func (s RtString) Serialise() string {
-	return fmt.Sprintf("\"%s\"",string(s))
+	return fmt.Sprintf("\"%s\"", string(s))
 }
 
 /* RtStringArray array of strings */
@@ -273,11 +272,11 @@ func (a RtStringArray) Serialise() string {
 	out := ""
 	for i := 0; i < len(a); i++ {
 		out += a[i].Serialise()
-		if i < len(a) - 1 {
+		if i < len(a)-1 {
 			out += " "
 		}
 	}
-	return fmt.Sprintf("[%s]",out)
+	return fmt.Sprintf("[%s]", out)
 }
 
 /* RtLightHandle */
@@ -288,8 +287,8 @@ func (l RtLightHandle) String() string {
 }
 
 func (l RtLightHandle) Serialise() string {
-	return fmt.Sprintf("%d",uint(l))
-} 
+	return fmt.Sprintf("%d", uint(l))
+}
 
 /* RtObjectHandle */
 type RtObjectHandle uint
@@ -299,8 +298,8 @@ func (l RtObjectHandle) String() string {
 }
 
 func (l RtObjectHandle) Serialise() string {
-	return fmt.Sprintf("%d",uint(l))
-} 
+	return fmt.Sprintf("%d", uint(l))
+}
 
 /* RtFilterFunc */
 type RtFilterFunc string
@@ -310,7 +309,7 @@ func (s RtFilterFunc) String() string {
 }
 
 func (s RtFilterFunc) Serialise() string {
-	return fmt.Sprintf("\"%s\"",string(s))
+	return fmt.Sprintf("\"%s\"", string(s))
 }
 
 /* RtProcSubdivFunc subdivision function */
@@ -321,7 +320,7 @@ func (s RtProcSubdivFunc) String() string {
 }
 
 func (s RtProcSubdivFunc) Serialise() string {
-	return fmt.Sprintf("\"%s\"",string(s))
+	return fmt.Sprintf("\"%s\"", string(s))
 }
 
 /* RtProcFreeFunc */
@@ -332,7 +331,7 @@ func (s RtProcFreeFunc) String() string {
 }
 
 func (s RtProcFreeFunc) Serialise() string {
-	return fmt.Sprintf("\"%s\"",string(s))
+	return fmt.Sprintf("\"%s\"", string(s))
 }
 
 /* RtArchiveCallbackFunc */
@@ -343,7 +342,7 @@ func (s RtArchiveCallbackFunc) String() string {
 }
 
 func (s RtArchiveCallbackFunc) Serialise() string {
-	return fmt.Sprintf("\"%s\"",string(s))
+	return fmt.Sprintf("\"%s\"", string(s))
 }
 
 /* RtAnnotation */
@@ -361,54 +360,51 @@ func (s RtAnnotation) Serialise() string {
 }
 
 const (
-	BoxFilter RtFilterFunc = "box"
-	TriangleFilter RtFilterFunc = "triangle"
+	BoxFilter        RtFilterFunc = "box"
+	TriangleFilter   RtFilterFunc = "triangle"
 	CatmullRomFilter RtFilterFunc = "catmull-rom"
-	GaussianFilter RtFilterFunc = "gaussian"
-	SincFilter RtFilterFunc = "sinc"
+	GaussianFilter   RtFilterFunc = "gaussian"
+	SincFilter       RtFilterFunc = "sinc"
 
 	ReadArchiveCallback RtArchiveCallbackFunc = "ReadArchive"
 
-	Perspective RtToken = "perspective"
+	Perspective  RtToken = "perspective"
 	Orthographic RtToken = "orthographic"
-	Bilinear RtToken = "bilinear"
-	Bicubic RtToken = "bicubic"
-	RGBA RtToken = "RGBA"
-	P RtToken = "P"
-	Pz RtToken = "Pz"
-	Pw RtToken = "Pw"
-	N RtToken = "N"
-	Cs RtToken = "Cs"
-	Os RtToken = "Os"
+	Bilinear     RtToken = "bilinear"
+	Bicubic      RtToken = "bicubic"
+	RGBA         RtToken = "RGBA"
+	P            RtToken = "P"
+	Pz           RtToken = "Pz"
+	Pw           RtToken = "Pw"
+	N            RtToken = "N"
+	Cs           RtToken = "Cs"
+	Os           RtToken = "Os"
 
 	ProcDelayedReadArchive RtProcSubdivFunc = "DelayedReadArchive"
-	ProcRunProgram RtProcSubdivFunc = "RunProgram"
-	ProcDynamicLoad RtProcSubdivFunc = "DynamicLoad"
-	
+	ProcRunProgram         RtProcSubdivFunc = "RunProgram"
+	ProcDynamicLoad        RtProcSubdivFunc = "DynamicLoad"
+
 	ProcFree RtProcFreeFunc = "free"
 
 	StructuralHint RtName = "##"
 )
 
 var (
-	ErrArrayTooBig = fmt.Errorf("insufficient memory to construct array")
-	ErrBadArgument = fmt.Errorf("incorrect parameter value")
-	ErrBadArray    = fmt.Errorf("invalid array specification")
-	ErrBadBasis    = fmt.Errorf("undefined basis matrix name")
-	ErrBadColor	   = fmt.Errorf("invalid color specification")
-	ErrBadHandle   = fmt.Errorf("invalid light or object handle")
-	ErrBadParamlist= fmt.Errorf("parameter list type mismatch")
-	ErrBadRIPCode  = fmt.Errorf("invalid encoded RIB request code")
+	ErrArrayTooBig    = fmt.Errorf("insufficient memory to construct array")
+	ErrBadArgument    = fmt.Errorf("incorrect parameter value")
+	ErrBadArray       = fmt.Errorf("invalid array specification")
+	ErrBadBasis       = fmt.Errorf("undefined basis matrix name")
+	ErrBadColor       = fmt.Errorf("invalid color specification")
+	ErrBadHandle      = fmt.Errorf("invalid light or object handle")
+	ErrBadParamlist   = fmt.Errorf("parameter list type mismatch")
+	ErrBadRIPCode     = fmt.Errorf("invalid encoded RIB request code")
 	ErrBadStringToken = fmt.Errorf("undefined encoded string token")
-	ErrBadToken = fmt.Errorf("invalid binary token")
-	ErrBadVersion = fmt.Errorf("protocol version number mismatch")
-	ErrLimitCheck = fmt.Errorf("overflowing an internal limit")
-	ErrOutOfMemory = fmt.Errorf("generic instance of insufficient memory")
-	ErrProtocolBotch = fmt.Errorf("malformed binary encoding")
-	ErrStringTooBig = fmt.Errorf("insufficient memory to read string")
-	ErrSyntaxError = fmt.Errorf("general syntactic error")
-	ErrUnregistered = fmt.Errorf("undefined RIB request")
+	ErrBadToken       = fmt.Errorf("invalid binary token")
+	ErrBadVersion     = fmt.Errorf("protocol version number mismatch")
+	ErrLimitCheck     = fmt.Errorf("overflowing an internal limit")
+	ErrOutOfMemory    = fmt.Errorf("generic instance of insufficient memory")
+	ErrProtocolBotch  = fmt.Errorf("malformed binary encoding")
+	ErrStringTooBig   = fmt.Errorf("insufficient memory to read string")
+	ErrSyntaxError    = fmt.Errorf("general syntactic error")
+	ErrUnregistered   = fmt.Errorf("undefined RIB request")
 )
-
-
-

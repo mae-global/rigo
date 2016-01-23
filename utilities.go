@@ -4,14 +4,13 @@ import (
 	"fmt"
 )
 
-
-func serialise(parameterlist ...Rter) (string,error) {
+func serialise(parameterlist ...Rter) (string, error) {
 	out := ""
 	if len(parameterlist) > 0 {
-		if len(parameterlist) % 2 != 0 {
-			return "",ErrBadParamlist
+		if len(parameterlist)%2 != 0 {
+			return "", ErrBadParamlist
 		}
-		for i,p := range parameterlist {
+		for i, p := range parameterlist {
 			out += p.Serialise()
 			if i < (len(parameterlist) - 1) {
 				out += " "
@@ -19,37 +18,37 @@ func serialise(parameterlist ...Rter) (string,error) {
 		}
 	}
 
-	return out,nil
+	return out, nil
 }
 
 func serialiseToString(parameterlist ...Rter) string {
 	out := ""
-	for i,p := range parameterlist {
+	for i, p := range parameterlist {
 		out += p.Serialise()
 		if i < (len(parameterlist) - 1) {
 			out += " "
 		}
 	}
 	return out
-} 
+}
 
 func parseAnnotations(annotations ...RtAnnotation) []Rter {
-	out := make([]Rter,0)
-	for i,a := range annotations {
+	out := make([]Rter, 0)
+	for i, a := range annotations {
 		if i > 0 {
-			out = append(out,RtName(string(a)))
+			out = append(out, RtName(string(a)))
 			continue
 		}
-		out = append(out,a)
+		out = append(out, a)
 	}
 	return out
 }
 
 func Serialise(list []Rter) string {
 	out := ""
-	for i,p := range list {
+	for i, p := range list {
 		out += p.Serialise()
-		if i < len(list) - 1 {
+		if i < len(list)-1 {
 			out += " "
 		}
 	}
@@ -57,11 +56,11 @@ func Serialise(list []Rter) string {
 }
 
 func reduce(f RtFloat) string {
-	
-	str := fmt.Sprintf("%f",f)
+
+	str := fmt.Sprintf("%f", f)
 	s := 0
 	neg := false
-	for i,c := range str {
+	for i, c := range str {
 		if c != '0' {
 			if c == '-' {
 				neg = true
@@ -80,12 +79,12 @@ func reduce(f RtFloat) string {
 		if str[i] != '0' {
 			e = i + 1
 			break
-		}		
+		}
 		if str[i] == '.' {
 			break
 		}
-	} 
-	
+	}
+
 	str = str[s:e]
 	if str == "." {
 		str = "0"
@@ -95,23 +94,15 @@ func reduce(f RtFloat) string {
 	}
 
 	return str
-} 
+}
 
 func reducev(fv []RtFloat) string {
 	out := ""
-	for i,f := range fv {
+	for i, f := range fv {
 		out += reduce(f)
-		if i < len(fv) - 1 {
+		if i < len(fv)-1 {
 			out += " "
 		}
 	}
 	return out
 }
-
-
-
-
-
-
-
-

@@ -5,24 +5,23 @@ import (
 	"testing"
 )
 
-
 func Test_Solids(t *testing.T) {
 
-	Convey("All Solids",t,func() {
+	Convey("All Solids", t, func() {
 
 		ctx := New(nil)
-		So(ctx,ShouldNotBeNil)
+		So(ctx, ShouldNotBeNil)
 
-		So(ctx.Begin("output/solids.rib"),ShouldBeNil)
-		So(ctx.Comment("output from rigo, solids_test.go"),ShouldBeNil)
-		So(ctx.SolidBegin("union"),ShouldBeNil)
-		
-		oh,err := ctx.ObjectBegin()
-		So(err,ShouldBeNil)		
-		So(ctx.ObjectEnd(),ShouldBeNil)
-		So(ctx.ObjectInstance(oh),ShouldBeNil)
+		So(ctx.Begin("output/solids.rib"), ShouldBeNil)
+		So(ctx.Comment("output from rigo, solids_test.go"), ShouldBeNil)
+		So(ctx.SolidBegin("union"), ShouldBeNil)
 
-		So(ctx.SolidEnd(),ShouldBeNil)
-		So(ctx.End(),ShouldBeNil)
+		oh, err := ctx.ObjectBegin()
+		So(err, ShouldBeNil)
+		So(ctx.ObjectEnd(), ShouldBeNil)
+		So(ctx.ObjectInstance(oh), ShouldBeNil)
+
+		So(ctx.SolidEnd(), ShouldBeNil)
+		So(ctx.End(), ShouldBeNil)
 	})
 }

@@ -2,9 +2,7 @@
 package ri
 
 /* test function */
-func foo(name RtString,color RtColor) error {
-
-	
+func foo(name RtString, color RtColor) error {
 
 	return nil
 }
