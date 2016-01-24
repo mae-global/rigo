@@ -11,86 +11,86 @@ Install with:
 
 Quick example usage; outputting to a RIB Entity file. 
 
-		# example.go
-		/* create a function to record the duration between RiBegin and RiEnd calls */
-		type MyTimer struct {
-			start time.Time
-			finish time.Time
-		}
+```go
+/* create a function to record the duration between RiBegin and RiEnd calls */
+type MyTimer struct {
+	start time.Time
+	finish time.Time
+}
 
-		func (t MyTimer) Name() string {
-			return "mytimer"
-		}
+func (t MyTimer) Name() string {
+	return "mytimer"
+}
 
-		func (t *MyTimer) Took() time.Duration {
-			return t.finish.Sub(t.start)
-		}
+func (t *MyTimer) Took() time.Duration {
+	return t.finish.Sub(t.start)
+}
 
-		func (t *MyTimer) Write(name RtName,list []Rter,info Info) *Result {
-			switch string(name) {
-				case "Begin":
-					t.start = time.Now()
-					t.finish = t.start
-				break
-				case "End":
-					t.finish = time.Now()
-				break
-			}
-			return Done()
-		}
+func (t *MyTimer) Write(name RtName,list []Rter,info Info) *Result {
+	switch string(name) {
+		case "Begin":
+			t.start = time.Now()
+			t.finish = t.start
+		break
+		case "End":
+			t.finish = time.Now()
+		break
+	}
+	return Done()
+}
 
-		/* Construct a pipeline, including our timer, piping RIB output to file */
-		pipe := NewPipe()
-		pipe.Append(&MyTimer{}).Append(&PipeToFile{})
+/* Construct a pipeline, including our timer, piping RIB output to file */
+pipe := NewPipe()
+pipe.Append(&MyTimer{}).Append(&PipeToFile{})
 
-		ctx := NewEntity(pipe)
+ctx := NewEntity(pipe)
 
-		/* Do all our Ri calls */
-		ctx.Begin("unitcube.rib")
-		ctx.AttributeBegin("begin unit cube")
-		ctx.Attribute("identifier", RtToken("name"), RtToken("unitcube"))
-		ctx.Bound(RtBound{-.5, .5, -.5, .5, -.5, .5})
-		ctx.TransformBegin()
+/* Do all our Ri calls */
+ctx.Begin("unitcube.rib")
+ctx.AttributeBegin("begin unit cube")
+ctx.Attribute("identifier", RtToken("name"), RtToken("unitcube"))
+ctx.Bound(RtBound{-.5, .5, -.5, .5, -.5, .5})
+ctx.TransformBegin()
 
-		ctx.Comment("far face")
-		ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
-		ctx.Rotate(90, 0, 1, 0)
+ctx.Comment("far face")
+ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Rotate(90, 0, 1, 0)
 
-		ctx.Comment("right face")
-		ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
-		ctx.Rotate(90, 0, 1, 0)
+ctx.Comment("right face")
+ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Rotate(90, 0, 1, 0)
 
-		ctx.Comment("near face")
-		ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
-		ctx.Rotate(90, 0, 1, 0)
+ctx.Comment("near face")
+ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Rotate(90, 0, 1, 0)
 
-		ctx.Comment("left face")
-		ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Comment("left face")
+ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
 
-		ctx.TransformEnd()
-		ctx.TransformBegin()
+ctx.TransformEnd()
+ctx.TransformBegin()
 
-		ctx.Comment("bottom face")
-		ctx.Rotate(90, 1, 0, 0)
-		ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Comment("bottom face")
+ctx.Rotate(90, 1, 0, 0)
+ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
 
-		ctx.TransformEnd()
-		ctx.TransformBegin()
+ctx.TransformEnd()
+ctx.TransformBegin()
 
-		ctx.Comment("top face")
-		ctx.Rotate(-90, 1, 0, 0)
-		ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Comment("top face")
+ctx.Rotate(-90, 1, 0, 0)
+ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
 
-		ctx.TransformEnd()
-		ctx.AttributeEnd("end unit cube")
-		ctx.End()	
+ctx.TransformEnd()
+ctx.AttributeEnd("end unit cube")
+ctx.End()	
 		
-		/* grab our timer back and print the duration */
-		p = pipe.GetByName(MyTimer{}.Name())
-		t,_ := p.(*MyTimer)
+/* grab our timer back and print the duration */
+p = pipe.GetByName(MyTimer{}.Name())
+t,_ := p.(*MyTimer)
 	
-		fmt.Printf("took %s\n",t.Took())
-	
+fmt.Printf("took %s\n",t.Took())
+```	
 
 RenderMan Interface Specification is Copyright © 2005 Pixar.
 RenderMan © is a registered trademark of Pixar.
