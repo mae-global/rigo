@@ -3,11 +3,44 @@ package ri
 import (
 	"fmt"
 	"os"
+	"time"
 )
+
 
 func DefaultFilePipe() *Pipe {
 	pipe := NewPipe()
-	return pipe.Append(&PipeToStats{}).Append(&PipeToFile{})
+	return pipe.Append(&PipeTimer{}).Append(&PipeToStats{}).Append(&PipeToFile{})
+}
+
+/* Time from Begin to End */
+type PipeTimer struct {
+	start time.Time
+	finish time.Time
+}
+
+func (p PipeTimer) Name() string {
+	return "default-pipe-timer"
+}
+
+func (p *PipeTimer) Write(name RtName,list []Rter,info Info) *Result {
+	switch string(name) {
+		case "Begin":
+			p.start = time.Now()
+			p.finish = p.start
+			break
+		case "End":
+			p.finish = time.Now()
+			break
+	}
+	return Done()
+}
+
+func (p *PipeTimer) String() string {
+	return fmt.Sprintf("pipe took %s",p.finish.Sub(p.start))
+}
+
+func (p *PipeTimer) Took() time.Duration {
+	return p.finish.Sub(p.start)
 }
 
 /* Pipe RI output to gathered states */

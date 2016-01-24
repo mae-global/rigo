@@ -97,9 +97,17 @@ func Test_ExampleD14(t *testing.T) {
 		/* output gathered stats */
 		p := pipe.GetByName(PipeToStats{}.Name())
 		So(p, ShouldNotBeNil)
-		if s, ok := p.(*PipeToStats); ok {
-			fmt.Printf("%s", s)
-		}
+		s, ok := p.(*PipeToStats)
+		So(s,ShouldNotBeNil)
+		So(ok,ShouldBeTrue)		
+
+		p = pipe.GetByName(PipeTimer{}.Name())
+		So(p, ShouldNotBeNil)
+		t,ok := p.(*PipeTimer)
+		So(t,ShouldNotBeNil)
+		So(ok,ShouldBeTrue)
+
+		fmt.Printf("%s%s", s,t)
 	})
 }
 
@@ -150,10 +158,20 @@ func Test_ExampleD21(t *testing.T) {
 
 		So(ctx.End(), ShouldBeNil)
 
+	/* output gathered stats */
 		p := pipe.GetByName(PipeToStats{}.Name())
 		So(p, ShouldNotBeNil)
-		if s, ok := p.(*PipeToStats); ok {
-			fmt.Printf("%s", s)
-		}
+		s, ok := p.(*PipeToStats)
+		So(s,ShouldNotBeNil)
+		So(ok,ShouldBeTrue)		
+
+		p = pipe.GetByName(PipeTimer{}.Name())
+		So(p, ShouldNotBeNil)
+		t,ok := p.(*PipeTimer)
+		So(t,ShouldNotBeNil)
+		So(ok,ShouldBeTrue)
+
+		fmt.Printf("%s%s", s,t)
+	
 	})
 }
