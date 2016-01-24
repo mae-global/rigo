@@ -9,7 +9,7 @@ func Test_External(t *testing.T) {
 
 	Convey("All External", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/external.rib"), ShouldBeNil)

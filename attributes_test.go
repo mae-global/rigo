@@ -9,7 +9,7 @@ func Test_Attributes(t *testing.T) {
 
 	Convey("All Attributes", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/attributes.rib"), ShouldBeNil)

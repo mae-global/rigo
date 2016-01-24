@@ -24,11 +24,11 @@ func (p PipeTimer) Name() string {
 
 func (p *PipeTimer) Write(name RtName,list []Rter,info Info) *Result {
 	switch string(name) {
-		case "Begin":
+		case "Begin","RiBegin":
 			p.start = time.Now()
 			p.finish = p.start
 			break
-		case "End":
+		case "End","RiEnd":
 			p.finish = time.Now()
 			break
 	}
@@ -99,6 +99,10 @@ func (p PipeToFile) Name() string {
 }
 
 func (p *PipeToFile) Write(name RtName, list []Rter, info Info) *Result {
+	if info.Formal {
+		name = name.Trim("Ri")
+	}
+
 	if name == "Begin" {
 		if p.file != nil {
 			return InError(ErrProtocolBotch)
@@ -120,7 +124,7 @@ func (p *PipeToFile) Write(name RtName, list []Rter, info Info) *Result {
 		if info.Entity {
 			postfix = " Entity\n"
 		}
-		if _, err = p.file.Write([]byte("##RenderMan RIB-Structure 1.1" + postfix)); err != nil {
+		if _, err = p.file.Write([]byte(string(RIBStructure) + postfix)); err != nil {
 			return InError(err)
 		}
 		return Done()

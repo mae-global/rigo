@@ -27,7 +27,8 @@ func Done() *Result {
 }
 
 func Next(name RtName, args []Rter, infom Info) *Result {
-	info := &Info{Name: infom.Name, Depth: infom.Depth, Lights: infom.Lights, Objects: infom.Objects, Entity: infom.Entity}
+	/* FIXME: this is a mess */
+	info := &Info{Name: infom.Name, Depth: infom.Depth, Lights: infom.Lights, Objects: infom.Objects, Entity: infom.Entity,Formal:infom.Formal}
 	return &Result{name, args, info, nil}
 }
 
@@ -142,37 +143,48 @@ type Info struct {
 	Lights  uint
 	Objects uint
 	Entity  bool
+	Formal  bool
+}
+
+type Configuration struct {
+	Entity bool
+	Formal bool
 }
 
 type Context struct {
 	pipe *Pipe
-	name string
+	/* TODO: move to an Info block instead */
+	name string /* as set through Begin(name) */
 
-	entity bool
-	depth  int
+	entity bool /* is Entity file? */
+	formal bool /* convert Begin,End... to RiBegin,RiEnd... */
+	depth  int  /* pretty print tabs */
 
 	lights  uint
 	objects uint
 }
 
 func (ctx *Context) info() Info {
-	return Info{ctx.name, ctx.depth, ctx.lights, ctx.objects, ctx.entity}
+	return Info{ctx.name, ctx.depth, ctx.lights, ctx.objects, ctx.entity,ctx.formal}
 }
 
 func (ctx *Context) writef(name RtName, parameterlist ...Rter) error {
-	return ctx.pipe.Run(name, parameterlist, ctx.info()) //ctx.pipe.Write(name, parameterlist, ctx.info())
+	if ctx.formal {
+		name = name.Prefix("Ri")
+	}
+	return ctx.pipe.Run(name, parameterlist, ctx.info()) 
 }
 
-func New(pipe *Pipe) *Context {
+func New(pipe *Pipe,config *Configuration) *Context {
 	if pipe == nil {
 		pipe = DefaultFilePipe()
 	}
-	return &Context{name: "", pipe: pipe}
+	if config == nil {
+		config = &Configuration{Entity:false,Formal:false}
+	}
+	return &Context{name: "", pipe: pipe, entity:config.Entity,formal:config.Formal}
 }
 
 func NewEntity(pipe *Pipe) *Context {
-	if pipe == nil {
-		pipe = DefaultFilePipe()
-	}
-	return &Context{name: "", pipe: pipe, entity: true}
+	return New(pipe,&Configuration{Entity:true,Formal:false})
 }

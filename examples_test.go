@@ -19,8 +19,9 @@ func Test_ExampleD14(t *testing.T) {
 
 		pipe := DefaultFilePipe()
 		So(pipe, ShouldNotBeNil)
-
-		ctx := New(pipe)
+		
+		/* create a formal version of the RIB output to the pipe, RiBegin,RiEnd... instead of Begin,End... */
+		ctx := New(pipe,&Configuration{Formal:true})
 		ctx.Begin("output/exampleD14.rib")
 		ctx.ArchiveRecord("structure", "Scene Bouncing Ball")
 		ctx.ArchiveRecord("structure", "Creator %s-%s", Author, Version)

@@ -3,6 +3,7 @@ package ri
 
 import (
 	"fmt"
+	"strings"
 )
 
 const (
@@ -24,6 +25,14 @@ func (s RtName) String() string {
 
 func (s RtName) Serialise() string {
 	return string(s)
+}
+
+func (s RtName) Prefix(pre string) RtName {
+	return RtName(pre + string(s))
+}
+
+func (s RtName) Trim(pre string) RtName {
+	return RtName(strings.TrimPrefix(string(s),pre))
 }
 
 /* RtBoolean boolean value */
@@ -392,6 +401,7 @@ const (
 	ProcFree RtProcFreeFunc = "free"
 
 	StructuralHint RtName = "##"
+	RIBStructure RtName = "##RenderMan RIB-Structure 1.1"
 )
 
 var (

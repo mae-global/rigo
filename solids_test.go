@@ -9,7 +9,7 @@ func Test_Solids(t *testing.T) {
 
 	Convey("All Solids", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/solids.rib"), ShouldBeNil)

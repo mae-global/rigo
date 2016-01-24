@@ -9,7 +9,7 @@ func Test_Surfaces(t *testing.T) {
 
 	Convey("All Surfaces", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/surfaces.rib"), ShouldBeNil)

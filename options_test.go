@@ -9,7 +9,7 @@ func Test_Options(t *testing.T) {
 
 	Convey("All Options", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/options.rib"), ShouldBeNil)

@@ -9,7 +9,7 @@ func Test_Procedurals(t *testing.T) {
 
 	Convey("All Procedurals", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/procedurals.rib"), ShouldBeNil)

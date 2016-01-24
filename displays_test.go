@@ -9,7 +9,7 @@ func Test_Display(t *testing.T) {
 
 	Convey("All Display", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/displays.rib"), ShouldBeNil)

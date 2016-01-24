@@ -9,7 +9,7 @@ func Test_Patches(t *testing.T) {
 
 	Convey("All Patches", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/patches.rib"), ShouldBeNil)

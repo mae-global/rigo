@@ -11,7 +11,7 @@ func Test_State(t *testing.T) {
 
 	Convey("Context", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		/* try a test.rib file */
@@ -27,7 +27,7 @@ func Test_State(t *testing.T) {
 
 	Convey("All", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/states.rib"), ShouldBeNil)

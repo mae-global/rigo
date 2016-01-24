@@ -9,7 +9,7 @@ func Test_Quadrics(t *testing.T) {
 
 	Convey("All Quadrics", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/quadrics.rib"), ShouldBeNil)

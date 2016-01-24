@@ -9,7 +9,7 @@ func Test_Geometric(t *testing.T) {
 
 	Convey("All Geometric", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/geometric.rib"), ShouldBeNil)

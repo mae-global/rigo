@@ -9,7 +9,7 @@ func Test_Transformations(t *testing.T) {
 
 	Convey("All Transformations", t, func() {
 
-		ctx := New(nil)
+		ctx := New(nil,nil)
 		So(ctx, ShouldNotBeNil)
 
 		So(ctx.Begin("output/transformations.rib"), ShouldBeNil)
