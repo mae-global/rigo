@@ -92,6 +92,39 @@ t,_ := p.(*MyTimer)
 fmt.Printf("took %s\n",t.Took())
 ```	
 
+RIB output is thus :-
+
+```
+##RenderMan RIB-Structure 1.1 Entity
+AttributeBegin #begin unit cube
+	Attribute "identifier" "name" "unitcube"
+	Bound [-.5 .5 -.5 .5 -.5 .5]
+	TransformBegin 
+		# far face
+		Polygon "P" [.5 .5 .5 -.5 .5 .5 -.5 -.5 .5 .5 -.5 .5]
+		Rotate 90. 0 1. 0
+		# right face
+		Polygon "P" [.5 .5 .5 -.5 .5 .5 -.5 -.5 .5 .5 -.5 .5]
+		Rotate 90. 0 1. 0
+		# near face
+		Polygon "P" [.5 .5 .5 -.5 .5 .5 -.5 -.5 .5 .5 -.5 .5]
+		Rotate 90. 0 1. 0
+		# left face
+		Polygon "P" [.5 .5 .5 -.5 .5 .5 -.5 -.5 .5 .5 -.5 .5]
+	TransformEnd 
+	TransformBegin 
+		# bottom face
+		Rotate 90. 1. 0 0
+		Polygon "P" [.5 .5 .5 -.5 .5 .5 -.5 -.5 .5 .5 -.5 .5]
+	TransformEnd 
+	TransformBegin 
+		# top face
+		Rotate -90. 1. 0 0
+		Polygon "P" [.5 .5 .5 -.5 .5 .5 -.5 -.5 .5 .5 -.5 .5]
+	TransformEnd 
+AttributeEnd #end unit cube
+```
+
 ##Roadmap
 
 - [x] Basic RIB pipe
