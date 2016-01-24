@@ -1,5 +1,9 @@
 package ri
 
+import (
+	"fmt"
+)
+
 /* MakeTexture Convert an image in a standard picture file whise name is picturename */
 func (ctx *Context) MakeTexture(picturename, texturename RtString, swrap, twrap RtToken, filterfunc RtFilterFunc, swidth, twidth RtFloat, parameterlist ...Rter) error {
 
@@ -36,29 +40,29 @@ func (ctx *Context) MakeShadow(picturename, texturename RtString, parameterlist 
 	return ctx.writef("MakeShadow", out...)
 }
 
-/* ArchiveRecord - FIXME
-func (ctx *Context) ArchiveRecord(typeof RtToken,format RtString,args ...Rter) error {
+/* ArchiveRecord */
+func (ctx *Context) ArchiveRecord(typeof RtToken,format RtString,args ...interface{}) error {
 
 	var err error
 
 	switch string(typeof) {
 		case "comment":
 
-			err = ctx.writef("#",fmt.Sprintf(string(format),args...))
+			err = ctx.writef("#",RtName(fmt.Sprintf(string(format),args...)))
 		break
 		case "structure":
 
-			err = ctx.writef("#!",fmt.Sprintf(string(format),args...))
+			err = ctx.writef("##",RtName(fmt.Sprintf(string(format),args...)))
 		break
 		case "verbatim":
 
-			err = ctx.writef("",args...)
+			err = ctx.writef("Verbatim",RtName(fmt.Sprintf(string(format),args...)))
 		break
 	}
 
 	return err
 }
-*/
+
 
 /* ReadArchive */
 func (ctx *Context) ReadArchive(name RtToken, callback RtArchiveCallbackFunc, parameterlist ...Rter) error {

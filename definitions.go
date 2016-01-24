@@ -5,6 +5,11 @@ import (
 	"fmt"
 )
 
+const (
+	Version = "1"
+	Author = "rigo"
+)
+
 type Rter interface {
 	String() string
 	Serialise() string
@@ -212,7 +217,7 @@ func (m RtMatrix) String() string {
 func (m RtMatrix) Serialise() string {
 	out := ""
 	for i := 0; i < 16; i++ {
-		out += fmt.Sprintf("%d", reduce(m[i]))
+		out += fmt.Sprintf("%s", reduce(m[i]))
 		if i < 15 {
 			out += " "
 		}

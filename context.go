@@ -10,6 +10,7 @@ var (
 	ErrInvalidContextHandle = fmt.Errorf("Invalid Context Handle")
 	ErrContextAlreadyExists = fmt.Errorf("Context Already Exists")
 	ErrNoActiveContext      = fmt.Errorf("No Active Context")
+	ErrNotImplemented				= fmt.Errorf("Not Implemented")
 )
 
 type Piper interface {
@@ -65,7 +66,12 @@ func (p *DefaultFilePipe) Write(name RtName, list []Rter, info Info) error {
 		return ErrNoActiveContext
 	}
 
-	if name != "##" {
+	if name == "Verbatim" {
+		_,err := p.file.Write([]byte(Serialise(list) + "\n"))
+		return err
+	}
+
+	if name != "##"  {
 
 		prefix := ""
 		for i := 0; i < info.Depth; i++ {

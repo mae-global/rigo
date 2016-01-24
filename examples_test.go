@@ -3,6 +3,8 @@ package ri
 import (
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+	"os/user"
+	"time"
 )
 
 func Test_ExampleD14(t *testing.T) {
@@ -10,10 +12,19 @@ func Test_ExampleD14(t *testing.T) {
 	Convey("Example D1.4", t, func() {
 
 		sgroup := RtString("shadinggroup")
+		frames := 2
+		cuser,err := user.Current()
+		So(err,ShouldBeNil)
 
 		ctx := New(nil)
 		ctx.Begin("output/exampleD14.rib")
-		/* TODO */
+		ctx.ArchiveRecord("structure","Scene Bouncing Ball")
+		ctx.ArchiveRecord("structure","Creator %s-%s",Author,Version)
+		ctx.ArchiveRecord("structure","CreationDate %s",time.Now())
+		ctx.ArchiveRecord("structure","For %s",cuser.Username)
+		ctx.ArchiveRecord("structure","Frames %d",frames)
+		ctx.ArchiveRecord("Structure","Shaders PIXARmarble, PIXARwood, MyUserShader")
+		ctx.ArchiveRecord("structure","CapabilitiesNeeded ShadingLanguage Displacements")
 		ctx.Declare("d", "uniform point")
 		ctx.Declare("squish", "uniform float")
 		ctx.Option("limits", RtToken("bucketsize"), RtIntArray{6, 6})
@@ -22,7 +33,8 @@ func Test_ExampleD14(t *testing.T) {
 		ctx.Projection(Perspective)
 		ctx.Clipping(10, 1000.0)
 		ctx.FrameBegin(1)
-		/* TODO */
+		ctx.ArchiveRecord("structure","Shaders PIXARmarble, PIXARwood")
+		ctx.ArchiveRecord("structure","CameraOrientation %.1f %.1f %.1f %.1f %.1f %.1f",10.,10.,10.,0.,0.,0.)
 		ctx.Transform(RtMatrix{.707107, -.408248, 0.57735, 0, 0, .816497, -.57735, 0, -.707107, -.408248, -.57735, 0, 0, 0, 17.3205, 1})
 		ctx.WorldBegin()
 		ctx.AttributeBegin()
@@ -49,7 +61,8 @@ func Test_ExampleD14(t *testing.T) {
 		ctx.FrameEnd()
 
 		ctx.FrameBegin(2)
-		/* TODO */
+		ctx.ArchiveRecord("structure","Shaders PIXARwood, PIXARmarbles")
+		ctx.ArchiveRecord("structure","CameraOrientation %.1f %.1f %.1f %.1f %.1f %.1f",10.,20.,10.,0.,0.,0.)
 		ctx.Transform(RtMatrix{.707107, -.57735, -.408248, 0, 0, .57735, -.815447, 0, -.707107, -.57735, -.408248, 0, 0, 0, 24.4949, 1})
 		ctx.WorldBegin()
 		ctx.AttributeBegin()
@@ -85,7 +98,6 @@ func Test_ExampleD21(t *testing.T) {
 
 		ctx := NewEntity(nil)
 		ctx.Begin("output/exampleD21.rib")
-		/* TODO */
 		ctx.AttributeBegin("begin unit cube")
 		ctx.Attribute("identifier", RtToken("name"), RtToken("unitcube"))
 		ctx.Bound(RtBound{-.5, .5, -.5, .5, -.5, .5})
