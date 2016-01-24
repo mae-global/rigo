@@ -1,4 +1,4 @@
-# rigo
+# RiGO
 Implementation of the RenderMan Interface for the Go programming language. This is currently 
 based on Pixar's RenderMan Specification version 3.2.1 (November 2005). This implementation 
 is still under *active development*, so *expect* holes and bugs. 
@@ -11,10 +11,42 @@ Install with:
 
 Quick example usage; outputting to a RIB Entity file. 
 
-		pipe := DefaultFilePipe()
+		# example.go
+		/* create a function to record the duration between RiBegin and RiEnd calls */
+		type MyTimer struct {
+			start time.Time
+			finish time.Time
+		}
+
+		func (t MyTimer) Name() string {
+			return "mytimer"
+		}
+
+		func (t *MyTimer) Took() time.Duration {
+			return t.finish.Sub(t.start)
+		}
+
+		func (t *MyTimer) Write(name RtName,list []Rter,info Info) *Result {
+			switch string(name) {
+				case "Begin":
+					t.start = time.Now()
+					t.finish = t.start
+				break
+				case "End":
+					t.finish = time.Now()
+				break
+			}
+			return Done()
+		}
+
+		/* Construct a pipeline, including our timer, piping RIB output to file */
+		pipe := NewPipe()
+		pipe.Append(&MyTimer{}).Append(&PipeToFile{})
 
 		ctx := NewEntity(pipe)
-		ctx.Begin("output/exampleD21.rib")
+
+		/* Do all our Ri calls */
+		ctx.Begin("unitcube.rib")
 		ctx.AttributeBegin("begin unit cube")
 		ctx.Attribute("identifier", RtToken("name"), RtToken("unitcube"))
 		ctx.Bound(RtBound{-.5, .5, -.5, .5, -.5, .5})
@@ -51,13 +83,15 @@ Quick example usage; outputting to a RIB Entity file.
 
 		ctx.TransformEnd()
 		ctx.AttributeEnd("end unit cube")
+		ctx.End()	
+		
+		/* grab our timer back and print the duration */
+		p = pipe.GetByName(MyTimer{}.Name())
+		t,_ := p.(*MyTimer)
 	
-		p := pipe.GetByName(PipeToStats{}.Name())
-		s, _ := p.(*PipeToStats)
+		fmt.Printf("took %s\n",t.Took())
 	
-		p = pipe.GetByName(PipeTimer{}.Name())
-		t,_ := p.(*PipeTimer)
-	
-		fmt.Printf("%s%s", s,t)
-	
+
+RenderMan Interface Specification is Copyright © 2005 Pixar.
+RenderMan © is a registered trademark of Pixar.
 
