@@ -92,7 +92,7 @@ t,_ := p.(*MyTimer)
 fmt.Printf("took %s\n",t.Took())
 ```	
 
-RIB output is thus :-
+RIB output of *unitcube.rib* is thus :-
 
 ```
 ##RenderMan RIB-Structure 1.1 Entity
