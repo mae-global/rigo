@@ -1,5 +1,7 @@
 # rigo
-Implementation of the RenderMan Interface for the Go programming language. 
+Implementation of the RenderMan Interface for the Go programming language. This is currently 
+based on Pixar's RenderMan Specification version 3.2.1 (November 2005). This implementation 
+is still under *active development*, so *expect* holes and bugs. 
 
 [Online Documentation](https://godoc.org/github.com/mae-global/rigo)
 
@@ -58,4 +60,4 @@ Quick example usage; outputting to a RIB Entity file.
 	
 		fmt.Printf("%s%s", s,t)
 	
-The implementation is still under active development, so expect holes and bugs. 
+
