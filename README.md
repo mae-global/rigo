@@ -1,7 +1,7 @@
 # rigo
 Implementation of the RenderMan Interface for the Go programming language. 
 
-[Online Documentation](https://godoc.org/github.com/mae-gloab/rigo)
+[Online Documentation](https://godoc.org/github.com/mae-global/rigo)
 
 Install with:
 
@@ -9,9 +9,9 @@ Install with:
 
 Quick example usage; outputting to a RIB Entity file. 
 
-		pipe := ri.DefaultFilePipe()
+		pipe := DefaultFilePipe()
 
-		ctx := ri.NewEntity(pipe)
+		ctx := NewEntity(pipe)
 		ctx.Begin("output/exampleD21.rib")
 		ctx.AttributeBegin("begin unit cube")
 		ctx.Attribute("identifier", RtToken("name"), RtToken("unitcube"))
