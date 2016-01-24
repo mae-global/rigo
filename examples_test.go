@@ -5,6 +5,7 @@ import (
 	"testing"
 	"os/user"
 	"time"
+	"fmt"
 )
 
 func Test_ExampleD14(t *testing.T) {
@@ -16,7 +17,10 @@ func Test_ExampleD14(t *testing.T) {
 		cuser,err := user.Current()
 		So(err,ShouldBeNil)
 
-		ctx := New(nil)
+		pipe := DefaultFilePipe()
+		So(pipe,ShouldNotBeNil)
+
+		ctx := New(pipe)
 		ctx.Begin("output/exampleD14.rib")
 		ctx.ArchiveRecord("structure","Scene Bouncing Ball")
 		ctx.ArchiveRecord("structure","Creator %s-%s",Author,Version)
@@ -89,6 +93,13 @@ func Test_ExampleD14(t *testing.T) {
 		ctx.FrameEnd()
 
 		So(ctx.End(), ShouldBeNil)
+
+		/* output gathered stats */
+		p := pipe.GetByName(PipeToStats{}.Name())
+		So(p,ShouldNotBeNil)
+		if s,ok := p.(*PipeToStats); ok {
+			fmt.Printf("%s",s)
+		}
 	})
 }
 
@@ -96,7 +107,9 @@ func Test_ExampleD21(t *testing.T) {
 
 	Convey("Example D.2.1 RIB Entity", t, func() {
 
-		ctx := NewEntity(nil)
+		pipe := DefaultFilePipe()
+
+		ctx := NewEntity(pipe)
 		ctx.Begin("output/exampleD21.rib")
 		ctx.AttributeBegin("begin unit cube")
 			ctx.Attribute("identifier", RtToken("name"), RtToken("unitcube"))
@@ -136,5 +149,11 @@ func Test_ExampleD21(t *testing.T) {
 		ctx.AttributeEnd("end unit cube")
 
 		So(ctx.End(), ShouldBeNil)
+
+		p := pipe.GetByName(PipeToStats{}.Name())
+		So(p,ShouldNotBeNil)
+		if s,ok := p.(*PipeToStats); ok {
+			fmt.Printf("%s",s)
+		}
 	})
 }

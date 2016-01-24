@@ -58,6 +58,34 @@ func (p *Pipe) Append(block Piper) *Pipe {
 	p.blocks = append(p.blocks,block)
 	return p
 }
+/* Len get the length of the pipe */
+func (p *Pipe) Len() int {
+	p.Lock()
+	defer p.Unlock()
+	return len(p.blocks)
+}
+
+/* Get get a Piper object via index */
+func (p *Pipe) Get(idx int) Piper {
+	p.Lock()
+	defer p.Unlock()
+	if idx < 0 || idx >= len(p.blocks) {
+		return nil
+	}
+	return p.blocks[idx]
+}
+
+/* GetByName get the first Piper object by name */
+func (p *Pipe) GetByName(name string) Piper {
+	p.Lock()
+	defer p.Unlock()
+	for _,b := range p.blocks {
+		if b.Name() == name {
+			return b
+		}
+	}
+	return nil
+}
 
 func (p *Pipe) Run(name RtName,list []Rter,info Info) error {
 	p.Lock()
@@ -109,6 +137,7 @@ func NewPipe() *Pipe {
 
 type Piper interface {
 	Write(RtName, []Rter, Info) *Result
+	Name() string
 }
 
 type Info struct {

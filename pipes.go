@@ -2,16 +2,69 @@ package ri
 
 import (
 	"os"
+	"fmt"
 )
 
 func DefaultFilePipe() *Pipe {
 	pipe := NewPipe()
-	return pipe.Append(&PipeToFile{})
+	return pipe.Append(&PipeToStats{}).Append(&PipeToFile{})
 }
 
 
+/* Pipe RI output to gathered states */
+type PipeToStats struct {
+	Stats map[RtName]int
+}
+
+func (p PipeToStats) Name() string {
+	return "default-pipe-to-stats"
+}
+
+func (p *PipeToStats) Write(name RtName,list []Rter,info Info) *Result {
+	if p.Stats == nil {
+		p.Stats = make(map[RtName]int,0)
+	}
+	if _,exists := p.Stats[name]; !exists {
+		p.Stats[name] = 0
+	}
+	p.Stats[name] ++
+
+	return Done()
+}
+
+func (p *PipeToStats) String() string {
+	if p.Stats == nil {
+		return "stats [empty]"
+	}
+
+	if len(p.Stats) == 0 {
+		return "stats [empty]"
+	}
+
+	max := 0
+	for _,v := range p.Stats {
+		if v > max {
+			max = v
+		}
+	}
+
+	dfmt := "\t%0" + fmt.Sprintf("%d",len(fmt.Sprintf("%d",max))) + "d"
+
+	out := fmt.Sprintf("stats %d [\n",len(p.Stats))
+	for n,v := range p.Stats {
+		out += fmt.Sprintf(dfmt + " call(s).....%s\n",v,n)
+	}
+	return out + "]\n"
+}
+
+
+/* Pipe RI output to file */
 type PipeToFile struct {
 	file *os.File
+}
+
+func (p PipeToFile) Name() string {
+	return "default-pipe-to-file"
 }
 
 func (p *PipeToFile) Write(name RtName, list []Rter, info Info) *Result {
