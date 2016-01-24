@@ -9,7 +9,7 @@ Install with:
 
     go get github.com/mae-global/rigo
 
-Quick example usage; outputting to a RIB Entity file. 
+Quick example usage; outputting a Unit Cube to a RIB Entity file. 
 
 ```go
 /* create a function to record the duration between RiBegin and RiEnd calls */
@@ -108,7 +108,7 @@ fmt.Printf("took %s\n",t.Took())
 - [ ] Documentation/Examples
 
 
-
+###Information
 
 RenderMan Interface Specification is Copyright © 2005 Pixar.
 RenderMan © is a registered trademark of Pixar.
