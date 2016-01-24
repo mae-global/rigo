@@ -28,11 +28,11 @@ func (t *MyTimer) Took() time.Duration {
 
 func (t *MyTimer) Write(name RtName,list []Rter,info Info) *Result {
 	switch string(name) {
-		case "Begin":
+		case "Begin","RiBegin":
 			t.start = time.Now()
 			t.finish = t.start
 		break
-		case "End":
+		case "End","RiEnd":
 			t.finish = time.Now()
 		break
 	}
@@ -91,6 +91,24 @@ t,_ := p.(*MyTimer)
 	
 fmt.Printf("took %s\n",t.Took())
 ```	
+
+##Roadmap
+
+- [x] Basic RIB pipe
+- [ ] Complete RenderMan Interface
+- [ ] Stdout/buffer wrapper around io.Writer interface
+- [ ] Complete Error checking for each Ri Call
+  - [x] Basic Error checking
+	- [ ] Sanity checking
+	- [ ] Per call checking
+	- [ ] Parameterlist checking
+- [ ] RIB parser
+- [ ] Call wrapping for Ri[call]Begin/Ri[call]End pairs
+- [ ] Call Fragments 
+- [ ] Documentation/Examples
+
+
+
 
 RenderMan Interface Specification is Copyright © 2005 Pixar.
 RenderMan © is a registered trademark of Pixar.
