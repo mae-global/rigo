@@ -7,7 +7,7 @@ import (
 
 const (
 	Version = "1"
-	Author = "rigo"
+	Author  = "rigo"
 )
 
 type Rter interface {

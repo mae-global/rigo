@@ -41,28 +41,27 @@ func (ctx *Context) MakeShadow(picturename, texturename RtString, parameterlist 
 }
 
 /* ArchiveRecord */
-func (ctx *Context) ArchiveRecord(typeof RtToken,format RtString,args ...interface{}) error {
+func (ctx *Context) ArchiveRecord(typeof RtToken, format RtString, args ...interface{}) error {
 
 	var err error
 
 	switch string(typeof) {
-		case "comment":
+	case "comment":
 
-			err = ctx.writef("#",RtName(fmt.Sprintf(string(format),args...)))
+		err = ctx.writef("#", RtName(fmt.Sprintf(string(format), args...)))
 		break
-		case "structure":
+	case "structure":
 
-			err = ctx.writef("##",RtName(fmt.Sprintf(string(format),args...)))
+		err = ctx.writef("##", RtName(fmt.Sprintf(string(format), args...)))
 		break
-		case "verbatim":
+	case "verbatim":
 
-			err = ctx.writef("Verbatim",RtName(fmt.Sprintf(string(format),args...)))
+		err = ctx.writef("Verbatim", RtName(fmt.Sprintf(string(format), args...)))
 		break
 	}
 
 	return err
 }
-
 
 /* ReadArchive */
 func (ctx *Context) ReadArchive(name RtToken, callback RtArchiveCallbackFunc, parameterlist ...Rter) error {

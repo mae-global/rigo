@@ -10,8 +10,7 @@ func Test_Pipes(t *testing.T) {
 	Convey("All Pipes", t, func() {
 
 		pipe := DefaultFilePipe()
-		So(pipe,ShouldNotBeNil)
-		So(pipe.Run("foo",nil,Info{}),ShouldEqual,ErrNoActiveContext)		
+		So(pipe, ShouldNotBeNil)
+		So(pipe.Run("foo", nil, Info{}), ShouldEqual, ErrNoActiveContext)
 	})
 }
-

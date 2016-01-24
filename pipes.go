@@ -1,15 +1,14 @@
 package ri
 
 import (
-	"os"
 	"fmt"
+	"os"
 )
 
 func DefaultFilePipe() *Pipe {
 	pipe := NewPipe()
 	return pipe.Append(&PipeToStats{}).Append(&PipeToFile{})
 }
-
 
 /* Pipe RI output to gathered states */
 type PipeToStats struct {
@@ -20,14 +19,14 @@ func (p PipeToStats) Name() string {
 	return "default-pipe-to-stats"
 }
 
-func (p *PipeToStats) Write(name RtName,list []Rter,info Info) *Result {
+func (p *PipeToStats) Write(name RtName, list []Rter, info Info) *Result {
 	if p.Stats == nil {
-		p.Stats = make(map[RtName]int,0)
+		p.Stats = make(map[RtName]int, 0)
 	}
-	if _,exists := p.Stats[name]; !exists {
+	if _, exists := p.Stats[name]; !exists {
 		p.Stats[name] = 0
 	}
-	p.Stats[name] ++
+	p.Stats[name]++
 
 	return Done()
 }
@@ -42,21 +41,20 @@ func (p *PipeToStats) String() string {
 	}
 
 	max := 0
-	for _,v := range p.Stats {
+	for _, v := range p.Stats {
 		if v > max {
 			max = v
 		}
 	}
 
-	dfmt := "\t%0" + fmt.Sprintf("%d",len(fmt.Sprintf("%d",max))) + "d"
+	dfmt := "\t%0" + fmt.Sprintf("%d", len(fmt.Sprintf("%d", max))) + "d"
 
-	out := fmt.Sprintf("stats %d [\n",len(p.Stats))
-	for n,v := range p.Stats {
-		out += fmt.Sprintf(dfmt + " call(s).....%s\n",v,n)
+	out := fmt.Sprintf("stats %d [\n", len(p.Stats))
+	for n, v := range p.Stats {
+		out += fmt.Sprintf(dfmt+" call(s).....%s\n", v, n)
 	}
 	return out + "]\n"
 }
-
 
 /* Pipe RI output to file */
 type PipeToFile struct {
@@ -110,13 +108,13 @@ func (p *PipeToFile) Write(name RtName, list []Rter, info Info) *Result {
 	}
 
 	if name == "Verbatim" {
-		if _,err := p.file.Write([]byte(Serialise(list) + "\n")); err != nil {
+		if _, err := p.file.Write([]byte(Serialise(list) + "\n")); err != nil {
 			return InError(err)
 		}
 		return Done()
 	}
 
-	if name != "##"  {
+	if name != "##" {
 
 		prefix := ""
 		for i := 0; i < info.Depth; i++ {
@@ -134,10 +132,3 @@ func (p *PipeToFile) Write(name RtName, list []Rter, info Info) *Result {
 	}
 	return Done()
 }
-
-
-
-
-
-
-
