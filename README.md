@@ -11,6 +11,8 @@ Install with:
 
 Quick example usage; outputting a Unit Cube to a RIB Entity file. 
 
+![Pipeline](documentation/pipe.png)
+
 ```go
 /* create a function to record the duration between RiBegin and RiEnd calls */
 type MyTimer struct {
