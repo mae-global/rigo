@@ -26,10 +26,8 @@ func Done() *Result {
 	return &Result{"", nil, nil, ErrPipeDone}
 }
 
-func Next(name RtName, args []Rter, infom Info) *Result {
-	/* FIXME: this is a mess */
-	info := &Info{Name: infom.Name, Depth: infom.Depth, Lights: infom.Lights, Objects: infom.Objects, Entity: infom.Entity,Formal:infom.Formal}
-	return &Result{name, args, info, nil}
+func Next(name RtName, args []Rter, info Info) *Result {
+	return &Result{name, args, info.Copy(), nil}
 }
 
 func InError(err error) *Result {
@@ -47,6 +45,15 @@ func EndOfLine() *Result {
 type Pipe struct {
 	blocks []Piper
 	sync.Mutex
+}
+
+func (p *Pipe) Last() Piper {
+	p.Lock()
+	defer p.Unlock()
+	if len(p.blocks) == 0 {
+		return nil
+	}
+	return p.blocks[len(p.blocks) - 1]
 }
 
 func (p *Pipe) Append(block Piper) *Pipe {
@@ -146,6 +153,17 @@ type Info struct {
 	Formal  bool
 }
 
+func (info Info) Copy() *Info {
+	n := Info{}
+	n.Name = info.Name
+	n.Depth = info.Depth
+	n.Lights = info.Lights
+	n.Objects = info.Objects
+	n.Entity = info.Entity
+	n.Formal = info.Formal
+	return &n
+}
+
 type Configuration struct {
 	Entity bool
 	Formal bool
@@ -164,27 +182,66 @@ type Context struct {
 	objects uint
 }
 
+func (ctx *Context) Write(name RtName,list []Rter) error {
+	if ctx.formal {
+		name = name.Prefix("Ri")
+	}
+	return ctx.pipe.Run(name,list,ctx.info())
+}
+
+func (ctx *Context) Depth(d int) {
+	ctx.depth += d
+}
+
+func (ctx *Context) LightHandle() (RtLightHandle,error) {
+	lh := RtLightHandle(ctx.lights)
+	ctx.lights ++
+	return lh,nil
+}
+
+func (ctx *Context) CheckLightHandle(lh RtLightHandle) error {
+	if uint(lh) >= ctx.lights {
+		return ErrBadHandle
+	}
+	return nil
+}
+
+func (ctx *Context)	ObjectHandle() (RtObjectHandle,error) {
+	oh := RtObjectHandle(ctx.objects)
+	ctx.objects++
+	return oh,nil
+}
+
+func (ctx *Context) CheckObjectHandle(oh RtObjectHandle) error {
+	if uint(oh) >= ctx.objects {
+		return ErrBadHandle
+	}
+	return nil
+}
+
 func (ctx *Context) info() Info {
 	return Info{ctx.name, ctx.depth, ctx.lights, ctx.objects, ctx.entity,ctx.formal}
 }
-
+/* FIXME REMOVE
 func (ctx *Context) writef(name RtName, parameterlist ...Rter) error {
 	if ctx.formal {
 		name = name.Prefix("Ri")
 	}
 	return ctx.pipe.Run(name, parameterlist, ctx.info()) 
 }
+*/
 
-func New(pipe *Pipe,config *Configuration) *Context {
+func New(pipe *Pipe,config *Configuration) *Ri {
 	if pipe == nil {
 		pipe = DefaultFilePipe()
 	}
 	if config == nil {
 		config = &Configuration{Entity:false,Formal:false}
 	}
-	return &Context{name: "", pipe: pipe, entity:config.Entity,formal:config.Formal}
+	ctx := &Context{name: "", pipe: pipe, entity:config.Entity,formal:config.Formal}
+	return &Ri{ctx}
 }
 
-func NewEntity(pipe *Pipe) *Context {
+func NewEntity(pipe *Pipe) *Ri {
 	return New(pipe,&Configuration{Entity:true,Formal:false})
 }

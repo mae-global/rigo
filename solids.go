@@ -1,35 +1,37 @@
 package ri
 
 /* SolidBegin */
-func (ctx *Context) SolidBegin(operation RtToken) error {
-	defer func() { ctx.depth++ }()
-	return ctx.writef("SolidBegin", operation)
+func (r *Ri) SolidBegin(operation RtToken) error {
+	defer func() { r.Depth(1) }()
+	return r.writef("SolidBegin", operation)
 }
 
 /* SolidEnd */
-func (ctx *Context) SolidEnd() error {
-	ctx.depth--
-	return ctx.writef("SolidEnd")
+func (r *Ri) SolidEnd() error {
+	r.Depth(-1)
+	return r.writef("SolidEnd")
 }
 
 /* ObjectBegin */
-func (ctx *Context) ObjectBegin() (RtObjectHandle, error) {
-	oh := RtObjectHandle(ctx.objects)
-	ctx.objects++
-	defer func() { ctx.depth++ }()
-	return oh, ctx.writef("ObjectBegin", oh)
+func (r *Ri) ObjectBegin() (RtObjectHandle, error) {
+	oh,err := r.ObjectHandle()
+	if err != nil {
+		return oh,err
+	}	
+	defer func() { r.Depth(1) }()
+	return oh, r.writef("ObjectBegin", oh)
 }
 
 /* ObjectEnd */
-func (ctx *Context) ObjectEnd() error {
-	ctx.depth--
-	return ctx.writef("ObjectEnd")
+func (r *Ri) ObjectEnd() error {
+	r.Depth(-1)
+	return r.writef("ObjectEnd")
 }
 
 /* ObjectInstance */
-func (ctx *Context) ObjectInstance(handle RtObjectHandle) error {
-	if uint(handle) >= ctx.objects {
-		return ErrBadHandle
+func (r *Ri) ObjectInstance(handle RtObjectHandle) error {
+	if err := r.CheckObjectHandle(handle); err != nil {
+		return err
 	}
-	return ctx.writef("ObjectInstance", handle)
+	return r.writef("ObjectInstance", handle)
 }
