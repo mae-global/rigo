@@ -55,7 +55,7 @@ func (p *Pipe) Last() Piper {
 	if len(p.blocks) == 0 {
 		return nil
 	}
-	return p.blocks[len(p.blocks) - 1]
+	return p.blocks[len(p.blocks)-1]
 }
 
 func (p *Pipe) Append(block Piper) *Pipe {
@@ -184,21 +184,21 @@ type Context struct {
 	objects uint
 }
 
-func (ctx *Context) Write(name RtName,list []Rter) error {
+func (ctx *Context) Write(name RtName, list []Rter) error {
 	if ctx.formal {
 		name = name.Prefix("Ri")
 	}
-	return ctx.pipe.Run(name,list,ctx.info())
+	return ctx.pipe.Run(name, list, ctx.info())
 }
 
 func (ctx *Context) Depth(d int) {
 	ctx.depth += d
 }
 
-func (ctx *Context) LightHandle() (RtLightHandle,error) {
+func (ctx *Context) LightHandle() (RtLightHandle, error) {
 	lh := RtLightHandle(ctx.lights)
-	ctx.lights ++
-	return lh,nil
+	ctx.lights++
+	return lh, nil
 }
 
 func (ctx *Context) CheckLightHandle(lh RtLightHandle) error {
@@ -208,10 +208,10 @@ func (ctx *Context) CheckLightHandle(lh RtLightHandle) error {
 	return nil
 }
 
-func (ctx *Context)	ObjectHandle() (RtObjectHandle,error) {
+func (ctx *Context) ObjectHandle() (RtObjectHandle, error) {
 	oh := RtObjectHandle(ctx.objects)
 	ctx.objects++
-	return oh,nil
+	return oh, nil
 }
 
 func (ctx *Context) CheckObjectHandle(oh RtObjectHandle) error {
@@ -222,28 +222,29 @@ func (ctx *Context) CheckObjectHandle(oh RtObjectHandle) error {
 }
 
 func (ctx *Context) info() Info {
-	return Info{ctx.name, ctx.depth, ctx.lights, ctx.objects, ctx.entity,ctx.formal}
+	return Info{ctx.name, ctx.depth, ctx.lights, ctx.objects, ctx.entity, ctx.formal}
 }
+
 /* FIXME REMOVE
 func (ctx *Context) writef(name RtName, parameterlist ...Rter) error {
 	if ctx.formal {
 		name = name.Prefix("Ri")
 	}
-	return ctx.pipe.Run(name, parameterlist, ctx.info()) 
+	return ctx.pipe.Run(name, parameterlist, ctx.info())
 }
 */
 
-func New(pipe *Pipe,config *Configuration) *Ri {
+func New(pipe *Pipe, config *Configuration) *Ri {
 	if pipe == nil {
 		pipe = DefaultFilePipe()
 	}
 	if config == nil {
-		config = &Configuration{Entity:false,Formal:false}
+		config = &Configuration{Entity: false, Formal: false}
 	}
-	ctx := &Context{name: "", pipe: pipe, entity:config.Entity,formal:config.Formal}
+	ctx := &Context{name: "", pipe: pipe, entity: config.Entity, formal: config.Formal}
 	return &Ri{ctx}
 }
 
 func NewEntity(pipe *Pipe) *Ri {
-	return New(pipe,&Configuration{Entity:true,Formal:false})
+	return New(pipe, &Configuration{Entity: true, Formal: false})
 }

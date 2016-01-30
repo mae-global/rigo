@@ -32,7 +32,7 @@ func (s RtName) Prefix(pre string) RtName {
 }
 
 func (s RtName) Trim(pre string) RtName {
-	return RtName(strings.TrimPrefix(string(s),pre))
+	return RtName(strings.TrimPrefix(string(s), pre))
 }
 
 /* RtBoolean boolean value */
@@ -401,7 +401,7 @@ const (
 	ProcFree RtProcFreeFunc = "free"
 
 	StructuralHint RtName = "##"
-	RIBStructure RtName = "##RenderMan RIB-Structure 1.1"
+	RIBStructure   RtName = "##RenderMan RIB-Structure 1.1"
 )
 
 var (

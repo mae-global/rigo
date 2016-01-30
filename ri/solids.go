@@ -14,10 +14,10 @@ func (r *Ri) SolidEnd() error {
 
 /* ObjectBegin */
 func (r *Ri) ObjectBegin() (RtObjectHandle, error) {
-	oh,err := r.ObjectHandle()
+	oh, err := r.ObjectHandle()
 	if err != nil {
-		return oh,err
-	}	
+		return oh, err
+	}
 	defer func() { r.Depth(1) }()
 	return oh, r.writef("ObjectBegin", oh)
 }

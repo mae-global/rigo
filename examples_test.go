@@ -21,9 +21,9 @@ func Test_ExampleD14(t *testing.T) {
 
 		pipe := DefaultFilePipe()
 		So(pipe, ShouldNotBeNil)
-		
+
 		/* create a formal version of the RIB output to the pipe, RiBegin,RiEnd... instead of Begin,End... */
-		ctx := New(pipe,&Configuration{Formal:true})
+		ctx := New(pipe, &Configuration{Formal: true})
 		ctx.Begin("output/exampleD14.rib")
 		ctx.ArchiveRecord("structure", "Scene Bouncing Ball")
 		ctx.ArchiveRecord("structure", "Creator %s-%s", Author, Version)
@@ -101,16 +101,16 @@ func Test_ExampleD14(t *testing.T) {
 		p := pipe.GetByName(PipeToStats{}.Name())
 		So(p, ShouldNotBeNil)
 		s, ok := p.(*PipeToStats)
-		So(s,ShouldNotBeNil)
-		So(ok,ShouldBeTrue)		
+		So(s, ShouldNotBeNil)
+		So(ok, ShouldBeTrue)
 
 		p = pipe.GetByName(PipeTimer{}.Name())
 		So(p, ShouldNotBeNil)
-		t,ok := p.(*PipeTimer)
-		So(t,ShouldNotBeNil)
-		So(ok,ShouldBeTrue)
+		t, ok := p.(*PipeTimer)
+		So(t, ShouldNotBeNil)
+		So(ok, ShouldBeTrue)
 
-		fmt.Printf("%s%s", s,t)
+		fmt.Printf("%s%s", s, t)
 	})
 }
 
@@ -161,20 +161,20 @@ func Test_ExampleD21(t *testing.T) {
 
 		So(ctx.End(), ShouldBeNil)
 
-	/* output gathered stats */
+		/* output gathered stats */
 		p := pipe.GetByName(PipeToStats{}.Name())
 		So(p, ShouldNotBeNil)
 		s, ok := p.(*PipeToStats)
-		So(s,ShouldNotBeNil)
-		So(ok,ShouldBeTrue)		
+		So(s, ShouldNotBeNil)
+		So(ok, ShouldBeTrue)
 
 		p = pipe.GetByName(PipeTimer{}.Name())
 		So(p, ShouldNotBeNil)
-		t,ok := p.(*PipeTimer)
-		So(t,ShouldNotBeNil)
-		So(ok,ShouldBeTrue)
+		t, ok := p.(*PipeTimer)
+		So(t, ShouldNotBeNil)
+		So(ok, ShouldBeTrue)
 
-		fmt.Printf("%s%s", s,t)
-	
+		fmt.Printf("%s%s", s, t)
+
 	})
 }

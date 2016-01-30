@@ -95,8 +95,8 @@ func reduce(f RtFloat) string {
 	if neg {
 		str = "-" + str
 	}
-	if str[len(str) - 1] == '.' {
-		str = str[:len(str) - 1]
+	if str[len(str)-1] == '.' {
+		str = str[:len(str)-1]
 	}
 
 	return str

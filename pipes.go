@@ -8,7 +8,6 @@ import (
 	. "github.com/mae-global/rigo/ri"
 )
 
-
 func DefaultFilePipe() *Pipe {
 	pipe := NewPipe()
 	return pipe.Append(&PipeTimer{}).Append(&PipeToStats{}).Append(&PipeToFile{})
@@ -16,7 +15,7 @@ func DefaultFilePipe() *Pipe {
 
 /* Time from Begin to End */
 type PipeTimer struct {
-	start time.Time
+	start  time.Time
 	finish time.Time
 }
 
@@ -24,21 +23,21 @@ func (p PipeTimer) Name() string {
 	return "default-pipe-timer"
 }
 
-func (p *PipeTimer) Write(name RtName,list []Rter,info Info) *Result {
+func (p *PipeTimer) Write(name RtName, list []Rter, info Info) *Result {
 	switch string(name) {
-		case "Begin","RiBegin":
-			p.start = time.Now()
-			p.finish = p.start
-			break
-		case "End","RiEnd":
-			p.finish = time.Now()
-			break
+	case "Begin", "RiBegin":
+		p.start = time.Now()
+		p.finish = p.start
+		break
+	case "End", "RiEnd":
+		p.finish = time.Now()
+		break
 	}
 	return Done()
 }
 
 func (p *PipeTimer) String() string {
-	return fmt.Sprintf("pipe took %s",p.finish.Sub(p.start))
+	return fmt.Sprintf("pipe took %s", p.finish.Sub(p.start))
 }
 
 func (p *PipeTimer) Took() time.Duration {

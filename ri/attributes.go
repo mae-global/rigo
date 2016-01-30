@@ -35,11 +35,11 @@ func (r *Ri) TextureCoordinates(s1, t1, s2, t2, s3, t3, s4, t4 RtFloat) error {
 
 /* LightSource create a non-area light */
 func (r *Ri) LightSource(shadername RtToken, parameterlist ...Rter) (RtLightHandle, error) {
-	lh,err := r.LightHandle()
+	lh, err := r.LightHandle()
 	if err != nil {
-		return lh,err
+		return lh, err
 	}
-	
+
 	var out = []Rter{shadername, lh}
 	out = append(out, parameterlist...)
 
@@ -48,9 +48,9 @@ func (r *Ri) LightSource(shadername RtToken, parameterlist ...Rter) (RtLightHand
 
 /* AreaLightSource */
 func (r *Ri) AreaLightSource(shadername RtToken, parameterlist ...Rter) (RtLightHandle, error) {
-	lh,err := r.LightHandle()	
+	lh, err := r.LightHandle()
 	if err != nil {
-		return lh,err
+		return lh, err
 	}
 	var out = []Rter{shadername, lh}
 	out = append(out, parameterlist...)
