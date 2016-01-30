@@ -1,11 +1,13 @@
-package ri
+package rigo
 
 import (
 	"fmt"
-	. "github.com/smartystreets/goconvey/convey"
 	"os/user"
 	"testing"
 	"time"
+
+	. "github.com/mae-global/rigo/ri"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func Test_ExampleD14(t *testing.T) {

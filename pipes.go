@@ -1,9 +1,11 @@
-package ri
+package rigo
 
 import (
 	"fmt"
 	"os"
 	"time"
+
+	. "github.com/mae-global/rigo/ri"
 )
 
 

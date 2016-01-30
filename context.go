@@ -1,9 +1,11 @@
 /* rigo/context.go */
-package ri
+package rigo
 
 import (
 	"fmt"
 	"sync"
+
+	. "github.com/mae-global/rigo/ri"
 )
 
 var (

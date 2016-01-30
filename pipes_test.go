@@ -1,4 +1,4 @@
-package ri
+package rigo
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
