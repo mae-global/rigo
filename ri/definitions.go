@@ -7,9 +7,12 @@ import (
 )
 
 const (
-	Version = "1"
-	Author  = "rigo"
+	ImplementationVersion = "3.2.1 November 2005"
+	Major = 3
+	Minor = 2
+	Patch = 1
 )
+
 
 type Rter interface {
 	String() string
