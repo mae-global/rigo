@@ -17,7 +17,7 @@ func (r *Ri) ConcatTransform(transform RtMatrix) error {
 
 /* Perspective Concatenate a perspective transformation onto the current transformation. */
 func (r *Ri) Perspective(fov RtFloat) error {
-	return r.writef("Perspecitve", fov)
+	return r.writef("Perspective", fov)
 }
 
 /* Translate Concatenate a translation onto the current transformation */
