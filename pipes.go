@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"sort"
 
 	. "github.com/mae-global/rigo/ri"
 )
@@ -65,6 +66,18 @@ func (p *PipeToStats) Write(name RtName, list []Rter, info Info) *Result {
 	return Done()
 }
 
+type record struct {
+	Name RtName
+	Count int
+}
+
+type byCount []record
+
+func (bc byCount) Len() int { return len(bc) }
+func (bc byCount) Less(i,j int) bool { return bc[i].Count < bc[j].Count }
+func (bc byCount) Swap(i,j int) { bc[i],bc[j] = bc[j],bc[i] }
+
+
 func (p *PipeToStats) String() string {
 	if p.Stats == nil {
 		return "stats [empty]"
@@ -75,17 +88,23 @@ func (p *PipeToStats) String() string {
 	}
 
 	max := 0
-	for _, v := range p.Stats {
+	records := make([]record,0)
+
+	for n, v := range p.Stats {
 		if v > max {
 			max = v
 		}
+		
+		records = append(records,record{n,v})
 	}
+
+	sort.Sort(byCount(records))
 
 	dfmt := "\t%0" + fmt.Sprintf("%d", len(fmt.Sprintf("%d", max))) + "d"
 
 	out := fmt.Sprintf("stats %d [\n", len(p.Stats))
-	for n, v := range p.Stats {
-		out += fmt.Sprintf(dfmt+" call(s).....%s\n", v, n)
+	for _, r := range records {
+		out += fmt.Sprintf(dfmt + " call(s).....%s\n", r.Count,r.Name)
 	}
 	return out + "]\n"
 }
@@ -170,3 +189,5 @@ func (p *PipeToFile) Write(name RtName, list []Rter, info Info) *Result {
 	}
 	return Done()
 }
+
+
