@@ -176,67 +176,61 @@ type Configuration struct {
 }
 
 type Context struct {
+	mux sync.RWMutex
 	pipe *Pipe
-	/* TODO: move to an Info block instead */
-	name string /* as set through Begin(name) */
 
-	entity bool /* is Entity file? */
-	formal bool /* convert Begin,End... to RiBegin,RiEnd... */
-	depth  int  /* pretty print tabs */
-
-	lights  uint
-	objects uint
+	Info
 }
 
 func (ctx *Context) Write(name RtName, list []Rter) error {
-	if ctx.formal {
+	ctx.mux.Lock()
+	defer ctx.mux.Unlock()
+	if ctx.Formal {
 		name = name.Prefix("Ri")
 	}
-	return ctx.pipe.Run(name, list, ctx.info())
+	return ctx.pipe.Run(name, list, ctx.Info)
 }
 
 func (ctx *Context) Depth(d int) {
-	ctx.depth += d
+	ctx.mux.Lock()
+	defer ctx.mux.Unlock()
+	ctx.Info.Depth += d /* TODO: this is a little clunky */
 }
 
 func (ctx *Context) LightHandle() (RtLightHandle, error) {
-	lh := RtLightHandle(ctx.lights)
-	ctx.lights++
+	ctx.mux.Lock()
+	defer ctx.mux.Unlock()
+	lh := RtLightHandle(ctx.Lights)
+	ctx.Lights++
 	return lh, nil
 }
 
 func (ctx *Context) CheckLightHandle(lh RtLightHandle) error {
-	if uint(lh) >= ctx.lights {
+	ctx.mux.RLock()
+	defer ctx.mux.RUnlock()
+	if uint(lh) >= ctx.Lights {
 		return ErrBadHandle
 	}
 	return nil
 }
 
 func (ctx *Context) ObjectHandle() (RtObjectHandle, error) {
-	oh := RtObjectHandle(ctx.objects)
-	ctx.objects++
+	ctx.mux.Lock()
+	defer ctx.mux.Unlock()
+	oh := RtObjectHandle(ctx.Objects)
+	ctx.Objects++
 	return oh, nil
 }
 
 func (ctx *Context) CheckObjectHandle(oh RtObjectHandle) error {
-	if uint(oh) >= ctx.objects {
+	ctx.mux.RLock()
+	defer ctx.mux.RUnlock()
+	if uint(oh) >= ctx.Objects {
 		return ErrBadHandle
 	}
 	return nil
 }
 
-func (ctx *Context) info() Info {
-	return Info{ctx.name, ctx.depth, ctx.lights, ctx.objects, ctx.entity, ctx.formal}
-}
-
-/* FIXME REMOVE
-func (ctx *Context) writef(name RtName, parameterlist ...Rter) error {
-	if ctx.formal {
-		name = name.Prefix("Ri")
-	}
-	return ctx.pipe.Run(name, parameterlist, ctx.info())
-}
-*/
 
 func New(pipe *Pipe, config *Configuration) *Ri {
 	if pipe == nil {
@@ -245,7 +239,7 @@ func New(pipe *Pipe, config *Configuration) *Ri {
 	if config == nil {
 		config = &Configuration{Entity: false, Formal: false}
 	}
-	ctx := &Context{name: "", pipe: pipe, entity: config.Entity, formal: config.Formal}
+	ctx := &Context{pipe:pipe,Info:Info{Name: "", Entity: config.Entity, Formal: config.Formal}}
 	return &Ri{ctx}
 }
 
