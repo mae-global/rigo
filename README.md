@@ -126,6 +126,157 @@ AttributeBegin #begin unit cube
 	TransformEnd 
 AttributeEnd #end unit cube
 ```
+We can remove duplicate work, by using the fragments interface.
+
+```go
+pipe := DefaultFilePipe()
+
+ctx := New(pipe,nil)
+ctx.Begin("output/orangeball.rib")
+ctx.ArchiveRecord("structure","Scene Orange Ball")
+ctx.ArchiveRecord("structure","Frames 5")
+		
+frag := NewFragment("orangeball_fragment")
+/* grab the Renderman Interface from the fragment */
+fri := frag.Ri()
+
+fri.Format(640,480,-1)
+fri.ShadingRate(1)
+fri.Projection(Perspective,RtString("fov"),RtInt(30))
+fri.FrameAspectRatio(1.33)
+fri.Identity()
+fri.LightSource("distantlight",RtInt(1))
+fri.Translate(0,0,5)
+fri.WorldBegin()
+fri.Identity()
+fri.AttributeBegin()
+fri.Color(RtColor{1.0,0.6,0.0})
+fri.Surface("plastic",RtString("Ka"),RtFloat(1),RtString("Kd"),RtFloat(0.5),
+										  RtString("Ks"),RtFloat(1),RtString("roughness"),RtFloat(0.1))
+fri.TransformBegin()
+fri.Rotate(90,1,0,0)
+fri.Sphere(1,-1,1,360)
+fri.TransformEnd()
+fri.AttributeEnd()
+fri.WorldEnd()
+
+
+for frame := 1; frame <= 5; frame++ {
+	ctx.FrameBegin(RtInt(frame))
+	ctx.Display(RtToken(fmt.Sprintf("orange_%03d.tif",frame)),"file","rgba")		
+
+	frag.Replay(ctx)
+
+	ctx.FrameEnd()
+}
+
+ctx.End()
+```
+```
+##RenderMan RIB-Structure 1.1
+##Scene Orange Ball
+##Frames 5
+FrameBegin 1
+	Display "orange_001.tif" "file" "rgba"
+	Format 640 480 -1
+	ShadingRate 1
+	Projection "perspective" "fov" 30
+	FrameAspectRatio 1.33
+	Identity 
+	Translate 0 0 5
+	WorldBegin 
+		Identity 
+		AttributeBegin 
+			Color [1 .6 0]
+			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
+			TransformBegin 
+				Rotate 90 1 0 0
+				Sphere 1 -1 1 360
+			TransformEnd 
+		AttributeEnd 
+	WorldEnd 
+FrameEnd 
+FrameBegin 2
+	Display "orange_002.tif" "file" "rgba"
+	Format 640 480 -1
+	ShadingRate 1
+	Projection "perspective" "fov" 30
+	FrameAspectRatio 1.33
+	Identity 
+	Translate 0 0 5
+	WorldBegin 
+		Identity 
+		AttributeBegin 
+			Color [1 .6 0]
+			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
+			TransformBegin 
+				Rotate 90 1 0 0
+				Sphere 1 -1 1 360
+			TransformEnd 
+		AttributeEnd 
+	WorldEnd 
+FrameEnd 
+FrameBegin 3
+	Display "orange_003.tif" "file" "rgba"
+	Format 640 480 -1
+	ShadingRate 1
+	Projection "perspective" "fov" 30
+	FrameAspectRatio 1.33
+	Identity 
+	Translate 0 0 5
+	WorldBegin 
+		Identity 
+		AttributeBegin 
+			Color [1 .6 0]
+			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
+			TransformBegin 
+				Rotate 90 1 0 0
+				Sphere 1 -1 1 360
+			TransformEnd 
+		AttributeEnd 
+	WorldEnd 
+FrameEnd 
+FrameBegin 4
+	Display "orange_004.tif" "file" "rgba"
+	Format 640 480 -1
+	ShadingRate 1
+	Projection "perspective" "fov" 30
+	FrameAspectRatio 1.33
+	Identity 
+	Translate 0 0 5
+	WorldBegin 
+		Identity 
+		AttributeBegin 
+			Color [1 .6 0]
+			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
+			TransformBegin 
+				Rotate 90 1 0 0
+				Sphere 1 -1 1 360
+			TransformEnd 
+		AttributeEnd 
+	WorldEnd 
+FrameEnd 
+FrameBegin 5
+	Display "orange_005.tif" "file" "rgba"
+	Format 640 480 -1
+	ShadingRate 1
+	Projection "perspective" "fov" 30
+	FrameAspectRatio 1.33
+	Identity 
+	Translate 0 0 5
+	WorldBegin 
+		Identity 
+		AttributeBegin 
+			Color [1 .6 0]
+			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
+			TransformBegin 
+				Rotate 90 1 0 0
+				Sphere 1 -1 1 360
+			TransformEnd 
+		AttributeEnd 
+	WorldEnd 
+FrameEnd 
+```
 
 ##Roadmap
 
@@ -139,7 +290,7 @@ AttributeEnd #end unit cube
 	- [ ] Parameterlist checking
 - [ ] RIB parser
 - [ ] Call wrapping for Ri[call]Begin/Ri[call]End pairs
-- [ ] Call Fragments 
+- [x] Call Fragments 
 - [ ] Documentation/Examples
 
 
