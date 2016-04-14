@@ -21,7 +21,7 @@ func Test_ExampleOrangeBall(t *testing.T) {
 		pipe := DefaultFilePipe()
 		So(pipe,ShouldNotBeNil)
 
-		ctx := New(pipe,nil)
+		ctx := New(pipe,&Configuration{PrettyPrint:true})
 		ctx.Begin("output/exampleOrangeBall.rib")
 		ctx.ArchiveRecord("structure","Scene Orange Ball")
 		ctx.ArchiveRecord("structure","Creator %s-%s",Author,Version)

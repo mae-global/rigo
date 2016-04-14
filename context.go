@@ -151,12 +151,13 @@ type Piper interface {
 }
 
 type Info struct {
-	Name    string
-	Depth   int
-	Lights  uint
-	Objects uint
-	Entity  bool
-	Formal  bool
+	Name        string
+	Depth       int
+	Lights      uint
+	Objects     uint
+	Entity      bool
+	Formal      bool
+	PrettyPrint bool
 }
 
 func (info Info) Copy() *Info {
@@ -167,12 +168,14 @@ func (info Info) Copy() *Info {
 	n.Objects = info.Objects
 	n.Entity = info.Entity
 	n.Formal = info.Formal
+	n.PrettyPrint = info.PrettyPrint
 	return &n
 }
 
 type Configuration struct {
 	Entity bool
 	Formal bool
+	PrettyPrint bool
 }
 
 type Context struct {
@@ -237,9 +240,9 @@ func New(pipe *Pipe, config *Configuration) *Ri {
 		pipe = DefaultFilePipe()
 	}
 	if config == nil {
-		config = &Configuration{Entity: false, Formal: false}
+		config = &Configuration{Entity: false, Formal: false,PrettyPrint: false}
 	}
-	ctx := &Context{pipe:pipe,Info:Info{Name: "", Entity: config.Entity, Formal: config.Formal}}
+	ctx := &Context{pipe:pipe,Info:Info{Name: "", Entity: config.Entity, Formal: config.Formal,PrettyPrint: config.PrettyPrint}}
 	return &Ri{ctx}
 }
 

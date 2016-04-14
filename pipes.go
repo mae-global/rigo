@@ -174,8 +174,10 @@ func (p *PipeToFile) Write(name RtName, list []Rter, info Info) *Result {
 	if name != "##" {
 
 		prefix := ""
-		for i := 0; i < info.Depth; i++ {
-			prefix += "\t"
+		if info.PrettyPrint {
+			for i := 0; i < info.Depth; i++ {
+				prefix += "\t"
+			}
 		}
 
 		if _, err := p.file.Write([]byte(prefix + name.Serialise() + " " + Serialise(list) + "\n")); err != nil {
