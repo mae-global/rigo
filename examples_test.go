@@ -30,7 +30,7 @@ func Test_ExampleD14(t *testing.T) {
 		ctx.ArchiveRecord("structure", "CreationDate %s", time.Now())
 		ctx.ArchiveRecord("structure", "For %s", cuser.Username)
 		ctx.ArchiveRecord("structure", "Frames %d", frames)
-		ctx.ArchiveRecord("Structure", "Shaders PIXARmarble, PIXARwood, MyUserShader")
+		ctx.ArchiveRecord("structure", "Shaders PIXARmarble, PIXARwood, MyUserShader")
 		ctx.ArchiveRecord("structure", "CapabilitiesNeeded ShadingLanguage Displacements")
 		ctx.Declare("d", "uniform point")
 		ctx.Declare("squish", "uniform float")
