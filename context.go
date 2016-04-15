@@ -134,7 +134,9 @@ func (p *Pipe) Run(name RtName, list []Rter, info Info) error {
 		}
 
 		nblocks = append(nblocks, b)
-		/* TODO: take the output of last block */
+		if r.Args != nil {
+			list = r.Args
+		}
 	}
 
 	p.blocks = nblocks

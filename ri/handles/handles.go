@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 )
 
+
 /* RtLightHandle 
  * note -- updated to string handles [Siggraph 2009 course 9; Byron Bashforth] */
 type RtLightHandle string

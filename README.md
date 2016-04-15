@@ -129,9 +129,7 @@ AttributeEnd #end unit cube
 We can remove duplicate work, by using the fragments interface.
 
 ```go
-pipe := DefaultFilePipe()
-
-ctx := New(pipe,nil)
+ctx,pipe := StrictPipeline()
 ctx.Begin("output/orangeball.rib")
 ctx.ArchiveRecord("structure","Scene Orange Ball")
 ctx.ArchiveRecord("structure","Frames 5")
@@ -321,7 +319,6 @@ WorldBegin
 	Sphere 1 -1 1 360
 WorldEnd 
 ```
-
 
 
 

@@ -5,8 +5,10 @@ import (
 	"os"
 	"time"
 	"sort"
+	"strconv"
 
 	. "github.com/mae-global/rigo/ri"
+	. "github.com/mae-global/rigo/ri/handles"
 )
 
 func DefaultFilePipe() *Pipe {
@@ -191,5 +193,53 @@ func (p *PipeToFile) Write(name RtName, list []Rter, info Info) *Result {
 	}
 	return Done()
 }
+
+/* Convert String Handlers back to Int Handlers */
+type FilterStringHandles struct {
+	
+}
+
+func (p FilterStringHandles) Name() string {
+	return "default-filter-string-handles"
+}
+
+func (p *FilterStringHandles) Write(name RtName, list []Rter, info Info) *Result {
+
+	/* TODO: add filter to only those proceedures the include light and object handles */
+		
+	args := make([]Rter,len(list))
+	
+	for i := 0; i < len(args); i ++ {
+		if lh,ok := list[i].(RtLightHandle); ok {
+			id,err := strconv.Atoi(string(lh))
+			if err != nil {
+				return InError(err)
+			}
+			args[i] = RtInt(id)
+			continue
+		} 
+		if oh,ok := list[i].(RtObjectHandle); ok {
+			id,err := strconv.Atoi(string(oh))
+			if err != nil {
+				return InError(err)
+			}
+			args[i] = RtInt(id)
+			continue
+		}
+		args[i] = list[i]
+	}
+
+	fmt.Printf("FilterStringHandles : args = %v\n",args)
+	
+	return Next(name, args, info)
+}
+
+
+
+
+
+
+
+
 
 
