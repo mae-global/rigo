@@ -54,34 +54,36 @@ ctx.Attribute("identifier", RtToken("name"), RtToken("unitcube"))
 ctx.Bound(RtBound{-.5, .5, -.5, .5, -.5, .5})
 ctx.TransformBegin()
 
+points := RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5}
+
 ctx.Comment("far face")
-ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Polygon(4, RtToken("P"), points)
 ctx.Rotate(90, 0, 1, 0)
 
 ctx.Comment("right face")
-ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Polygon(4, RtToken("P"), points)
 ctx.Rotate(90, 0, 1, 0)
 
 ctx.Comment("near face")
-ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Polygon(4, RtToken("P"), points)
 ctx.Rotate(90, 0, 1, 0)
 
 ctx.Comment("left face")
-ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Polygon(4, RtToken("P"), points)
 
 ctx.TransformEnd()
 ctx.TransformBegin()
 
 ctx.Comment("bottom face")
 ctx.Rotate(90, 1, 0, 0)
-ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Polygon(4, RtToken("P"), points)
 
 ctx.TransformEnd()
 ctx.TransformBegin()
 
 ctx.Comment("top face")
 ctx.Rotate(-90, 1, 0, 0)
-ctx.Polygon(4, RtToken("P"), RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5})
+ctx.Polygon(4, RtToken("P"), points)
 
 ctx.TransformEnd()
 ctx.AttributeEnd("end unit cube")
