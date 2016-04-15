@@ -223,5 +223,102 @@ func Test_SimpleExample(t *testing.T) {
 	})
 }
 
+func Test_SimpleExampleWithConditionals(t *testing.T) {
+
+	Convey("Simple Example with Conditionals",t,func() {
+	
+		pipe := DefaultFilePipe()
+	
+		/* use a custom unique generator with a prefix for the light handles */
+		lights := NewPrefixLightUniqueGenerator("light_")
+	
+		ctx := NewCustom(pipe,lights,nil,&Configuration{PrettyPrint:true})
+		ctx.Begin("output/simpleconditionals.rib")
+		ctx.Display("sphere.tif","file","rgb")
+		ctx.Format(320,240,1)
+		ctx.Projection(Perspective,RtString("fov"),RtFloat(30))
+		ctx.Translate(0,0,6)
+		ctx.WorldBegin()
+		ctx.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
+		ctx.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
+
+		ctx.Option("user",RtString("string renderpass"),RtString("red"))
+		ctx.IfBegin("$user:renderpass == 'red'")
+		ctx.Color(RtColor{1,0,0})
+		ctx.ElseIf("$user:renderpass == 'blue'")
+		ctx.Color(RtColor{0,0,1})
+		ctx.Else()
+		ctx.Color(RtColor{0,1,0})
+		ctx.IfEnd()
+		
+
+		ctx.Sphere(1,-1,1,360)
+		ctx.WorldEnd()
+
+		So(ctx.End(),ShouldBeNil)
+
+		/* output gathered stats */
+		p := pipe.GetByName(PipeToStats{}.Name())
+		So(p, ShouldNotBeNil)
+		s, ok := p.(*PipeToStats)
+		So(s, ShouldNotBeNil)
+		So(ok, ShouldBeTrue)
+
+		p = pipe.GetByName(PipeTimer{}.Name())
+		So(p, ShouldNotBeNil)
+		t, ok := p.(*PipeTimer)
+		So(t, ShouldNotBeNil)
+		So(ok, ShouldBeTrue)
+
+		fmt.Printf("%s%s", s, t)
+	})
+}
+
+
+
+/* go test -bench=. */
+func Benchmark_SimpleExampleNumberHandlers(b *testing.B) {
+
+	for i := 0; i < b.N; i++ {
+		pipe := NullPipe()
+		ctx := New(pipe,nil)
+		ctx.Begin("simple.rib")
+		ctx.Display("sphere.tif","file","rgb")
+		ctx.Format(320,240,1)
+		ctx.Projection(Perspective,RtString("fov"),RtFloat(30))
+		ctx.Translate(0,0,6)
+		ctx.WorldBegin()
+		ctx.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
+		ctx.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
+		ctx.Color(RtColor{1,0,0})
+		ctx.Sphere(1,-1,1,360)
+		ctx.WorldEnd()
+		ctx.End()
+	}
+}
+
+func Benchmark_SimpleExampleUniqueHandlers(b *testing.B) {
+
+	for i := 0; i < b.N; i++ {
+		pipe := NullPipe()
+		ctx := NewCustom(pipe,NewLightUniqueGenerator(),nil,nil)
+		ctx.Begin("simple.rib")
+		ctx.Display("sphere.tif","file","rgb")
+		ctx.Format(320,240,1)
+		ctx.Projection(Perspective,RtString("fov"),RtFloat(30))
+		ctx.Translate(0,0,6)
+		ctx.WorldBegin()
+		ctx.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
+		ctx.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
+		ctx.Color(RtColor{1,0,0})
+		ctx.Sphere(1,-1,1,360)
+		ctx.WorldEnd()
+		ctx.End()
+	}
+}
+
+
+
+
 
 

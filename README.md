@@ -323,6 +323,7 @@ WorldEnd
 
 ##Roadmap
 
+- [ ] Ability to run an output to an application from RiBegin
 - [ ] Structure block for recording context settings in RIB output
 - [x] ~~Basic RIB pipe~~
 - [ ] Complete RenderMan Interface
@@ -338,7 +339,7 @@ WorldEnd
 - [ ] Documentation/Examples
 - [ ] Siggarph 2003, Course 9 'Evolution of RIB' by Byron Bashforth
   - [x] ~~String Handles~~
-  - [ ] Conditional RIB and State Variable Subsitution
+  - [x] ~~Conditional RIB and State Variable Subsitution~~
   - [ ] Inline Archives
   - [x] ~~Plug-in Ri Filters (partial)~~
   - [ ] Multipart RIB and Plug-in Instancers

@@ -16,6 +16,11 @@ func DefaultFilePipe() *Pipe {
 	return pipe.Append(&PipeTimer{}).Append(&PipeToStats{}).Append(&PipeToFile{})
 }
 
+func NullPipe() *Pipe {
+	pipe := NewPipe()
+	return pipe.Append(&PipeTimer{}).Append(&PipeToStats{})
+}
+
 /* Time from Begin to End */
 type PipeTimer struct {
 	start  time.Time
@@ -229,8 +234,6 @@ func (p *FilterStringHandles) Write(name RtName, list []Rter, info Info) *Result
 		args[i] = list[i]
 	}
 
-	fmt.Printf("FilterStringHandles : args = %v\n",args)
-	
 	return Next(name, args, info)
 }
 
