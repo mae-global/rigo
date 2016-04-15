@@ -296,29 +296,7 @@ func (a RtStringArray) Serialise() string {
 	return fmt.Sprintf("[%s]", out)
 }
 
-/* RtLightHandle 
- * note -- updated to string handles [Siggraph 2009 course 9; Byron Bashforth] */
-type RtLightHandle string
 
-func (l RtLightHandle) String() string {
-	return l.Serialise()
-}
-
-func (l RtLightHandle) Serialise() string {
-	return fmt.Sprintf("\"%s\"", string(l))
-}
-
-/* RtObjectHandle 
- * note -- updated to string handles [Siggraph 2009 course 9; Byron Bashforth] */
-type RtObjectHandle string
-
-func (l RtObjectHandle) String() string {
-	return l.Serialise()
-}
-
-func (l RtObjectHandle) Serialise() string {
-	return fmt.Sprintf("\"%s\"", string(l))
-}
 
 /* RtFilterFunc */
 type RtFilterFunc string

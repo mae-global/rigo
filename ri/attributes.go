@@ -1,4 +1,8 @@
-package ri
+package ri	
+
+import (
+	. "github.com/mae-global/rigo/ri/handles"
+)
 
 /* AttributeBegin push the current set of attributes, you can add a single annotation */
 func (r *Ri) AttributeBegin(args ...RtAnnotation) error {

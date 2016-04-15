@@ -3,6 +3,8 @@ package ri
 import (
 	"fmt"
 	"strconv"
+
+	. "github.com/mae-global/rigo/ri/handles"
 )
 
 type Contexter interface {
