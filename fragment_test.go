@@ -28,6 +28,10 @@ func Test_ExampleOrangeBall(t *testing.T) {
 		ctx.ArchiveRecord("structure","CreationDate %s",time.Now())
 		ctx.ArchiveRecord("structure","For %s",cuser.Username)
 		ctx.ArchiveRecord("structure","Frames 5")
+
+		light,err := ctx.LightHandle()
+		So(err,ShouldBeNil)
+		So(light.String(),ShouldEqual,"\"0\"")
 		
 		frag := NewFragment("orangeball_fragment")
 		So(frag,ShouldNotBeNil)
@@ -40,7 +44,8 @@ func Test_ExampleOrangeBall(t *testing.T) {
 		fri.Projection(Perspective,RtString("fov"),RtInt(30))
 		fri.FrameAspectRatio(1.33)
 		fri.Identity()
-		fri.LightSource("distantlight",RtInt(1))
+		fri.LightSource("distantlight")
+		fri.Illuminate(light,true)
 		fri.Translate(0,0,5)
 		fri.WorldBegin()
 		fri.Identity()
@@ -55,7 +60,7 @@ func Test_ExampleOrangeBall(t *testing.T) {
 		fri.AttributeEnd()
 		fri.WorldEnd()
 
-		So(frag.Statements(),ShouldEqual,17)
+		So(frag.Statements(),ShouldEqual,19)
 
 		for frame := 1; frame <= 5; frame++ {
 			ctx.FrameBegin(RtInt(frame))

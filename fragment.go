@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	. "github.com/mae-global/rigo/ri"
+	. "github.com/mae-global/rigo/ri/handles"
 )
 
 type Fragmenter interface {
@@ -25,6 +26,8 @@ type FragmentStatement struct {
 type Fragment struct {
 	Name RtName
 	mux sync.RWMutex
+	lights LightHandler
+	objects ObjectHandler
 	statements []FragmentStatement	
 }
 
@@ -114,23 +117,45 @@ func (f *Fragment) Depth(d int) {
 }
 
 func (f *Fragment) LightHandle() (RtLightHandle,error) {
-	return 0,ErrNotImplemented
+	f.mux.Lock()
+	defer f.mux.Unlock()
+	return f.lights.Generate()
 }
 
 func (f *Fragment) CheckLightHandle(lh RtLightHandle) error {
-	return ErrNotImplemented
+	f.mux.RLock()
+	defer f.mux.RUnlock()
+	return f.lights.Check(lh)
 }
 
 func (f *Fragment) ObjectHandle() (RtObjectHandle, error) {
-	return 0,ErrNotImplemented
+	f.mux.Lock()
+	defer f.mux.RLock()
+	return f.objects.Generate()
 }
 
 func (f *Fragment) CheckObjectHandle(oh RtObjectHandle) error {
-	return ErrNotImplemented
+	f.mux.RLock()
+	defer f.mux.RUnlock()
+	return f.objects.Check(oh)
 }
 
 func NewFragment(name RtName) *Fragment {
-	f := &Fragment{Name:name}
+	return NewCustomFragment(name,nil,nil)
+}
+
+func NewCustomFragment(name RtName,lights LightHandler,objects ObjectHandler) *Fragment {
+	if lights == nil {
+		lights = NewLightNumberGenerator()
+	}
+	if objects == nil {
+		objects = NewObjectNumberGenerator()
+	}
+	f := &Fragment{Name:name,lights:lights,objects:objects}
 	f.statements = make([]FragmentStatement,0)
 	return f
 }
+
+
+
+

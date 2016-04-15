@@ -4,6 +4,9 @@ package handles
 import (
 	"fmt"
 	"sync"
+	"crypto/rand"
+	"io"
+	"encoding/hex"
 )
 
 /* RtLightHandle 
@@ -21,6 +24,7 @@ func (l RtLightHandle) Serialise() string {
 type LightHandler interface {
 	Generate() (RtLightHandle,error)
 	Check(RtLightHandle) error
+	Example() RtLightHandle
 }
 
 /* RtObjectHandle 
@@ -35,50 +39,183 @@ func (l RtObjectHandle) Serialise() string {
 	return fmt.Sprintf("\"%s\"", string(l))
 }
 
-
+/* ObjectHandler */
 type ObjectHandler interface {
 	Generate() (RtObjectHandle,error)
 	Check(RtObjectHandle) error
+	Example() RtObjectHandle
 }
 
 
-
-/* basic generators */
+/* LightNumberGenerator implements the old style of int handles */
 type LightNumberGenerator struct {
 	current uint
 	mux sync.RWMutex
+	format string
 }
 
-func (lng *LightNumberGenerator) Generate() (RtLightHandle,error) {
-	lng.mux.Lock()
-	defer lng.mux.Unlock()
-
-	h := fmt.Sprintf("%d",lng.current)
-	lng.current++
+func (g *LightNumberGenerator) Generate() (RtLightHandle,error) {
+	g.mux.Lock()
+	defer g.mux.Unlock()
+	
+	h := fmt.Sprintf(g.format,g.current)
+	g.current ++
 	return RtLightHandle(h),nil
 }
 
-func (lng *LightNumberGenerator) Check(h RtLightHandle) error {
-	return nil
+func (g *LightNumberGenerator) Check(h RtLightHandle) error {
+	return nil /* FIXME */
 }
 
+func (g *LightNumberGenerator) Example() RtLightHandle {
+	g.mux.RLock()
+	defer g.mux.RUnlock()
+	return RtLightHandle(fmt.Sprintf(g.format,0))
+}
+
+/* NewLightNumberGenerator */
+func NewLightNumberGenerator() *LightNumberGenerator {
+	return &LightNumberGenerator{format:"%d"}
+}
+
+/* NewPrefixLightNumberGenerator */
+func NewPrefixLightNumberGenerator(prefix string) *LightNumberGenerator {
+	if len(prefix) == 0 {
+		return NewLightNumberGenerator()
+	}
+	return &LightNumberGenerator{format:prefix + "%d"}
+}
+
+/* ObjectNumberGenerator implements the old style of int handles */
 type ObjectNumberGenerator struct {
 	current uint
 	mux sync.RWMutex
+	format string
 }
 
-func (ong *ObjectNumberGenerator) Generate() (RtObjectHandle,error) {
-	ong.mux.Lock()
-	defer ong.mux.Unlock()
+func (g *ObjectNumberGenerator) Generate() (RtObjectHandle,error) {
+	g.mux.Lock()
+	defer g.mux.Unlock()
 
-	h := fmt.Sprintf("%d",ong.current)
-	ong.current++
+	h := fmt.Sprintf(g.format,g.current)
+	g.current ++
 	return RtObjectHandle(h),nil
 }
 
-func (ong *ObjectNumberGenerator) Check(h RtObjectHandle) error {
-	return nil
+func (g *ObjectNumberGenerator) Check(h RtObjectHandle) error {
+	return nil /* FIXME */
 }
+
+func (g *ObjectNumberGenerator) Example() RtObjectHandle {
+	g.mux.RLock()
+	defer g.mux.RUnlock()
+	return RtObjectHandle(fmt.Sprintf(g.format,0))
+}
+
+/* NewObjectNumberGenerator */
+func NewObjectNumberGenerator() *ObjectNumberGenerator {
+	return &ObjectNumberGenerator{format:"%d"}
+}
+
+/* NewPrefixObjectNumberGenerator */
+func NewPrefixObjectNumberGenerator(prefix string) *ObjectNumberGenerator {
+	if len(prefix) == 0 {
+		return NewObjectNumberGenerator()
+	}
+	return &ObjectNumberGenerator{format:prefix + "%d"}
+}
+
+
+/* LightUniqueGenerator */
+type LightUniqueGenerator struct {
+	mux sync.RWMutex
+	size   int
+	format string
+}
+
+func (g *LightUniqueGenerator) Generate() (RtLightHandle,error) {
+	g.mux.Lock()
+	defer g.mux.Unlock()
+
+	b := make([]byte,g.size)
+	n,err := io.ReadFull(rand.Reader,b)
+	if err != nil {
+		return "",err
+	}
+	h := fmt.Sprintf(g.format,hex.EncodeToString(b[:n]))
+	return RtLightHandle(h),nil
+}
+
+func (g *LightUniqueGenerator) Check(h RtLightHandle) error {
+	return nil /* FIXME */
+}
+
+func (g *LightUniqueGenerator) Example() RtLightHandle {
+	g.mux.RLock()
+	defer g.mux.RUnlock()
+	example := []byte("abcdefghijklnmopqrstuvw123456789") /* FIXME */
+	return RtLightHandle(fmt.Sprintf(g.format,hex.EncodeToString(example[:g.size])))
+}	
+
+/* NewLightUniqueGenerator */
+func NewLightUniqueGenerator() *LightUniqueGenerator {
+	return &LightUniqueGenerator{format:"%s",size:4}
+}
+
+/* NewPrefixLightUniqueGenerator */
+func NewPrefixLightUniqueGenerator(prefix string) *LightUniqueGenerator {
+	if len(prefix) == 0 {
+		return NewLightUniqueGenerator()
+	}
+	return &LightUniqueGenerator{format:prefix + "%s",size:4}
+}
+ 
+
+/* ObjectUniqueGenerator */
+type ObjectUniqueGenerator struct {
+	mux sync.RWMutex
+	size   int
+	format string
+}
+
+func (g *ObjectUniqueGenerator) Generate() (RtObjectHandle,error) {
+	g.mux.Lock()
+	defer g.mux.Unlock()
+
+	b := make([]byte,g.size)
+	n,err := io.ReadFull(rand.Reader,b)
+	if err != nil {
+		return "",err
+	}
+	h := fmt.Sprintf(g.format,hex.EncodeToString(b[:n]))
+	return RtObjectHandle(h),nil
+}
+
+func (g *ObjectUniqueGenerator) Check(h RtObjectHandle) error {
+	return nil /* FIXME */
+}
+
+func (g *ObjectUniqueGenerator) Example() RtObjectHandle {
+	g.mux.RLock()
+	defer g.mux.RUnlock()
+	example := []byte("abcdefghijklnmopqrstuvw123456789") /* FIXME */
+	return RtObjectHandle(fmt.Sprintf(g.format,hex.EncodeToString(example[:g.size])))
+}	
+
+/* NewObjectUniqueGenerator */
+func NewObjectUniqueGenerator() *ObjectUniqueGenerator {
+	return &ObjectUniqueGenerator{format:"%s",size:4}
+}
+
+/* NewPrefixObjectUniqueGenerator */
+func NewPrefixObjectUniqueGenerator(prefix string) *ObjectUniqueGenerator {
+	if len(prefix) == 0 {
+		return NewObjectUniqueGenerator()
+	}
+	return &ObjectUniqueGenerator{format:prefix + "%s",size:4}
+}
+ 
+
 
 
 

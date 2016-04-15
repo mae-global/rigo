@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	. "github.com/mae-global/rigo/ri"
+	. "github.com/mae-global/rigo/ri/handles"
 )
 
 const (
@@ -182,6 +183,8 @@ type Configuration struct {
 type Context struct {
 	mux sync.RWMutex
 	pipe *Pipe
+	objects ObjectHandler
+	lights LightHandler
 
 	Info
 }
@@ -204,46 +207,48 @@ func (ctx *Context) Depth(d int) {
 func (ctx *Context) LightHandle() (RtLightHandle, error) {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
-	lh := RtLightHandle(ctx.Lights)
-	ctx.Lights++
-	return lh, nil
+	return ctx.lights.Generate()
 }
 
 func (ctx *Context) CheckLightHandle(lh RtLightHandle) error {
 	ctx.mux.RLock()
 	defer ctx.mux.RUnlock()
-	if uint(lh) >= ctx.Lights {
-		return ErrBadHandle
-	}
-	return nil
+	return ctx.lights.Check(lh)
 }
 
 func (ctx *Context) ObjectHandle() (RtObjectHandle, error) {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
-	oh := RtObjectHandle(ctx.Objects)
-	ctx.Objects++
-	return oh, nil
+	return ctx.objects.Generate()
 }
 
 func (ctx *Context) CheckObjectHandle(oh RtObjectHandle) error {
 	ctx.mux.RLock()
 	defer ctx.mux.RUnlock()
-	if uint(oh) >= ctx.Objects {
-		return ErrBadHandle
-	}
-	return nil
+	return ctx.objects.Check(oh)
 }
 
 
 func New(pipe *Pipe, config *Configuration) *Ri {
+	return NewCustom(pipe,nil,nil,config)
+}
+
+func NewCustom(pipe *Pipe,lights LightHandler,objects ObjectHandler,config *Configuration) *Ri {
 	if pipe == nil {
 		pipe = DefaultFilePipe()
 	}
 	if config == nil {
-		config = &Configuration{Entity: false, Formal: false,PrettyPrint: false}
+		config = &Configuration{Entity: false,Formal: false,PrettyPrint: false}
 	}
-	ctx := &Context{pipe:pipe,Info:Info{Name: "", Entity: config.Entity, Formal: config.Formal,PrettyPrint: config.PrettyPrint}}
+	
+	if lights == nil {
+		lights = NewLightNumberGenerator()
+	}
+	if objects == nil {
+		objects = NewObjectNumberGenerator()
+	}
+
+	ctx := &Context{pipe:pipe,lights:lights,objects:objects,Info:Info{Name: "", Entity: config.Entity, Formal: config.Formal,PrettyPrint: config.PrettyPrint}}
 	return &Ri{ctx}
 }
 
