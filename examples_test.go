@@ -280,7 +280,7 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Printf("Hello there Alice\n")
+	fmt.Printf("Hello there $name\n")
 }
 `
 
@@ -296,9 +296,17 @@ func Test_Archive(t *testing.T) {
 		aw,err := ctx.ArchiveBegin("test",RtToken("Content-Type"),RtString("application/go"))
 		So(err,ShouldBeNil)
 		So(aw,ShouldNotBeNil)
-	
+
+		/* attempt to open a new archive */
+		aw1,err := ctx.ArchiveBegin("test1")
+		So(err,ShouldEqual,ErrNotSupported)
+		So(aw1,ShouldBeNil)
+
 		aw.Write([]byte(hello_world))
 		So(ctx.ArchiveEnd("test"),ShouldBeNil)
+
+		ctx.ArchiveInstance("test",RtString("string name"),RtString("Alice"))
+
 		So(ctx.End(),ShouldBeNil)	
 
 		/* output gathered stats */

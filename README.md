@@ -20,6 +20,10 @@ type MyTimer struct {
 	finish time.Time
 }
 
+func (t *MyTimer) ToRaw() ArchiveWriter {
+	return nil
+}
+
 func (t MyTimer) Name() string {
 	return "mytimer"
 }
@@ -337,12 +341,12 @@ WorldEnd
 - [ ] Call wrapping for Ri[call]Begin/Ri[call]End pairs
 - [x] ~~Call Fragments~~ 
 - [ ] Documentation/Examples
-- [ ] Siggarph 2003, Course 9 'Evolution of RIB' by Byron Bashforth
+- [x] ~~Siggarph 2003, Course 9 'Evolution of RIB' by Byron Bashforth~~
   - [x] ~~String Handles~~
   - [x] ~~Conditional RIB and State Variable Subsitution~~
-  - [ ] Inline Archives
+  - [x] ~~inline Archives~~
   - [x] ~~Plug-in Ri Filters (partial)~~
-  - [ ] Multipart RIB and Plug-in Instancers
+  - [x] ~~Multipart RIB and Plug-in Instancers~~
 
 
 ###Information

@@ -240,8 +240,14 @@ func (ctx *Context) OpenRaw(id RtToken) (ArchiveWriter,error) {
 		return nil,ErrNotSupported
 	}
 
+	for _,r := range ctx.files {
+		if r {
+			return nil,ErrNotSupported
+		}
+	}
+
 	ctx.files[id] = true
-	
+
 	return ctx.pipe.ToRaw(),nil
 }
 

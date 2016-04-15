@@ -4,8 +4,8 @@ Format 320 240 1
 Projection "perspective" "fov" 30
 Translate 0 0 6
 WorldBegin 
-	LightSource "ambientlight" "light_e71621c8" "intensity" .5
-	LightSource "distantlight" "light_dbd9d3d4" "intensity" 1.2 "form" [0 0 -6] "to" [0 0 0]
+	LightSource "ambientlight" "light_a14a8ddc" "intensity" .5
+	LightSource "distantlight" "light_685157ef" "intensity" 1.2 "form" [0 0 -6] "to" [0 0 0]
 	Option "user" "string renderpass" "red"
 	IfBegin "$user:renderpass == 'red'"
 	Color [1 0 0]

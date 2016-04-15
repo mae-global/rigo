@@ -27,3 +27,10 @@ func (r *Ri) ArchiveEnd(id RtToken) error {
 	return r.writef("ArchiveEnd",id)
 }
 
+func (r *Ri) ArchiveInstance(id RtToken,parameterlist ...Rter) error {
+
+	list := []Rter{id}
+	list = append(list,parameterlist...)
+
+	return r.writef("ArchiveInstance",list...)
+}

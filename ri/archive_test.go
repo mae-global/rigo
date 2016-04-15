@@ -21,5 +21,6 @@ func Test_Archive(t *testing.T) {
 		So(n,ShouldEqual,11)
 			
 		So(ctx.ArchiveEnd("test"),ErrorShouldEqual,`ArchiveEnd "test"`)
+		So(ctx.ArchiveInstance("test"),ErrorShouldEqual,`ArchiveInstance "test"`)
 	})
 }
