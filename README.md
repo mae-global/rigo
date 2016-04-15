@@ -325,7 +325,6 @@ WorldEnd
 
 
 
-
 ##Roadmap
 
 - [x] Basic RIB pipe
@@ -340,6 +339,12 @@ WorldEnd
 - [ ] Call wrapping for Ri[call]Begin/Ri[call]End pairs
 - [x] Call Fragments 
 - [ ] Documentation/Examples
+- [ ] Siggarph 2003, Course 9 'Evolution of RIB' by Byron Bashforth
+  - [x] String Handles
+  - [ ] Conditional RIB and State Variable Subsitution
+  - [ ] Inline Archives
+  - [x] Plug-in Ri Filters (partial)
+  - [ ] Multipart RIB and Plug-in Instancers
 
 
 ###Information
