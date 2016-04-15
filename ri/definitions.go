@@ -405,4 +405,5 @@ var (
 	ErrStringTooBig   = fmt.Errorf("insufficient memory to read string")
 	ErrSyntaxError    = fmt.Errorf("general syntactic error")
 	ErrUnregistered   = fmt.Errorf("undefined RIB request")
+	ErrNotSupported   = fmt.Errorf("not supported at this time")
 )

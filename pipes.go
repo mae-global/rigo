@@ -27,6 +27,10 @@ type PipeTimer struct {
 	finish time.Time
 }
 
+func (p *PipeTimer) ToRaw() ArchiveWriter {
+	return nil
+}
+
 func (p PipeTimer) Name() string {
 	return "default-pipe-timer"
 }
@@ -55,6 +59,10 @@ func (p *PipeTimer) Took() time.Duration {
 /* Pipe RI output to gathered states */
 type PipeToStats struct {
 	Stats map[RtName]int
+}
+
+func (p *PipeToStats) ToRaw() ArchiveWriter {
+	return nil
 }
 
 func (p PipeToStats) Name() string {
@@ -119,6 +127,13 @@ func (p *PipeToStats) String() string {
 /* Pipe RI output to file */
 type PipeToFile struct {
 	file *os.File
+}
+
+func (p *PipeToFile) ToRaw() ArchiveWriter {
+	if p.file == nil {
+		return nil
+	}
+	return p.file
 }
 
 func (p PipeToFile) Name() string {
@@ -202,6 +217,10 @@ func (p *PipeToFile) Write(name RtName, list []Rter, info Info) *Result {
 /* Convert String Handlers back to Int Handlers */
 type FilterStringHandles struct {
 	
+}
+
+func (p *FilterStringHandles) ToRaw() ArchiveWriter {
+	return nil
 }
 
 func (p FilterStringHandles) Name() string {

@@ -1,5 +1,7 @@
 package ri
 
+/* see Siggraph 2003, Course 9 'The Evolution of RIB' by Byron Bashforth, pg.5 */
+
 /* IfBegin */
 func (r *Ri) IfBegin(operation RtString) error {
 	return r.writef("IfBegin",operation)

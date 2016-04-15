@@ -110,6 +110,15 @@ func (f *Fragment) Write(name RtName, list []Rter) error {
 	return nil
 }
 
+func (f *Fragment) OpenRaw(id RtToken) (ArchiveWriter,error) {
+	return nil,ErrNotSupported
+}
+
+func (f *Fragment) CloseRaw(id RtToken) error {
+	return ErrNotSupported
+}
+
+
 func (f *Fragment) Depth(d int) {
 	f.mux.Lock()
 	defer f.mux.Unlock()

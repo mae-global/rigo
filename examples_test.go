@@ -274,6 +274,49 @@ func Test_SimpleExampleWithConditionals(t *testing.T) {
 	})
 }
 
+const hello_world = `
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Printf("Hello there Alice\n")
+}
+`
+
+func Test_Archive(t *testing.T) {
+
+	Convey("Archive",t,func() {
+	
+		pipe := DefaultFilePipe()
+
+		ctx := New(pipe,nil)
+
+		ctx.Begin("output/archive.rib")
+		aw,err := ctx.ArchiveBegin("test",RtToken("Content-Type"),RtString("application/go"))
+		So(err,ShouldBeNil)
+		So(aw,ShouldNotBeNil)
+	
+		aw.Write([]byte(hello_world))
+		So(ctx.ArchiveEnd("test"),ShouldBeNil)
+		So(ctx.End(),ShouldBeNil)	
+
+		/* output gathered stats */
+		p := pipe.GetByName(PipeToStats{}.Name())
+		So(p, ShouldNotBeNil)
+		s, ok := p.(*PipeToStats)
+		So(s, ShouldNotBeNil)
+		So(ok, ShouldBeTrue)
+
+		p = pipe.GetByName(PipeTimer{}.Name())
+		So(p, ShouldNotBeNil)
+		t, ok := p.(*PipeTimer)
+		So(t, ShouldNotBeNil)
+		So(ok, ShouldBeTrue)
+
+		fmt.Printf("%s%s", s, t)
+	})
+}
 
 
 /* go test -bench=. */

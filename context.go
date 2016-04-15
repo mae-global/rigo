@@ -143,6 +143,26 @@ func (p *Pipe) Run(name RtName, list []Rter, info Info) error {
 	return nil
 }
 
+func (p *Pipe) ToRaw() ArchiveWriter {
+	p.Lock()
+	defer p.Unlock()
+
+	if len(p.blocks) == 0 {
+		return nil
+	}
+
+	for _,b := range p.blocks {
+		if b == nil {
+			continue
+		}
+		if aw := b.ToRaw(); aw != nil {
+			return aw
+		}
+	}
+	return nil
+}
+	
+
 func NewPipe() *Pipe {
 	pipe := Pipe{}
 	pipe.blocks = make([]Piper, 0)
@@ -152,7 +172,10 @@ func NewPipe() *Pipe {
 type Piper interface {
 	Write(RtName, []Rter, Info) *Result
 	Name() string
+	ToRaw() ArchiveWriter
 }
+
+
 
 type Info struct {
 	Name        string
@@ -182,11 +205,16 @@ type Configuration struct {
 	PrettyPrint bool
 }
 
+
+
+
 type Context struct {
 	mux sync.RWMutex
 	pipe *Pipe
 	objects ObjectHandler
 	lights LightHandler
+
+	files map[RtToken]bool
 
 	Info
 }
@@ -198,6 +226,41 @@ func (ctx *Context) Write(name RtName, list []Rter) error {
 		name = name.Prefix("Ri")
 	}
 	return ctx.pipe.Run(name, list, ctx.Info)
+}
+
+func (ctx *Context) OpenRaw(id RtToken) (ArchiveWriter,error) {
+	ctx.mux.Lock()
+	defer ctx.mux.Unlock()
+
+	if ctx.files == nil {
+		ctx.files = make(map[RtToken]bool,0)
+	}
+
+	if _,exists := ctx.files[id]; exists {
+		return nil,ErrNotSupported
+	}
+
+	ctx.files[id] = true
+	
+	return ctx.pipe.ToRaw(),nil
+}
+
+func (ctx *Context) CloseRaw(id RtToken) error {
+	ctx.mux.Lock()
+	defer ctx.mux.Unlock()
+	
+	if ctx.files == nil {
+		return ErrNotSupported
+	}
+
+
+	if _,exists := ctx.files[id]; !exists {
+		return ErrNotSupported
+	}
+
+	delete(ctx.files,id)
+
+	return nil
 }
 
 func (ctx *Context) Depth(d int) {

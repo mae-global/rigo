@@ -63,6 +63,7 @@ func (r *Ri) ArchiveRecord(typeof RtToken, format RtString, args ...interface{})
 	return err
 }
 
+
 /* ReadArchive */
 func (r *Ri) ReadArchive(name RtToken, callback RtArchiveCallbackFunc, parameterlist ...Rter) error {
 
