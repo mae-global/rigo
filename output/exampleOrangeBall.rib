@@ -1,0 +1,116 @@
+##RenderMan RIB-Structure 1.1
+##Scene Orange Ball
+##Creator rigo-0
+##CreationDate 2016-04-15 14:17:41.935190047 +0100 BST
+##For mae
+##Frames 5
+FrameBegin 1
+	Display "orange_001.tif" "file" "rgba"
+	Format 640 480 -1
+	ShadingRate 1
+	Projection "perspective" "fov" 30
+	FrameAspectRatio 1.33
+	Identity 
+	LightSource "distantlight" "0"
+	Illuminate "0" 1
+	Translate 0 0 5
+	WorldBegin 
+		Identity 
+		AttributeBegin 
+			Color [1 .6 0]
+			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
+			TransformBegin 
+				Rotate 90 1 0 0
+				Sphere 1 -1 1 360
+			TransformEnd 
+		AttributeEnd 
+	WorldEnd 
+FrameEnd 
+FrameBegin 2
+	Display "orange_002.tif" "file" "rgba"
+	Format 640 480 -1
+	ShadingRate 1
+	Projection "perspective" "fov" 30
+	FrameAspectRatio 1.33
+	Identity 
+	LightSource "distantlight" "0"
+	Illuminate "0" 1
+	Translate 0 0 5
+	WorldBegin 
+		Identity 
+		AttributeBegin 
+			Color [1 .6 0]
+			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
+			TransformBegin 
+				Rotate 90 1 0 0
+				Sphere 1 -1 1 360
+			TransformEnd 
+		AttributeEnd 
+	WorldEnd 
+FrameEnd 
+FrameBegin 3
+	Display "orange_003.tif" "file" "rgba"
+	Format 640 480 -1
+	ShadingRate 1
+	Projection "perspective" "fov" 30
+	FrameAspectRatio 1.33
+	Identity 
+	LightSource "distantlight" "0"
+	Illuminate "0" 1
+	Translate 0 0 5
+	WorldBegin 
+		Identity 
+		AttributeBegin 
+			Color [1 .6 0]
+			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
+			TransformBegin 
+				Rotate 90 1 0 0
+				Sphere 1 -1 1 360
+			TransformEnd 
+		AttributeEnd 
+	WorldEnd 
+FrameEnd 
+FrameBegin 4
+	Display "orange_004.tif" "file" "rgba"
+	Format 640 480 -1
+	ShadingRate 1
+	Projection "perspective" "fov" 30
+	FrameAspectRatio 1.33
+	Identity 
+	LightSource "distantlight" "0"
+	Illuminate "0" 1
+	Translate 0 0 5
+	WorldBegin 
+		Identity 
+		AttributeBegin 
+			Color [1 .6 0]
+			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
+			TransformBegin 
+				Rotate 90 1 0 0
+				Sphere 1 -1 1 360
+			TransformEnd 
+		AttributeEnd 
+	WorldEnd 
+FrameEnd 
+FrameBegin 5
+	Display "orange_005.tif" "file" "rgba"
+	Format 640 480 -1
+	ShadingRate 1
+	Projection "perspective" "fov" 30
+	FrameAspectRatio 1.33
+	Identity 
+	LightSource "distantlight" "0"
+	Illuminate "0" 1
+	Translate 0 0 5
+	WorldBegin 
+		Identity 
+		AttributeBegin 
+			Color [1 .6 0]
+			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
+			TransformBegin 
+				Rotate 90 1 0 0
+				Sphere 1 -1 1 360
+			TransformEnd 
+		AttributeEnd 
+	WorldEnd 
+FrameEnd 
