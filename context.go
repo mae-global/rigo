@@ -7,6 +7,7 @@ import (
 
 	. "github.com/mae-global/rigo/ri"
 )
+
 const (
 	Version = "0"
 	Author  = "rigo"
