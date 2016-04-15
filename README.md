@@ -175,6 +175,9 @@ ctx.End()
 ```
 ##RenderMan RIB-Structure 1.1
 ##Scene Orange Ball
+##Creator rigo-0
+##CreationDate 2016-04-15 13:06:05.461257304 +0100 BST
+##For mae
 ##Frames 5
 FrameBegin 1
 	Display "orange_001.tif" "file" "rgba"
@@ -183,6 +186,7 @@ FrameBegin 1
 	Projection "perspective" "fov" 30
 	FrameAspectRatio 1.33
 	Identity 
+	LightSource "distantlight" "0"
 	Translate 0 0 5
 	WorldBegin 
 		Identity 
@@ -203,6 +207,7 @@ FrameBegin 2
 	Projection "perspective" "fov" 30
 	FrameAspectRatio 1.33
 	Identity 
+	LightSource "distantlight" "0"
 	Translate 0 0 5
 	WorldBegin 
 		Identity 
@@ -223,6 +228,7 @@ FrameBegin 3
 	Projection "perspective" "fov" 30
 	FrameAspectRatio 1.33
 	Identity 
+	LightSource "distantlight" "0"
 	Translate 0 0 5
 	WorldBegin 
 		Identity 
@@ -243,6 +249,7 @@ FrameBegin 4
 	Projection "perspective" "fov" 30
 	FrameAspectRatio 1.33
 	Identity 
+	LightSource "distantlight" "0"
 	Translate 0 0 5
 	WorldBegin 
 		Identity 
@@ -263,6 +270,7 @@ FrameBegin 5
 	Projection "perspective" "fov" 30
 	FrameAspectRatio 1.33
 	Identity 
+	LightSource "distantlight" "0"
 	Translate 0 0 5
 	WorldBegin 
 		Identity 
@@ -277,6 +285,46 @@ FrameBegin 5
 	WorldEnd 
 FrameEnd 
 ```
+An example light handler generator, which generates unique names so that lights can be tracked more easily. 
+
+```go
+pipe := DefaultFilePipe()
+	
+/* use a custom unique generator with a prefix for the light handles */
+lights := NewPrefixLightUniqueGenerator("light_")
+	
+ctx := NewCustom(pipe,lights,nil,&Configuration{PrettyPrint:true})
+ctx.Begin("output/simple.rib")
+ctx.Display("sphere.tif","file","rgb")
+ctx.Format(320,240,1)
+ctx.Projection(Perspective,RtString("fov"),RtFloat(30))
+ctx.Translate(0,0,6)
+ctx.WorldBegin()
+ctx.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
+ctx.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
+ctx.Color(RtColor{1,0,0})
+ctx.Sphere(1,-1,1,360)
+ctx.WorldEnd()
+ctx.End()
+```
+
+```
+##RenderMan RIB-Structure 1.1
+Display "sphere.tif" "file" "rgb"
+Format 320 240 1
+Projection "perspective" "fov" 30
+Translate 0 0 6
+WorldBegin 
+	LightSource "ambientlight" "light_09c84b71" "intensity" .2
+	LightSource "distantlight" "light_64f4dfbf" "intensity" 1.2 "form" [0 0 -6] "to" [0 0 0]
+	Color [1 0 0]
+	Sphere 1 -1 1 360
+WorldEnd 
+```
+
+
+
+
 
 ##Roadmap
 
