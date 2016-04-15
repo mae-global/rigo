@@ -175,9 +175,6 @@ ctx.End()
 ```
 ##RenderMan RIB-Structure 1.1
 ##Scene Orange Ball
-##Creator rigo-0
-##CreationDate 2016-04-15 13:06:05.461257304 +0100 BST
-##For mae
 ##Frames 5
 FrameBegin 1
 	Display "orange_001.tif" "file" "rgba"
@@ -331,19 +328,19 @@ WorldEnd
 - [ ] Complete RenderMan Interface
 - [ ] Stdout/buffer wrapper around io.Writer interface
 - [ ] Complete Error checking for each Ri Call
-  - [x] Basic Error checking
+  - [x] ~~Basic Error checking~~
 	- [ ] Sanity checking
 	- [ ] Per call checking
 	- [ ] Parameterlist checking
 - [ ] RIB parser
 - [ ] Call wrapping for Ri[call]Begin/Ri[call]End pairs
-- [x] Call Fragments 
+- [x] ~~Call Fragments~~ 
 - [ ] Documentation/Examples
 - [ ] Siggarph 2003, Course 9 'Evolution of RIB' by Byron Bashforth
-  - [x] String Handles
+  - [x] ~~String Handles~~
   - [ ] Conditional RIB and State Variable Subsitution
   - [ ] Inline Archives
-  - [x] Plug-in Ri Filters (partial)
+  - [x] ~~Plug-in Ri Filters (partial)~~
   - [ ] Multipart RIB and Plug-in Instancers
 
 
