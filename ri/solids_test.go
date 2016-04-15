@@ -17,9 +17,9 @@ func Test_Solids(t *testing.T) {
 		So(ctx.SolidBegin("union"), ErrorShouldEqual, `SolidBegin "union"`)
 
 		oh, err := ctx.ObjectBegin()
-		So(err, ErrorShouldEqual, `ObjectBegin 0`)
+		So(err, ErrorShouldEqual, `ObjectBegin "0"`)
 		So(ctx.ObjectEnd(), ErrorShouldEqual, `ObjectEnd`)
-		So(ctx.ObjectInstance(oh), ErrorShouldEqual, `ObjectInstance 0`)
+		So(ctx.ObjectInstance(oh), ErrorShouldEqual, `ObjectInstance "0"`)
 
 		So(ctx.SolidEnd(), ErrorShouldEqual, `SolidEnd`)
 		So(ctx.End(), ErrorShouldEqual, `End`)

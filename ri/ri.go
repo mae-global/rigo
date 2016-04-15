@@ -2,6 +2,7 @@ package ri
 
 import (
 	"fmt"
+	"strconv"
 )
 
 type Contexter interface {
@@ -33,27 +34,27 @@ func (b *TestContext) Depth(d int) {
 }
 
 func (b *TestContext) LightHandle() (RtLightHandle, error) {
-	h := RtLightHandle(b.lights)
+	h := RtLightHandle(fmt.Sprintf("%d",b.lights))
 	b.lights++
 
 	return h, nil
 }
 
 func (b *TestContext) CheckLightHandle(h RtLightHandle) error {
-	if uint(h) >= b.lights {
+	if i,err := strconv.Atoi(string(h)); err != nil || uint(i) >= b.lights {
 		return ErrBadHandle
-	}
+	} 
 	return nil
 }
 
 func (b *TestContext) ObjectHandle() (RtObjectHandle, error) {
-	h := RtObjectHandle(b.objects)
+	h := RtObjectHandle(fmt.Sprintf("%d",b.objects))
 	b.objects++
 	return h, nil
 }
 
 func (b *TestContext) CheckObjectHandle(h RtObjectHandle) error {
-	if uint(h) >= b.objects {
+	if i,err := strconv.Atoi(string(h)); err != nil || uint(i) >= b.objects {
 		return ErrBadHandle
 	}
 	return nil
