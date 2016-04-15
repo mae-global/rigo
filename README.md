@@ -326,7 +326,8 @@ WorldEnd
 
 ##Roadmap
 
-- [x] Basic RIB pipe
+- [ ] Structure block for recording context settings in RIB output
+- [x] ~~Basic RIB pipe~~
 - [ ] Complete RenderMan Interface
 - [ ] Stdout/buffer wrapper around io.Writer interface
 - [ ] Complete Error checking for each Ri Call

@@ -257,3 +257,5 @@ func NewCustom(pipe *Pipe,lights LightHandler,objects ObjectHandler,config *Conf
 func NewEntity(pipe *Pipe) *Ri {
 	return New(pipe, &Configuration{Entity: true, Formal: false})
 }
+
+
