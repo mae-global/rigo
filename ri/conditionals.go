@@ -4,12 +4,12 @@ package ri
 
 /* IfBegin */
 func (r *Ri) IfBegin(operation RtString) error {
-	return r.writef("IfBegin",operation)
+	return r.writef("IfBegin",operation,PARAMETERLIST)
 }
 
 /* ElseIf */
 func (r *Ri) ElseIf(operation RtString) error {
-	return r.writef("ElseIf",operation)
+	return r.writef("ElseIf",operation,PARAMETERLIST)
 }
 
 /* Else */

@@ -8,7 +8,7 @@ import (
 )
 
 type Contexter interface {
-	Write(RtName, []Rter) error
+	Write(RtName, []Rter,[]Rter) error
 	OpenRaw(RtToken) (ArchiveWriter,error)
 	CloseRaw(RtToken) error
 	Depth(int)
@@ -45,17 +45,14 @@ func (w *testArchiveWriter) Write(c []byte) (int,error) {
 
 
 
-func (b *TestContext) Write(name RtName, list []Rter) error {
+func (b *TestContext) Write(name RtName,args,list []Rter) error {
 	if name != "ArchiveBegin" && b.raw != nil {
 		return ErrNotSupported
 	}
-
+	astr := Serialise(args)
 	str := Serialise(list)
-	if len(str) == 0 {
-		return fmt.Errorf("%s", name)
-	}
-
-	return fmt.Errorf("%s %s", name, str)
+	
+	return fmt.Errorf("%s %s %s", name,astr,str)
 }
 
 func (b *TestContext) OpenRaw(id RtToken) (ArchiveWriter,error) {
@@ -125,5 +122,26 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	if r.Contexter == nil {
 		return ErrProtocolBotch
 	}
-	return r.Write(name, parameterlist)
+
+	args := make([]Rter,0)
+	list := make([]Rter,0)
+	para := false
+	/* find the actual parameterlist */
+	for _,r := range parameterlist {
+		if t,ok := r.(RtToken); ok {
+			if t == PARAMETERLIST {
+				para = true
+				continue
+			}
+		}
+		if para {
+			list = append(list,r)
+		} else {
+			args = append(args,r)
+		}
+	}
+
+	/* TODO: sanity check the parameterlist */
+
+	return r.Write(name, args,parameterlist)
 }

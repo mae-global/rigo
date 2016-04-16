@@ -24,7 +24,7 @@ func (r *Ri) Exposure(gain, gamma RtFloat) error {
 /* Imager; select an imager function programmed in the Shading Language. */
 func (r *Ri) Imager(name RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{name}
+	var out = []Rter{name,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Imager", out...)
@@ -38,7 +38,7 @@ func (r *Ri) Quantize(typeof RtToken, one, min, max RtInt, ditheramplitude RtFlo
 /* Display choose a display by name and set the type of output being generated. */
 func (r *Ri) Display(name, typeof, mode RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{name, typeof, mode}
+	var out = []Rter{name, typeof, mode,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Display", out...)
@@ -47,7 +47,7 @@ func (r *Ri) Display(name, typeof, mode RtToken, parameterlist ...Rter) error {
 /* Hider */
 func (r *Ri) Hider(typeof RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{typeof}
+	var out = []Rter{typeof,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Hider", out...)

@@ -44,7 +44,7 @@ func (r *Ri) LightSource(shadername RtToken, parameterlist ...Rter) (RtLightHand
 		return lh, err
 	}
 
-	var out = []Rter{shadername, lh}
+	var out = []Rter{shadername, lh,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return lh, r.writef("LightSource", out...)
@@ -56,7 +56,7 @@ func (r *Ri) AreaLightSource(shadername RtToken, parameterlist ...Rter) (RtLight
 	if err != nil {
 		return lh, err
 	}
-	var out = []Rter{shadername, lh}
+	var out = []Rter{shadername, lh,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return lh, r.writef("AreaLightSource", out...)
@@ -73,7 +73,7 @@ func (r *Ri) Illuminate(light RtLightHandle, onoff RtBoolean) error {
 /* Surface shadername is the name of a surface shader */
 func (r *Ri) Surface(shadername RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{shadername}
+	var out = []Rter{shadername,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Surface", out...)
@@ -82,7 +82,7 @@ func (r *Ri) Surface(shadername RtToken, parameterlist ...Rter) error {
 /* Displacement set the current displacement shader to the named shader. */
 func (r *Ri) Displacement(shadername RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{shadername}
+	var out = []Rter{shadername,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Displacement", out...)
@@ -91,7 +91,7 @@ func (r *Ri) Displacement(shadername RtToken, parameterlist ...Rter) error {
 /* Atmosphere this procedure sets the current atmosphere shader. */
 func (r *Ri) Atmosphere(shadername RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{shadername}
+	var out = []Rter{shadername,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Atmosphere", out...)
@@ -100,7 +100,7 @@ func (r *Ri) Atmosphere(shadername RtToken, parameterlist ...Rter) error {
 /* Interior this procedure sets the current interior volume shader. */
 func (r *Ri) Interior(shadername RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{shadername}
+	var out = []Rter{shadername,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Interior", out...)
@@ -109,7 +109,7 @@ func (r *Ri) Interior(shadername RtToken, parameterlist ...Rter) error {
 /* Exterior this procedure sets the curent exterior volume shader. */
 func (r *Ri) Exterior(shadername RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{shadername}
+	var out = []Rter{shadername,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Exterior", out...)

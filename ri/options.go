@@ -9,6 +9,7 @@ func (r *Ri) Declare(name, declaration RtString) error {
 func (r *Ri) Option(name RtToken, parameterlist ...Rter) error {
 	out := make([]Rter, 0)
 	out = append(out, name)
+	out = append(out,PARAMETERLIST)
 	out = append(out, parameterlist...)
 
 	return r.writef("Option", out...)
@@ -17,7 +18,7 @@ func (r *Ri) Option(name RtToken, parameterlist ...Rter) error {
 /* Attribute Set the paramters of the attribute name. Implementation-specific */
 func (r *Ri) Attribute(name RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{name}
+	var out = []Rter{name,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Attribute", out...)
@@ -26,7 +27,7 @@ func (r *Ri) Attribute(name RtToken, parameterlist ...Rter) error {
 /* Geometry */
 func (r *Ri) Geometry(typeof RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{typeof}
+	var out = []Rter{typeof,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Geometry", out...)

@@ -19,6 +19,7 @@ type Rter interface {
 	Serialise() string
 }
 
+
 /* RtName internal use for RIB command names */
 type RtName string
 
@@ -355,6 +356,11 @@ func (s RtAnnotation) Serialise() string {
 	}
 	return "#" + string(s)
 }
+
+const (
+	PARAMETERLIST RtToken = "_PARAMETERLIST_"
+)
+
 
 const (
 	BoxFilter        RtFilterFunc = "box"

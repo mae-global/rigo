@@ -3,7 +3,7 @@ package ri
 /* Sphere */
 func (r *Ri) Sphere(radius, zmin, zmax, thetamax RtFloat, parameterlist ...Rter) error {
 
-	var out = []Rter{radius, zmin, zmax, thetamax}
+	var out = []Rter{radius, zmin, zmax, thetamax,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Sphere", out...)
@@ -12,7 +12,7 @@ func (r *Ri) Sphere(radius, zmin, zmax, thetamax RtFloat, parameterlist ...Rter)
 /* Cone */
 func (r *Ri) Cone(height, radius, thetamax RtFloat, parameterlist ...Rter) error {
 
-	var out = []Rter{height, radius, thetamax}
+	var out = []Rter{height, radius, thetamax,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Cone", out...)
@@ -21,7 +21,7 @@ func (r *Ri) Cone(height, radius, thetamax RtFloat, parameterlist ...Rter) error
 /* Cylinder */
 func (r *Ri) Cylinder(radius, zmin, zmax, thetamax RtFloat, parameterlist ...Rter) error {
 
-	var out = []Rter{radius, zmin, zmax, thetamax}
+	var out = []Rter{radius, zmin, zmax, thetamax,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Cylinder", out...)
@@ -30,7 +30,7 @@ func (r *Ri) Cylinder(radius, zmin, zmax, thetamax RtFloat, parameterlist ...Rte
 /* Hyperboloid */
 func (r *Ri) Hyperboloid(point1, point2 RtPoint, thetamax RtFloat, parameterlist ...Rter) error {
 
-	var out = []Rter{point1, point2, thetamax}
+	var out = []Rter{point1, point2, thetamax,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Hyperboloid", out...)
@@ -39,7 +39,7 @@ func (r *Ri) Hyperboloid(point1, point2 RtPoint, thetamax RtFloat, parameterlist
 /* Disk */
 func (r *Ri) Disk(height, radius, thetamax RtFloat, parameterlist ...Rter) error {
 
-	var out = []Rter{height, radius, thetamax}
+	var out = []Rter{height, radius, thetamax,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Disk", out...)
@@ -48,7 +48,7 @@ func (r *Ri) Disk(height, radius, thetamax RtFloat, parameterlist ...Rter) error
 /* Torus */
 func (r *Ri) Torus(majorradius, minorradius, phimin, phimax, thetamax RtFloat, parameterlist ...Rter) error {
 
-	var out = []Rter{majorradius, minorradius, phimin, phimax, thetamax}
+	var out = []Rter{majorradius, minorradius, phimin, phimax, thetamax,PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("Torus", out...)

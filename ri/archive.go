@@ -12,7 +12,7 @@ func (r *Ri) ArchiveBegin(id RtToken, parameterlist ...Rter) (ArchiveWriter,erro
 		return nil,err
 	}
 
-	list := []Rter{id}
+	list := []Rter{id,PARAMETERLIST}
 	list = append(list,parameterlist...)	
 
 	return aw,r.writef("ArchiveBegin",list...)
@@ -24,12 +24,12 @@ func (r *Ri) ArchiveEnd(id RtToken) error {
 		return err
 	}
 
-	return r.writef("ArchiveEnd",id)
+	return r.writef("ArchiveEnd",id,PARAMETERLIST)
 }
 
 func (r *Ri) ArchiveInstance(id RtToken,parameterlist ...Rter) error {
 
-	list := []Rter{id}
+	list := []Rter{id,PARAMETERLIST}
 	list = append(list,parameterlist...)
 
 	return r.writef("ArchiveInstance",list...)
