@@ -122,6 +122,8 @@ func (s RtToken) Serialise() string {
 	return fmt.Sprintf("\"%s\"", string(s))
 }
 
+
+
 /* RtToken array */
 type RtTokenArray []RtToken
 
@@ -343,7 +345,7 @@ func (s RtArchiveCallbackFunc) Serialise() string {
 	return fmt.Sprintf("\"%s\"", string(s))
 }
 
-/* RtAnnotation */
+/* RtAnnotation (TODO: move this to RtxAnnotation as it does not belong in the Ri spec.) */
 type RtAnnotation string
 
 func (s RtAnnotation) String() string {
@@ -360,6 +362,7 @@ func (s RtAnnotation) Serialise() string {
 const (
 	PARAMETERLIST RtToken = "_PARAMETERLIST_"
 	DEPTH RtName = "_DEPTH_"
+	DEBUG RtName = "-->"
 )
 
 
@@ -384,6 +387,19 @@ const (
 	Cs           RtToken = "Cs"
 	Os           RtToken = "Os"
 
+	Uniform			 RtToken = "uniform"
+	Vertex       RtToken = "vertex"
+	Varying			 RtToken = "varying"
+	Constant     RtToken = "constant"
+	
+	Color				 RtToken = "color"
+	Float        RtToken = "float"
+	Normal       RtToken = "normal"
+	Point        RtToken = "point"
+	Hpoint       RtToken = "hpoint"
+	/* TODO: finish... */
+
+
 	ProcDelayedReadArchive RtProcSubdivFunc = "DelayedReadArchive"
 	ProcRunProgram         RtProcSubdivFunc = "RunProgram"
 	ProcDynamicLoad        RtProcSubdivFunc = "DynamicLoad"
@@ -402,7 +418,7 @@ var (
 	ErrBadColor       = fmt.Errorf("invalid color specification")
 	ErrBadHandle      = fmt.Errorf("invalid light or object handle")
 	ErrBadParamlist   = fmt.Errorf("parameter list type mismatch")
-	ErrBadRIPCode     = fmt.Errorf("invalid encoded RIB request code")
+	ErrBadRIBCode     = fmt.Errorf("invalid encoded RIB request code")
 	ErrBadStringToken = fmt.Errorf("undefined encoded string token")
 	ErrBadToken       = fmt.Errorf("invalid binary token")
 	ErrBadVersion     = fmt.Errorf("protocol version number mismatch")

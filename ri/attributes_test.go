@@ -48,15 +48,15 @@ func Test_Attributes(t *testing.T) {
 
 		spot, err := ctx.LightSource(RtToken("spotlight"), RtToken("coneangle"), RtInt(5))
 		So(spot, ShouldEqual, "0")
-		So(err, ErrorShouldEqual, `LightSource "spotlight" "0" "coneangle" 5`)
+		So(err, ErrorShouldEqual, `LightSource "spotlight" "0" "coneangle" [5]`)
 		ambient, err := ctx.LightSource(RtToken("ambientlight"), RtToken("lightcolor"), RtColor{.5, 0, 0}, RtToken("intensity"), RtFloat(.6))
-		So(err, ErrorShouldEqual, `LightSource "ambientlight" "1" "lightcolor" [.5 0 0] "intensity" .6`)
+		So(err, ErrorShouldEqual, `LightSource "ambientlight" "1" "lightcolor" [.5 0 0] "intensity" [.6]`)
 		So(ambient, ShouldEqual, "1")
 		So(spot, ShouldNotEqual, ambient)
 
 		So(ctx.Illuminate(spot, RtBoolean(true)), ErrorShouldEqual, `Illuminate "0" 1`)
 		So(ctx.Illuminate(ambient, RtBoolean(false)), ErrorShouldEqual, `Illuminate "1" 0`)
-		So(ctx.Surface("wood", RtToken("roughness"), RtFloat(0.3), RtToken("Kd"), RtFloat(1.0), RtToken("float ringwidth"), RtFloat(0.25)), ErrorShouldEqual, `Surface "wood" "roughness" .3 "Kd" 1 "float ringwidth" .25`)
+		So(ctx.Surface("wood", RtToken("roughness"), RtFloat(0.3), RtToken("Kd"), RtFloat(1.0), RtToken("float ringwidth"), RtFloat(0.25)), ErrorShouldEqual, `Surface "wood" "roughness" [.3] "Kd" [1] "float ringwidth" [.25]`)
 		So(ctx.Displacement("displaceit"), ErrorShouldEqual, `Displacement "displaceit"`)
 		So(ctx.Atmosphere("fog"), ErrorShouldEqual, `Atmosphere "fog"`)
 		So(ctx.Interior("water"), ErrorShouldEqual, `Interior "water"`)
@@ -77,3 +77,33 @@ func Test_Attributes(t *testing.T) {
 		So(ctx.End(), ErrorShouldEqual, `End`)
 	})
 }
+
+func Test_AttributesExample(t *testing.T) {
+
+	Convey("Attributes Example from pg. 74 of 'Advanced RenderMan'",t,func() {
+		ctx := NewTest()
+		So(ctx,ShouldNotBeNil)
+
+		ctx.Begin("attributes.rib")
+		ctx.AttributeBegin()
+		ctx.Comment("Hemispherical wooden dome in a dense fog")
+		ctx.Declare("density","uniform float")
+		ctx.Color(RtColor{.2,.45,.8})
+		ctx.Opacity(RtColor{1,1,1})
+		ctx.Sides(2)
+		ctx.ShadingRate(1.0)
+		ctx.Surface("paintedplastic",RtToken("texturename"),RtString("wood.tx"))
+		ctx.Atmosphere("myfog",RtToken("density"),RtFloat(1.48))
+		ctx.Sphere(1,0,1,360)
+		ctx.Disk(0,1,360)
+		ctx.AttributeEnd()
+		ctx.End()
+	})
+}
+
+
+
+
+
+
+

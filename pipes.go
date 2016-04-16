@@ -146,17 +146,19 @@ func (p *PipeToFile) Write(name RtName,args, list []Rter, info Info) *Result {
 	}
 
 	if name == "Begin" {
+		fmt.Printf("PipeToFile Write, name=Begin...\n")
 		if p.file != nil {
 			return InError(ErrProtocolBotch)
 		}
 		file := "out.rib"
-		if len(list) > 0 {
-			if t, ok := list[0].(RtString); ok {
+		if len(args) > 0 {
+			if t, ok := args[0].(RtString); ok {
 				file = string(t)
 			}
 		}
 
 		f, err := os.Create(file)
+		fmt.Printf("\tfile %s created\n",file)
 		if err != nil {
 			return InError(err)
 		}
@@ -173,6 +175,7 @@ func (p *PipeToFile) Write(name RtName,args, list []Rter, info Info) *Result {
 	}
 
 	if name == "End" {
+		fmt.Printf("FileToPipe Write, name=End, p.File=%v\n",p.file)
 		if p.file == nil {
 			return InError(ErrProtocolBotch)
 		}
@@ -187,14 +190,14 @@ func (p *PipeToFile) Write(name RtName,args, list []Rter, info Info) *Result {
 	}
 
 	if name == "Verbatim" {
-		if _, err := p.file.Write([]byte(Serialise(list) + "\n")); err != nil {
+		if _, err := p.file.Write([]byte(Serialise(args) + " " + Serialise(list) + "\n")); err != nil {
 			return InError(err)
 		}
 		return Done()
 	}
 
 	if name != "##" {
-
+	  /* TODO: change this to a configurable scheme, N-spaces or \t character etc */
 		prefix := ""
 		if info.PrettyPrint {
 			for i := 0; i < info.Depth; i++ {
@@ -202,13 +205,13 @@ func (p *PipeToFile) Write(name RtName,args, list []Rter, info Info) *Result {
 			}
 		}
 
-		if _, err := p.file.Write([]byte(prefix + name.Serialise() + " " + Serialise(list) + "\n")); err != nil {
+		if _, err := p.file.Write([]byte(prefix + name.Serialise() + " " + Serialise(args) + " " + Serialise(list) + "\n")); err != nil {
 			return InError(err)
 		}
 		return Done()
 	}
 
-	if _, err := p.file.Write([]byte("##" + Serialise(list) + "\n")); err != nil {
+	if _, err := p.file.Write([]byte("##" + Serialise(args) + " " + Serialise(list) + "\n")); err != nil {
 		return InError(err)
 	}
 	return Done()

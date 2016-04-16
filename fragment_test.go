@@ -51,8 +51,8 @@ func Test_ExampleOrangeBall(t *testing.T) {
 		fri.Identity()
 		fri.AttributeBegin()
 		fri.Color(RtColor{1.0,0.6,0.0})
-		fri.Surface("plastic",RtString("Ka"),RtFloat(1),RtString("Kd"),RtFloat(0.5),
-												  RtString("Ks"),RtFloat(1),RtString("roughness"),RtFloat(0.1))
+		fri.Surface("plastic",RtToken("Ka"),RtFloat(1),RtToken("Kd"),RtFloat(0.5),
+												  RtToken("Ks"),RtFloat(1),RtToken("roughness"),RtFloat(0.1))
 		fri.TransformBegin()
 		fri.Rotate(90,1,0,0)
 		fri.Sphere(1,-1,1,360)
@@ -60,7 +60,7 @@ func Test_ExampleOrangeBall(t *testing.T) {
 		fri.AttributeEnd()
 		fri.WorldEnd()
 
-		So(frag.Statements(),ShouldEqual,19)
+		So(frag.Statements(),ShouldEqual,18)
 
 		for frame := 1; frame <= 5; frame++ {
 			ctx.FrameBegin(RtInt(frame))

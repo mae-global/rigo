@@ -3,7 +3,50 @@ package ri
 import (
 	"fmt"
 	"strings"
+	"strconv"
 )
+
+/* FIXME */
+func ClassTypeNameCount(t RtToken) (RtToken,RtToken,RtToken,RtInt) {
+	p := strings.Split(strings.TrimSpace(string(t))," ")
+	if len(p) == 1 {
+		return "","",t,1
+	}
+	
+	count := 1
+
+	ty := RtToken("")
+
+	if len(p) == 2 { /* should be just type and name */
+		
+		ty = RtToken(p[0])
+
+		if strings.Contains(p[0],"[") && strings.Contains(p[0],"]") {
+
+			parts := strings.Split(p[0],"[")
+			out := strings.Replace(parts[1],"]","",-1)
+			if c,err := strconv.Atoi(out); err == nil {
+				count = c
+			}	
+			ty = RtToken(parts[0])		
+		}
+		return "",ty,RtToken(p[1]),RtInt(count)
+	}
+
+	ty = RtToken(p[1])
+
+	if strings.Contains(p[1],"[") && strings.Contains(p[1],"]") {
+		parts := strings.Split(p[1],"[")
+		out := strings.Replace(parts[1],"]","",-1)
+		if c,err := strconv.Atoi(out); err == nil {
+			count = c
+		}
+		ty = RtToken(parts[0])
+	}
+	return RtToken(p[0]),ty,RtToken(p[2]),RtInt(count)
+}
+
+
 
 func serialise(parameterlist ...Rter) (string, error) {
 	out := ""

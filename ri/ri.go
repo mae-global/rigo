@@ -7,6 +7,9 @@ import (
 	. "github.com/mae-global/rigo/ri/handles"
 )
 
+const USEDEBUG = false
+
+
 type Contexter interface {
 	Write(RtName, []Rter,[]Rter) error
 	OpenRaw(RtToken) (ArchiveWriter,error)
@@ -121,6 +124,7 @@ type Ri struct {
 	Contexter
 }
 
+
 func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	if r.Contexter == nil {
 		return ErrProtocolBotch
@@ -147,11 +151,53 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 		list = make([]Rter,len(parameterlist) - (para + 1))
 		copy(list,parameterlist[para + 1:])
 	}
+
+	nlist := make([]Rter,len(list))		
+
+	for i,r := range list {
+		ar := r		
+		if i % 2 == 0 {
+			t,ok := r.(RtToken)
+			if !ok {
+				return ErrBadArgument  			
+			}
 		
-	/* TODO: sanity check the parameterlist */
+			cl,ty,nam,n := ClassTypeNameCount(t)
+			/* TODO: parse token, lookup class and type then check inputs of values */
+			fmt.Printf("Debug,Ri.writef token, class=%s,type=%s,name=%s,count=%d\n",cl,ty,nam,n)
 
+		} else {
+			if a,ok := r.(RtString); ok {
+				ar = RtStringArray{a}
+				
+			}
+			if a,ok := r.(RtFloat); ok {
+				ar = RtFloatArray{a}
+			}
+			if a,ok := r.(RtInt); ok {
+				ar = RtIntArray{a}
+			}
+			if a,ok := r.(RtToken); ok {
+				ar = RtTokenArray{a}
+			}
+			if a,ok := r.(RtPoint); ok {
+				ar = RtPointArray{a}
+			}
+		}
 
-	return r.Write(name, args,list)
+		nlist[i] = ar
+	}
+
+	/* tokens to values is unbalanced */
+	if len(nlist) % 2 != 0 {
+		return ErrBadArgument 
+	}
+
+	if USEDEBUG && len(nlist) > 0  {
+		args = append(args,DEBUG)
+	}
+
+	return r.Write(name, args,nlist)
 }
 
 
