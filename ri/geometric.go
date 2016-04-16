@@ -4,7 +4,9 @@ package ri
 func (r *Ri) Polygon(nvertices RtInt, parameterlist ...Rter) error {
 
 	/* NOTE: we don't need nvertices in the RIB output */
-	return r.writef("Polygon", PARAMETERLIST,parameterlist...)
+	var out = []Rter{PARAMETERLIST}
+	out = append(out,parameterlist...)
+	return r.writef("Polygon", out...)
 }
 
 /* GeneralPolygon Define a general planar concave polygon with holes */

@@ -11,7 +11,9 @@ func (r *Ri) SubdivisionMesh(scheme RtToken, nfaces RtInt, nvertices, vertices R
 
 /* Points */
 func (r *Ri) Points(npoints RtInt, parameterlist ...Rter) error {
-	return r.writef("Points", PARAMETERLIST,parameterlist...)
+	var out = []Rter{PARAMETERLIST}
+	out = append(out,parameterlist...)
+	return r.writef("Points", out...)
 }
 
 /* Curves */

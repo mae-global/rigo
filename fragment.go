@@ -20,6 +20,7 @@ type Fragmenter interface {
 type FragmentStatement struct {
 	Name RtName
 	Args []Rter
+	List []Rter
 }
 	
 
@@ -40,14 +41,14 @@ func (f *Fragment) Replay(ctx Contexter) error {
 	defer f.mux.RUnlock()
 
 	for _,s := range f.statements {
-		if s.Name == "_depth" {
+		if s.Name == DEPTH {
 			if r,ok := s.Args[0].(RtInt); ok {
 				ctx.Depth(int(r))
 			}
 			continue
 		}
 
-		if err := ctx.Write(s.Name,s.Args); err != nil {
+		if err := ctx.Write(s.Name,s.Args,s.List); err != nil {
 			return err
 		}
 	}
@@ -62,14 +63,14 @@ func (f *Fragment) ReplayPartial(ctx Contexter,start,finish uint) error {
 	for _,s := range f.statements {
 		if count >= start && count < finish {
 
-			if s.Name == "_depth" {
+			if s.Name == DEPTH {
 				if r,ok := s.Args[0].(RtInt); ok {
 					ctx.Depth(int(r))
 				}
 				continue
 			}
 
-			if err := ctx.Write(s.Name,s.Args); err != nil {
+			if err := ctx.Write(s.Name,s.Args,s.List); err != nil {
 				return err
 			}
 
@@ -90,7 +91,7 @@ func (f *Fragment) Statements() uint {
 	var count uint
 	for _,s := range f.statements {
 		/* skip all the _depth statements */
-		if s.Name == "_depth" {
+		if s.Name == DEPTH {
 			continue
 		}
 		count++
@@ -102,11 +103,11 @@ func (f *Fragment) Statements() uint {
 
 
 
-func (f *Fragment) Write(name RtName, list []Rter) error {
+func (f *Fragment) Write(name RtName,args, list []Rter) error {
 	f.mux.Lock()
 	defer f.mux.Unlock()
 
-	f.statements = append(f.statements,FragmentStatement{Name:name,Args:list})
+	f.statements = append(f.statements,FragmentStatement{Name:name,Args:args,List:list})
 	return nil
 }
 
@@ -122,7 +123,7 @@ func (f *Fragment) CloseRaw(id RtToken) error {
 func (f *Fragment) Depth(d int) {
 	f.mux.Lock()
 	defer f.mux.Unlock()
-	f.statements = append(f.statements,FragmentStatement{Name:"_depth",Args:[]Rter{RtInt(d)}})
+	f.statements = append(f.statements,FragmentStatement{Name:DEPTH,Args:[]Rter{RtInt(d)}})
 }
 
 func (f *Fragment) LightHandle() (RtLightHandle,error) {

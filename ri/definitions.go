@@ -359,6 +359,7 @@ func (s RtAnnotation) Serialise() string {
 
 const (
 	PARAMETERLIST RtToken = "_PARAMETERLIST_"
+	DEPTH RtName = "_DEPTH_"
 )
 
 

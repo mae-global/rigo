@@ -49,10 +49,13 @@ func (b *TestContext) Write(name RtName,args,list []Rter) error {
 	if name != "ArchiveBegin" && b.raw != nil {
 		return ErrNotSupported
 	}
+	/* combine args and parameterlist */
+	args = append(args,list...)	
 	astr := Serialise(args)
-	str := Serialise(list)
-	
-	return fmt.Errorf("%s %s %s", name,astr,str)
+	if len(args) == 0 {
+		return fmt.Errorf("%s",name)
+	}
+	return fmt.Errorf("%s %s", name,astr)
 }
 
 func (b *TestContext) OpenRaw(id RtToken) (ArchiveWriter,error) {
@@ -123,25 +126,33 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 		return ErrProtocolBotch
 	}
 
-	args := make([]Rter,0)
-	list := make([]Rter,0)
-	para := false
+	para := -1
 	/* find the actual parameterlist */
-	for _,r := range parameterlist {
+	for i,r := range parameterlist {
 		if t,ok := r.(RtToken); ok {
 			if t == PARAMETERLIST {
-				para = true
-				continue
+				para = i
+				break
 			}
 		}
-		if para {
-			list = append(list,r)
-		} else {
-			args = append(args,r)
-		}
 	}
+	var args []Rter
+	var list []Rter
 
+	if para == -1 {
+		args = parameterlist
+	} else {
+		args = make([]Rter,para)
+		copy(args,parameterlist[:para])
+		list = make([]Rter,len(parameterlist) - (para + 1))
+		copy(list,parameterlist[para + 1:])
+	}
+		
 	/* TODO: sanity check the parameterlist */
 
-	return r.Write(name, args,parameterlist)
+
+	return r.Write(name, args,list)
 }
+
+
+

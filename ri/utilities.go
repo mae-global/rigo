@@ -2,6 +2,7 @@ package ri
 
 import (
 	"fmt"
+	"strings"
 )
 
 func serialise(parameterlist ...Rter) (string, error) {
@@ -55,7 +56,7 @@ func Serialise(list []Rter) string {
 			out += " "
 		}
 	}
-	return out
+	return strings.TrimSpace(out)
 }
 
 func reduce(f RtFloat) string {

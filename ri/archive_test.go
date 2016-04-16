@@ -3,6 +3,8 @@ package ri
 import (
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+
+	"fmt"
 )
 
 func Test_Archive(t *testing.T) {
@@ -13,6 +15,7 @@ func Test_Archive(t *testing.T) {
 		So(ctx, ShouldNotBeNil)
 
 		aw,err := ctx.ArchiveBegin("test")
+		fmt.Printf("err = [%s]\n",err)
 		So(err,ErrorShouldEqual, `ArchiveBegin "test"`)
 		So(aw,ShouldNotBeNil)
 

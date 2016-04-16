@@ -26,28 +26,29 @@ var (
 type Result struct {
 	Name RtName
 	Args []Rter
+	List []Rter
 	Info *Info
 	Err  error
 }
 
 func Done() *Result {
-	return &Result{"", nil, nil, ErrPipeDone}
+	return &Result{"", nil, nil,nil, ErrPipeDone}
 }
 
-func Next(name RtName, args []Rter, info Info) *Result {
-	return &Result{name, args, info.Copy(), nil}
+func Next(name RtName, args,list []Rter, info Info) *Result {
+	return &Result{name, args,list, info.Copy(), nil}
 }
 
 func InError(err error) *Result {
-	return &Result{"", nil, nil, err}
+	return &Result{"", nil, nil,nil, err}
 }
 
 func Errored(message RtString) *Result {
-	return &Result{"", nil, nil, fmt.Errorf(string(message))}
+	return &Result{"", nil, nil,nil, fmt.Errorf(string(message))}
 }
 
 func EndOfLine() *Result {
-	return &Result{"", nil, nil, ErrEndOfLine}
+	return &Result{"", nil, nil,nil, ErrEndOfLine}
 }
 
 type Pipe struct {
@@ -103,7 +104,7 @@ func (p *Pipe) GetByName(name string) Piper {
 	return nil
 }
 
-func (p *Pipe) Run(name RtName, list []Rter, info Info) error {
+func (p *Pipe) Run(name RtName, args,list []Rter, info Info) error {
 	p.Lock()
 	defer p.Unlock()
 
@@ -118,7 +119,7 @@ func (p *Pipe) Run(name RtName, list []Rter, info Info) error {
 			continue
 		}
 
-		r := b.Write(name, list, info)
+		r := b.Write(name, args,list, info)
 		if r.Err != nil {
 			if r.Err == ErrPipeDone {
 				nblocks = append(nblocks, b)
@@ -135,7 +136,10 @@ func (p *Pipe) Run(name RtName, list []Rter, info Info) error {
 
 		nblocks = append(nblocks, b)
 		if r.Args != nil {
-			list = r.Args
+			args = r.Args
+		}
+		if r.List != nil {
+			list = r.List
 		}
 	}
 
@@ -170,7 +174,7 @@ func NewPipe() *Pipe {
 }
 
 type Piper interface {
-	Write(RtName, []Rter, Info) *Result
+	Write(RtName, []Rter,[]Rter, Info) *Result
 	Name() string
 	ToRaw() ArchiveWriter
 }
@@ -219,13 +223,13 @@ type Context struct {
 	Info
 }
 
-func (ctx *Context) Write(name RtName, list []Rter) error {
+func (ctx *Context) Write(name RtName, args,list []Rter) error {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
 	if ctx.Formal {
 		name = name.Prefix("Ri")
 	}
-	return ctx.pipe.Run(name, list, ctx.Info)
+	return ctx.pipe.Run(name, args,list, ctx.Info)
 }
 
 func (ctx *Context) OpenRaw(id RtToken) (ArchiveWriter,error) {

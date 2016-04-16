@@ -11,6 +11,6 @@ func Test_Pipes(t *testing.T) {
 
 		pipe := DefaultFilePipe()
 		So(pipe, ShouldNotBeNil)
-		So(pipe.Run("foo", nil, Info{}), ShouldEqual, ErrNoActiveContext)
+		So(pipe.Run("foo", nil,nil, Info{}), ShouldEqual, ErrNoActiveContext)
 	})
 }

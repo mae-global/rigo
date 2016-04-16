@@ -24,7 +24,7 @@ func (r *Ri) ArchiveEnd(id RtToken) error {
 		return err
 	}
 
-	return r.writef("ArchiveEnd",id,PARAMETERLIST)
+	return r.writef("ArchiveEnd",id)
 }
 
 func (r *Ri) ArchiveInstance(id RtToken,parameterlist ...Rter) error {

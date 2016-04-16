@@ -35,7 +35,7 @@ func (p PipeTimer) Name() string {
 	return "default-pipe-timer"
 }
 
-func (p *PipeTimer) Write(name RtName, list []Rter, info Info) *Result {
+func (p *PipeTimer) Write(name RtName,args,list []Rter, info Info) *Result {
 	switch string(name) {
 	case "Begin", "RiBegin":
 		p.start = time.Now()
@@ -69,7 +69,7 @@ func (p PipeToStats) Name() string {
 	return "default-pipe-to-stats"
 }
 
-func (p *PipeToStats) Write(name RtName, list []Rter, info Info) *Result {
+func (p *PipeToStats) Write(name RtName,args, list []Rter, info Info) *Result {
 	if p.Stats == nil {
 		p.Stats = make(map[RtName]int, 0)
 	}
@@ -140,7 +140,7 @@ func (p PipeToFile) Name() string {
 	return "default-pipe-to-file"
 }
 
-func (p *PipeToFile) Write(name RtName, list []Rter, info Info) *Result {
+func (p *PipeToFile) Write(name RtName,args, list []Rter, info Info) *Result {
 	if info.Formal {
 		name = name.Trim("Ri")
 	}
@@ -227,33 +227,33 @@ func (p FilterStringHandles) Name() string {
 	return "default-filter-string-handles"
 }
 
-func (p *FilterStringHandles) Write(name RtName, list []Rter, info Info) *Result {
+func (p *FilterStringHandles) Write(name RtName,args, list []Rter, info Info) *Result {
 
 	/* TODO: add filter to only those proceedures the include light and object handles */
 		
-	args := make([]Rter,len(list))
+	args1 := make([]Rter,len(args))
 	
 	for i := 0; i < len(args); i ++ {
-		if lh,ok := list[i].(RtLightHandle); ok {
+		if lh,ok := args[i].(RtLightHandle); ok {
 			id,err := strconv.Atoi(string(lh))
 			if err != nil {
 				return InError(err)
 			}
-			args[i] = RtInt(id)
+			args1[i] = RtInt(id)
 			continue
 		} 
-		if oh,ok := list[i].(RtObjectHandle); ok {
+		if oh,ok := args[i].(RtObjectHandle); ok {
 			id,err := strconv.Atoi(string(oh))
 			if err != nil {
 				return InError(err)
 			}
-			args[i] = RtInt(id)
+			args1[i] = RtInt(id)
 			continue
 		}
-		args[i] = list[i]
+		args1[i] = args[i]
 	}
 
-	return Next(name, args, info)
+	return Next(name, args1,list, info)
 }
 
 
