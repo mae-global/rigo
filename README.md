@@ -32,7 +32,7 @@ func (t *MyTimer) Took() time.Duration {
 	return t.finish.Sub(t.start)
 }
 
-func (t *MyTimer) Write(name RtName,list []Rter,info Info) *Result {
+func (t *MyTimer) Write(name RtName,args,list []Rter,info Info) *Result {
 	switch string(name) {
 		case "Begin","RiBegin":
 			t.start = time.Now()
@@ -322,7 +322,6 @@ WorldBegin
 	Sphere 1 -1 1 360
 WorldEnd 
 ```
-
 
 
 ##Roadmap
