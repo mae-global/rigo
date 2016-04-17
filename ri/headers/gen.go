@@ -129,7 +129,7 @@ const Template = `/* machine generated
 
 package {{.Name}}
 
-const Version RtInt = {{.Ri.Version}}
+const Version RtFloat = 3.04
 
 const (
 {{range $token := .Ri.Tokens}}{{$token | Token}} RtToken = "{{$token | Value}}"

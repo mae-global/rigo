@@ -1,13 +1,13 @@
 /* machine generated
  * build tool version 0
- * generated on 2016-04-17 11:03:34.494308063 +0000 UTC
+ * generated on 2016-04-17 11:31:24.5320691 +0000 UTC
  * source /opt/pixar/RenderManProServer-20.8/include/ri.h
  * RiVersion 5
  */
 
 package ri
 
-const Version RtInt = 5
+const Version RtFloat = 3.04
 
 const (
 	A                                  RtToken = "a"
