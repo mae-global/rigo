@@ -21,9 +21,9 @@ func Test_Patches(t *testing.T) {
 		points = append(points, RtPoint{0, 1, 1})
 		points = append(points, RtPoint{0, 0, 1})
 		points = append(points, RtPoint{0, 0, 0})
-		So(ctx.Patch(Bilinear, RtToken("P"), RtPointArray(points)), ErrorShouldEqual, `Patch "bilinear" "P" [0 1 0 0 1 1 0 0 1 0 0 0]`)
+		So(ctx.Patch(BILINEAR, RtToken("P"), RtPointArray(points)), ErrorShouldEqual, `Patch "bilinear" "P" [0 1 0 0 1 1 0 0 1 0 0 0]`)
 
-		So(ctx.PatchMesh(Bicubic, 7, "nonperiodic", 4, "nonperiodic", RtToken("P"), RtPointArray(points)), ErrorShouldEqual, `PatchMesh "bicubic" 7 "nonperiodic" 4 "nonperiodic" "P" [0 1 0 0 1 1 0 0 1 0 0 0]`)
+		So(ctx.PatchMesh(BICUBIC, 7, "nonperiodic", 4, "nonperiodic", RtToken("P"), RtPointArray(points)), ErrorShouldEqual, `PatchMesh "bicubic" 7 "nonperiodic" 4 "nonperiodic" "P" [0 1 0 0 1 1 0 0 1 0 0 0]`)
 		So(ctx.NuPatch(9, 3, RtFloatArray{0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4}, 0, 4, 2, 2, RtFloatArray{0, 0, 1, 1}, 0, 1), ErrorShouldEqual, `NuPatch 9 3 [0 0 0 1 1 2 2 3 3 4 4 4] 0 4 2 2 [0 0 1 1] 0 1`)
 
 		So(ctx.End(), ErrorShouldEqual, `End`)

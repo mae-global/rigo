@@ -194,7 +194,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	}
 
 	if USEDEBUG && len(nlist) > 0  {
-		args = append(args,DEBUG)
+		args = append(args,DEBUGBARRIER)
 	}
 
 	return r.Write(name, args,nlist)

@@ -362,8 +362,9 @@ func (s RtAnnotation) Serialise() string {
 const (
 	PARAMETERLIST RtToken = "_PARAMETERLIST_"
 	DEPTH RtName = "_DEPTH_"
-	DEBUG RtName = "-->"
+	DEBUGBARRIER RtName = "-->"
 )
+
 
 
 const (
@@ -374,31 +375,13 @@ const (
 	SincFilter       RtFilterFunc = "sinc"
 
 	ReadArchiveCallback RtArchiveCallbackFunc = "ReadArchive"
-
-	Perspective  RtToken = "perspective"
-	Orthographic RtToken = "orthographic"
-	Bilinear     RtToken = "bilinear"
-	Bicubic      RtToken = "bicubic"
-	RGBA         RtToken = "RGBA"
-	P            RtToken = "P"
-	Pz           RtToken = "Pz"
-	Pw           RtToken = "Pw"
-	N            RtToken = "N"
-	Cs           RtToken = "Cs"
-	Os           RtToken = "Os"
-
+	
 	Uniform			 RtToken = "uniform"
 	Vertex       RtToken = "vertex"
 	Varying			 RtToken = "varying"
-	Constant     RtToken = "constant"
-	
-	Color				 RtToken = "color"
-	Float        RtToken = "float"
-	Normal       RtToken = "normal"
-	Point        RtToken = "point"
-	Hpoint       RtToken = "hpoint"
-	/* TODO: finish... */
 
+	
+	
 
 	ProcDelayedReadArchive RtProcSubdivFunc = "DelayedReadArchive"
 	ProcRunProgram         RtProcSubdivFunc = "RunProgram"

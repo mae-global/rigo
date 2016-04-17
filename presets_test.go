@@ -21,7 +21,7 @@ func Test_Presets(t *testing.T) {
 			ctx.Begin("output/strict/simple.rib")
 			ctx.Display("sphere.tif","file","rgb")
 			ctx.Format(320,240,1)
-			ctx.Projection(Perspective,RtString("fov"),RtFloat(30))
+			ctx.Projection(PERSPECTIVE,RtString("fov"),RtFloat(30))
 			ctx.Translate(0,0,6)
 			ctx.WorldBegin()
 			ctx.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))

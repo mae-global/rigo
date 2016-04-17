@@ -41,9 +41,9 @@ func Test_Utilities(t *testing.T) {
 
 		Convey("ClassTypeNameCount",func() {
 			c,t,n,count := ClassTypeNameCount("varying float[2] st")
-			So(c,ShouldEqual,Varying)
-			So(t,ShouldEqual,Float)
-			So(n,ShouldEqual,RtToken("st"))
+			So(c,ShouldEqual,RtToken("varying"))
+			So(t,ShouldEqual,RtToken("float"))
+			So(n,ShouldEqual,ST)
 			So(count,ShouldEqual,2)
 		})
 

@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	Version = "0"
-	Author  = "rigo"
+	Author RtToken = "RiGO;ver 0"
 )
+
 
 var (
 	ErrInvalidContextHandle = fmt.Errorf("Invalid Context Handle")

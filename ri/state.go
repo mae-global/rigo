@@ -1,7 +1,10 @@
 package ri
 
 func (r *Ri) Begin(name RtString) error {
-	return r.writef("Begin", name)
+	if err := r.writef("Begin", name); err != nil {
+		return err
+	}
+	return r.writef("version",Version)
 }
 
 func (r *Ri) End() error {

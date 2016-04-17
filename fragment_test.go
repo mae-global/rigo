@@ -24,7 +24,7 @@ func Test_ExampleOrangeBall(t *testing.T) {
 		ctx := New(pipe,&Configuration{PrettyPrint:true})
 		ctx.Begin("output/exampleOrangeBall.rib")
 		ctx.ArchiveRecord("structure","Scene Orange Ball")
-		ctx.ArchiveRecord("structure","Creator %s-%s",Author,Version)
+		ctx.ArchiveRecord("structure","Creator %s",Author)
 		ctx.ArchiveRecord("structure","CreationDate %s",time.Now())
 		ctx.ArchiveRecord("structure","For %s",cuser.Username)
 		ctx.ArchiveRecord("structure","Frames 5")
@@ -41,7 +41,7 @@ func Test_ExampleOrangeBall(t *testing.T) {
 
 		fri.Format(640,480,-1)
 		fri.ShadingRate(1)
-		fri.Projection(Perspective,RtString("fov"),RtInt(30))
+		fri.Projection(PERSPECTIVE,RtString("fov"),RtInt(30))
 		fri.FrameAspectRatio(1.33)
 		fri.Identity()
 		fri.LightSource("distantlight")
