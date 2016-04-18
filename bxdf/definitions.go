@@ -5,8 +5,33 @@ import (
 )
 /* https://renderman.pixar.com/resources/current/RenderMan/devExamples.html */
 
+type Widget interface {
+	Name() RtToken
+	NameSpec() RtToken
+	Label() RtString
+	SetValue(value Rter) error
+	GetValue() Rter
+	Help() RtString
+	Bounds() (Rter,Rter) /* min anbd max if set */
+	Default() error
+
+	Next() Widget
+	Prev() Widget
+}
+
 type Bxdfer interface {
-	Write(*Ri) error 
+	Write() []Rter
+	Name() RtToken
+	NodeId() RtToken
+	Classifiation() RtString
+	
+	Widget(name RtToken) Widget 
+
+	Names() []RtToken
+	NamesSpec() []RtToken
+
+	SetValue(name RtToken,value Rter) error 
+	Value(name RtToken) Rter
 }
 
 

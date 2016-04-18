@@ -14,6 +14,10 @@ import (
  * note -- updated to string handles [Siggraph 2009 course 9; Byron Bashforth] */
 type RtLightHandle string
 
+func (l RtLightHandle) Type() string {
+	return "lighthandle"
+}
+
 func (l RtLightHandle) String() string {
 	return l.Serialise()
 }
@@ -31,6 +35,10 @@ type LightHandler interface {
 /* RtObjectHandle 
  * note -- updated to string handles [Siggraph 2009 course 9; Byron Bashforth] */
 type RtObjectHandle string
+
+func (l RtObjectHandle) Type() string {
+	return "objecthandle"
+}
 
 func (l RtObjectHandle) String() string {
 	return l.Serialise()

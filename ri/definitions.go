@@ -17,11 +17,16 @@ const (
 type Rter interface {
 	String() string
 	Serialise() string
+	Type() string
 }
 
 
 /* RtName internal use for RIB command names */
 type RtName string
+
+func (s RtName) Type() string {
+	return "name"
+}
 
 func (s RtName) String() string {
 	return s.Serialise()
@@ -42,6 +47,10 @@ func (s RtName) Trim(pre string) RtName {
 /* RtBoolean boolean value */
 type RtBoolean bool
 
+func (s RtBoolean) Type() string {
+	return "boolean"
+}
+
 func (s RtBoolean) String() string {
 	return s.Serialise()
 }
@@ -56,6 +65,10 @@ func (s RtBoolean) Serialise() string {
 /* RtInt integer value */
 type RtInt int
 
+func (i RtInt) Type() string {
+	return "int"
+}
+
 func (i RtInt) String() string {
 	return i.Serialise()
 }
@@ -66,6 +79,10 @@ func (i RtInt) Serialise() string {
 
 /* RtIntArray integer array */
 type RtIntArray []RtInt
+
+func (a RtIntArray) Type() string {
+	return "[]int"
+}
 
 func (a RtIntArray) String() string {
 	return a.Serialise()
@@ -85,6 +102,10 @@ func (a RtIntArray) Serialise() string {
 /* RtFloat float64 value */
 type RtFloat float64
 
+func (f RtFloat) Type() string {
+	return "float"
+}
+
 func (f RtFloat) String() string {
 	return f.Serialise()
 }
@@ -95,6 +116,10 @@ func (f RtFloat) Serialise() string {
 
 /* RtFloatArray float64 array */
 type RtFloatArray []RtFloat
+
+func (a RtFloatArray) Type() string {
+	return "[]float"
+}
 
 func (a RtFloatArray) String() string {
 	return a.Serialise()
@@ -114,6 +139,10 @@ func (a RtFloatArray) Serialise() string {
 /* RtToken */
 type RtToken string
 
+func (s RtToken) Type() string {
+	return "token"
+}
+
 func (s RtToken) String() string {
 	return s.Serialise()
 }
@@ -126,6 +155,10 @@ func (s RtToken) Serialise() string {
 
 /* RtToken array */
 type RtTokenArray []RtToken
+
+func (a RtTokenArray) Type() string {
+	return "[]token"
+}
 
 func (a RtTokenArray) String() string {
 	return a.Serialise()
@@ -145,6 +178,10 @@ func (a RtTokenArray) Serialise() string {
 /* RtColor implemented as an array */
 type RtColor []RtFloat
 
+func (c RtColor) Type() string {
+	return "color"
+}
+
 func (c RtColor) String() string {
 	return c.Serialise()
 }
@@ -160,8 +197,24 @@ func (c RtColor) Serialise() string {
 	return fmt.Sprintf("[%s]", out)
 }
 
+func (c RtColor) Equal(o RtColor) bool {
+	if len(c) != len(o) {
+		return false
+	}
+	for i := 0; i < len(c); i++ {
+		if c[i] != o[i] {
+			return false
+		}
+	}
+	return true
+}
+
 /* RtPoint */
 type RtPoint [3]RtFloat
+
+func (p RtPoint) Type() string {
+	return "point"
+}
 
 func (p RtPoint) String() string {
 	return p.Serialise()
@@ -173,6 +226,10 @@ func (p RtPoint) Serialise() string {
 
 /* RtPointArray */
 type RtPointArray []RtPoint
+
+func (p RtPointArray) Type() string {
+	return "[]point"
+}
 
 func (p RtPointArray) String() string {
 	return p.Serialise()
@@ -192,6 +249,10 @@ func (p RtPointArray) Serialise() string {
 /* RtVector */
 type RtVector [3]RtFloat
 
+func (v RtVector) Type() string {
+	return "vector"
+}
+
 func (v RtVector) String() string {
 	return v.Serialise()
 }
@@ -202,6 +263,10 @@ func (v RtVector) Serialise() string {
 
 /* RtNormal */
 type RtNormal [3]RtFloat
+
+func (n RtNormal) Type() string {
+	return "normal"
+}
 
 func (n RtNormal) String() string {
 	return n.Serialise()
@@ -214,6 +279,10 @@ func (n RtNormal) Serialise() string {
 /* RtHpoint */
 type RtHpoint [4]RtFloat
 
+func (h RtHpoint) Type() string {
+	return "hpoint"
+}
+
 func (h RtHpoint) String() string {
 	return h.Serialise()
 }
@@ -224,6 +293,10 @@ func (h RtHpoint) Serialise() string {
 
 /* RtMatrix */
 type RtMatrix [16]RtFloat
+
+func (m RtMatrix) Type() string {
+	return "matrix"
+}
 
 func (m RtMatrix) String() string {
 	return m.Serialise()
@@ -244,6 +317,10 @@ func (m RtMatrix) Serialise() string {
 /* RtBasis */
 type RtBasis [16]RtFloat
 
+func (m RtBasis) Type() string {
+	return "basis"
+}
+
 func (m RtBasis) String() string {
 	return m.Serialise()
 }
@@ -262,6 +339,10 @@ func (b RtBasis) Serialise() string {
 /* RtBound */
 type RtBound [6]RtFloat
 
+func (b RtBound) Type() string {
+	return "bound"
+}
+
 func (b RtBound) String() string {
 	return b.Serialise()
 }
@@ -273,6 +354,10 @@ func (b RtBound) Serialise() string {
 /* RtString */
 type RtString string
 
+func (s RtString) Type() string {
+	return "string"
+}
+
 func (s RtString) String() string {
 	return s.Serialise()
 }
@@ -283,6 +368,10 @@ func (s RtString) Serialise() string {
 
 /* RtStringArray array of strings */
 type RtStringArray []RtString
+
+func (a RtStringArray) Type() string {
+	return "[]string"
+}
 
 func (a RtStringArray) String() string {
 	return a.Serialise()
@@ -304,6 +393,10 @@ func (a RtStringArray) Serialise() string {
 /* RtFilterFunc */
 type RtFilterFunc string
 
+func (s RtFilterFunc) Type() string {
+	return "filterfunc"
+}
+
 func (s RtFilterFunc) String() string {
 	return s.Serialise()
 }
@@ -314,6 +407,10 @@ func (s RtFilterFunc) Serialise() string {
 
 /* RtProcSubdivFunc subdivision function */
 type RtProcSubdivFunc string
+
+func (s RtProcSubdivFunc) Type() string {
+	return "procsubdivfunc"
+}
 
 func (s RtProcSubdivFunc) String() string {
 	return s.Serialise()
@@ -326,6 +423,10 @@ func (s RtProcSubdivFunc) Serialise() string {
 /* RtProcFreeFunc */
 type RtProcFreeFunc string
 
+func (s RtProcFreeFunc) Type() string {
+	return "procfreefunc"
+}
+
 func (s RtProcFreeFunc) String() string {
 	return s.Serialise()
 }
@@ -337,6 +438,10 @@ func (s RtProcFreeFunc) Serialise() string {
 /* RtArchiveCallbackFunc */
 type RtArchiveCallbackFunc string
 
+func (s RtArchiveCallbackFunc) Type() string {
+	return "archivecallbackfunc"
+}
+
 func (s RtArchiveCallbackFunc) String() string {
 	return s.Serialise()
 }
@@ -347,6 +452,10 @@ func (s RtArchiveCallbackFunc) Serialise() string {
 
 /* RtAnnotation (TODO: move this to RtxAnnotation as it does not belong in the Ri spec.) */
 type RtAnnotation string
+
+func (s RtAnnotation) Type() string {
+	return "annotation"
+}
 
 func (s RtAnnotation) String() string {
 	return s.Serialise()
