@@ -285,6 +285,29 @@ func (v RtVector) Serialise() string {
 	return fmt.Sprintf("[%s %s %s]", reduce(v[0]), reduce(v[1]), reduce(v[2]))
 }
 
+func Str2Vector(str string) RtVector {
+ 
+	parts := strings.Split(strings.TrimSpace(str)," ")
+
+	if len(parts) != 3 {
+		return RtVector{0,0,0}
+	}
+	out := RtVector{0,0,0}
+
+	for i,part := range parts {
+		if f,err := strconv.ParseFloat(part,64); err != nil {
+			/* eat error */
+			continue
+		} else {
+			out[i] = RtFloat(f)
+		}
+	}
+
+	return out
+}		
+
+	
+
 /* RtNormal */
 type RtNormal [3]RtFloat
 

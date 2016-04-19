@@ -162,6 +162,15 @@ func Test_Parser(t *testing.T) {
 			cycle = false
 		}
 	})
+
+	Convey("Parse All",t,func() {
+
+		all,err := ParseArgsDir()
+		So(err,ShouldBeNil)
+		So(all,ShouldNotBeNil)
+
+		fmt.Printf("parsed %d *.args\n",len(all))
+	})
 }
 
 

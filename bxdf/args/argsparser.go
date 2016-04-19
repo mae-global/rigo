@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"io/ioutil"
 	"os"
+	"path"
 
 	. "github.com/mae-global/rigo/ri"
 	. "github.com/mae-global/rigo/bxdf"
@@ -194,7 +195,30 @@ func Parse(name string,data []byte) (Bxdfer,error) {
 				if len(param.Max) > 0 {
 					max = Str2Normal(param.Max)
 				}
-			break			
+			break		
+			case "vector":
+				def = RtVector{0,0,0}
+				min = RtVector{0,0,0}
+				max = RtVector{0,0,0}
+
+				if len(param.Default) > 0 {
+					def = Str2Vector(param.Default)
+				}
+				if len(param.Min) > 0 {
+					min = Str2Vector(param.Min)
+				}
+				if len(param.Max) > 0 {
+					max = Str2Vector(param.Max)
+				}
+			break
+			case "string":
+				def = RtString(param.Default)
+				min = RtString(param.Min)
+				max = RtString(param.Max)
+			break
+			case "struct": /* FIXME, don't know how to handle this type ? */
+				continue
+			break	
 			default:
 				return nil,fmt.Errorf("Unknown Type %s=[%s]",param.Name,param.Type)
 			break
@@ -231,6 +255,49 @@ func ParseArgsFile(name string) (Bxdfer,error) {
 	return Parse(name,file)
 }
 
+func ParseArgsDir() ([]Bxdfer,error) {
+
+	rmantree := os.Getenv("RMANTREE")
+	if len(rmantree) == 0 {
+		return nil,fmt.Errorf("is RMANTREE set?")
+	}
+
+	root := rmantree + "/lib/RIS/bxdf/Args/"
+
+	files, err := ioutil.ReadDir(root)
+	if err != nil {
+		return nil,err
+	}
+
+	list := make([]Bxdfer,0)
+
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+
+		ext := path.Ext(file.Name())
+		if ext != ".args" {
+			continue
+		}
+
+		name := strings.TrimSuffix(file.Name(),ext)
+
+		content,err := ioutil.ReadFile(root + file.Name())
+		if err != nil {
+			return nil,err
+		}
+
+		bxdf,err := Parse(name,content)
+		if err != nil {
+			return nil,err
+		}			
+
+		list = append(list,bxdf)		
+	}
+	
+	return list,nil
+}
 
 
 
