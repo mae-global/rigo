@@ -21,6 +21,10 @@ type Rter interface {
 	Type() string
 }
 
+type RterWriter interface {
+	Write() (RtName,[]Rter,[]Rter)
+}
+
 
 /* RtName internal use for RIB command names */
 type RtName string

@@ -124,6 +124,21 @@ type Ri struct {
 	Contexter
 }
 
+/* User special func for client libraries to write to */
+func (r *Ri) User(w RterWriter) error {
+	if w == nil {
+		return ErrBadArgument
+	}
+
+	name,args,params := w.Write() 
+	out := make([]Rter,len(args))
+	copy(out,args)
+	out = append(out,PARAMETERLIST)
+	out = append(out,params...)
+
+	return r.writef(name,out...)
+}
+	
 
 func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	if r.Contexter == nil {

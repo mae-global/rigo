@@ -20,7 +20,7 @@ type Widget interface {
 }
 
 type Bxdfer interface {
-	Write() []Rter
+	Write() (RtName,[]Rter,[]Rter)
 	Name() RtToken
 	NodeId() RtToken
 	Classifiation() RtString
@@ -33,9 +33,7 @@ type Bxdfer interface {
 	NamesSpec() []RtToken
 
 	SetValue(name RtToken,value Rter) error 
-	Value(name RtToken) Rter
-
-	
+	Value(name RtToken) Rter	
 }
 
 

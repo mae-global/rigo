@@ -14,7 +14,7 @@ func Test_Parser(t *testing.T) {
 
 	Convey("Parser",t,func() {
 
-		args,err := ParseArgs([]byte(constant_args))
+		args,err := ParseArgsXML([]byte(constant_args))
 		So(err,ShouldBeNil)
 		So(args,ShouldNotBeNil)
 
@@ -111,16 +111,25 @@ func Test_Parser(t *testing.T) {
 
 	Convey("Parse PxrConstant.args",t,func() {
 
-		constant,err := ParseArgsFile("PxrConstant")
+		constant,err := ParseFile("","PxrConstant")
 		So(err,ShouldBeNil)
 		So(constant,ShouldNotBeNil)
 		names := constant.Names()
 		So(len(names),ShouldEqual,2)
+
+		name,args,params := constant.Write()
+		So(name,ShouldEqual,RtName("Bxdf"))
+		So(len(args),ShouldEqual,1)
+		So(len(params),ShouldEqual,len(names) * 2)
+
+		So(Serialise(args),ShouldEqual,`"pxrConstant"`)
+		So(Serialise(params),ShouldEqual,`"emitColor" [1 1 1] "presence" 1`)
+
 	})
 
 	Convey("Parse PxrDiffuse.args",t,func() {
 
-		diffuse,err := ParseArgsFile("PxrDiffuse")
+		diffuse,err := ParseFile("","PxrDiffuse")
 		So(err,ShouldBeNil)
 		So(diffuse,ShouldNotBeNil)
 
@@ -135,7 +144,7 @@ func Test_Parser(t *testing.T) {
 
 	Convey("Parse PxrDisney.args",t,func() {
 		
-		disney,err := ParseArgsFile("PxrDisney")
+		disney,err := ParseFile("","PxrDisney")
 		So(err,ShouldBeNil)
 		So(disney,ShouldNotBeNil)
 
@@ -163,9 +172,21 @@ func Test_Parser(t *testing.T) {
 		}
 	})
 
+	Convey("Parse Some Args, Disney, Constant and Diffuse",t,func() {
+
+		some,err := ParseFiles("","PxrDisney","PxrConstant","PxrDiffuse")
+		So(err,ShouldBeNil)
+		So(some,ShouldNotBeNil)
+		So(len(some),ShouldEqual,3)
+
+		So(some[0].Name(),ShouldEqual,"PxrDisney")
+		So(some[1].Name(),ShouldEqual,"PxrConstant")
+		So(some[2].Name(),ShouldEqual,"PxrDiffuse")
+	})
+
 	Convey("Parse All",t,func() {
 
-		all,err := ParseArgsDir()
+		all,err := ParseDir("")
 		So(err,ShouldBeNil)
 		So(all,ShouldNotBeNil)
 

@@ -3,6 +3,8 @@ package bxdf
 import (
 	"sync"
 	"fmt"
+	"strings"
+
 	. "github.com/mae-global/rigo/ri"
 )
 
@@ -55,8 +57,26 @@ func (g *GeneralBxdf) AddParam(p *Param) error {
 }		
 
 
-func (g *GeneralBxdf) Write() []Rter {
-	return nil
+func (g *GeneralBxdf) Write() (RtName,[]Rter,[]Rter) {
+
+	args := make([]Rter,0)
+	params := make([]Rter,0)
+
+	n := strings.ToLower(string(g.name))
+	name := string(n[0]) + string(g.name[1:])
+	
+	args = append(args,RtToken(name))
+
+	for _,param := range g.params {
+		param.RLock()
+
+		params = append(params,param.Name)
+		params = append(params,param.Value)
+
+		param.RUnlock()
+	}
+
+	return RtName("Bxdf"),args,params
 }
 
 func (g *GeneralBxdf) Name() RtToken {

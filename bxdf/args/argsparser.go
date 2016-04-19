@@ -16,6 +16,10 @@ import (
 	. "github.com/mae-global/rigo/bxdf"
 )
 
+const (
+	DefaultArgsSubPath = "/lib/RIS/bxdf/Args/"
+)
+
 type ArgsTag struct {
 	XMLName xml.Name `xml:"tag"`
 	Value string `xml:"value,attr"`
@@ -86,7 +90,7 @@ type Args struct {
 
 
 /* This is the test parser */
-func ParseArgs(data []byte) (*Args,error) {
+func ParseArgsXML(data []byte) (*Args,error) {
 
 	var a Args 
 	if err := xml.Unmarshal(data,&a); err != nil {
@@ -97,7 +101,7 @@ func ParseArgs(data []byte) (*Args,error) {
 
 func Parse(name string,data []byte) (Bxdfer,error) {
 
-	args,err := ParseArgs(data)
+	args,err := ParseArgsXML(data)
 	if err != nil {
 		return nil,err
 	}
@@ -240,14 +244,19 @@ func Parse(name string,data []byte) (Bxdfer,error) {
 	return general,nil
 }
 
-func ParseArgsFile(name string) (Bxdfer,error) {
-
-	rmantree := os.Getenv("RMANTREE")
+/* ParseFile */
+func ParseFile(root,name string) (Bxdfer,error) {
+	
+	if root == "" {
+		root = "RMANTREE"
+	}	
+	
+	rmantree := os.Getenv(root)
 	if len(rmantree) == 0 {
-		return nil,fmt.Errorf("is RMANTREE set?")
+		return nil,fmt.Errorf("is \"%s\" set?",root)
 	}
 
-	file,err := ioutil.ReadFile(rmantree + "/lib/RIS/bxdf/Args/" + name + ".args")
+	file,err := ioutil.ReadFile(rmantree + DefaultArgsSubPath + name + ".args")
 	if err != nil {
 		return nil,err
 	}
@@ -255,16 +264,64 @@ func ParseArgsFile(name string) (Bxdfer,error) {
 	return Parse(name,file)
 }
 
-func ParseArgsDir() ([]Bxdfer,error) {
+/* ParseFileAbs */
+func ParseFileAbs(filepath string) (Bxdfer,error) {
 
-	rmantree := os.Getenv("RMANTREE")
-	if len(rmantree) == 0 {
-		return nil,fmt.Errorf("is RMANTREE set?")
+	ext := path.Ext(filepath)
+	name := strings.TrimSuffix(filepath,ext)
+
+	content,err := ioutil.ReadFile(filepath)
+	if err != nil {
+		return nil,err
 	}
 
-	root := rmantree + "/lib/RIS/bxdf/Args/"
+	return Parse(name,content)
+}
 
-	files, err := ioutil.ReadDir(root)
+/* ParseFiles */
+func ParseFiles(root string,names... string) ([]Bxdfer,error) {
+
+	if root == "" {
+		root = "RMANTREE"
+	}
+
+	rmantree := os.Getenv(root)
+	if len(rmantree) == 0 {
+		return nil,fmt.Errorf("is \"%s\" set?",root)
+	}
+
+	out := make([]Bxdfer,0)
+
+	for _,name := range names {
+		file,err := ioutil.ReadFile(rmantree + DefaultArgsSubPath + name + ".args")
+		if err != nil {
+			return nil,err
+		}
+
+		b,err := Parse(name,file)
+		if err != nil {
+			return nil,err
+		}
+		out = append(out,b)
+	}
+	return out,nil
+}
+
+/* ParseDir */
+func ParseDir(root string) ([]Bxdfer,error) {
+	
+	if root == "" {
+		root = "RMANTREE"
+	}
+
+	rmantree := os.Getenv(root)
+	if len(rmantree) == 0 {
+		return nil,fmt.Errorf("is \"%s\" set?",root)
+	}
+
+	from := rmantree + DefaultArgsSubPath
+
+	files, err := ioutil.ReadDir(from)
 	if err != nil {
 		return nil,err
 	}
@@ -283,7 +340,7 @@ func ParseArgsDir() ([]Bxdfer,error) {
 
 		name := strings.TrimSuffix(file.Name(),ext)
 
-		content,err := ioutil.ReadFile(root + file.Name())
+		content,err := ioutil.ReadFile(from + file.Name())
 		if err != nil {
 			return nil,err
 		}
@@ -298,7 +355,6 @@ func ParseArgsDir() ([]Bxdfer,error) {
 	
 	return list,nil
 }
-
 
 
 
