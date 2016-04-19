@@ -124,6 +124,21 @@ func (g *GeneralBxdf) Widget(name RtToken) Widget {
 	return w
 }
 
+func (g *GeneralBxdf) FirstWidget() Widget {
+	if len(g.params) == 0 {
+		return nil
+	}
+	return g.Widget(g.params[0].Name)
+}
+
+func (g *GeneralBxdf) LastWidget() Widget {
+	if len(g.params) == 0 {
+		return nil
+	}
+	return g.Widget(g.params[len(g.params) - 1].Name)
+}
+	
+
 func (g *GeneralBxdf) Names() []RtToken {
 	names := make([]RtToken,len(g.params))
 	for i,param := range g.params {

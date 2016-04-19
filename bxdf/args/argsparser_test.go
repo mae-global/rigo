@@ -6,6 +6,7 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 
 	. "github.com/mae-global/rigo/ri"
+	. "github.com/mae-global/rigo/bxdf"
 	
 )
 
@@ -130,6 +131,36 @@ func Test_Parser(t *testing.T) {
 		So(wn,ShouldNotBeNil)
 		So(wn.Value(),ShouldEqual,RtNormal{0,0,0})
 
+	})
+
+	Convey("Parse PxrDisney.args",t,func() {
+		
+		disney,err := ParseArgsFile("PxrDisney")
+		So(err,ShouldBeNil)
+		So(disney,ShouldNotBeNil)
+
+		w := disney.Widget("metallic")
+		So(w,ShouldNotBeNil)
+		wf,ok := w.(*RtFloatWidget)
+		So(ok,ShouldBeTrue)
+		So(wf,ShouldNotBeNil)
+		So(wf.Value(),ShouldEqual,RtFloat(0))
+
+		w = disney.FirstWidget()
+		So(w,ShouldNotBeNil)
+		first := w.Name()
+		cycle := true
+
+		for {
+			if w.Name() == first && !cycle {
+				break
+			}
+			
+			fmt.Printf("w [%s] name = %s val = %v\n",w.Label(),w.Name(),w.GetValue())
+
+			w = w.Next()
+			cycle = false
+		}
 	})
 }
 

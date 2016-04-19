@@ -101,14 +101,9 @@ func Parse(name string,data []byte) (Bxdfer,error) {
 		return nil,err
 	}
 
-	general := &GeneralBxdf{}
-	general.name = RtToken(name)
-	general.nodeid = RtToken(args.Rfmdata.NodeId)
-	general.classification = RtString(args.Rfmdata.Classification)
-	general.params = make([]Param,len(args.Params))
-	general.values = make(map[RtToken]Rter,0)
-
-	for i,param := range args.Params {
+	general := NewGeneralBxdf(RtToken(name),RtToken(args.Rfmdata.NodeId),RtString(args.Rfmdata.Classification))
+	
+	for _,param := range args.Params {
 
 		var def Rter
 		var min Rter
@@ -205,15 +200,16 @@ func Parse(name string,data []byte) (Bxdfer,error) {
 			break
 		}
 
+		param := &Param{Label:RtString(param.Label),
+													Name:RtToken(param.Name),
+													Type:RtToken(param.Type),
+													Widget:RtToken(param.Widget),
+													Help:RtString(strings.TrimSpace(param.Help.Value)),
+													Default:def,Min:min,Max:max,Value:def}
 
-		general.params[i] = Param{Label:RtString(param.Label),
-															Name:RtToken(param.Name),
-															Type:RtToken(param.Type),
-															Widget:RtToken(param.Widget),
-															Help:RtString(strings.TrimSpace(param.Help.Value)),
-															Default:def,Min:min,Max:max}
-
-		general.values[RtToken(param.Name)] = def
+		if err := general.AddParam(param); err != nil {
+			return nil,err
+		}
 	}
 
 	
