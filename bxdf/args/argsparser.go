@@ -7,6 +7,9 @@ import (
 	"encoding/xml"
 	"fmt"
 	"strings"
+	"strconv"
+	"io/ioutil"
+	"os"
 
 	. "github.com/mae-global/rigo/ri"
 	. "github.com/mae-global/rigo/bxdf"
@@ -112,20 +115,91 @@ func Parse(name string,data []byte) (Bxdfer,error) {
 		var max Rter
 		switch param.Type {
 			case "float":
-				def = RtFloat(1.0)
+				def = RtFloat(0.0)
 				min = RtFloat(0.0)
-				max = RtFloat(0.0)
+				max = RtFloat(0.0)				
+
+				if len(param.Default) > 0 {
+					if f,err := strconv.ParseFloat(param.Default,64);  err != nil {
+						return nil,err
+					}	else {
+						def = RtFloat(f)
+					}
+				}
+				if len(param.Min) > 0 {
+					if f,err := strconv.ParseFloat(param.Min,64); err != nil {
+						return nil,err
+					} else {
+						min = RtFloat(f)
+					}
+				}
+				if len(param.Max) > 0 {
+					if f,err := strconv.ParseFloat(param.Max,64); err != nil {
+						return nil,err
+					} else {
+						max = RtFloat(f)
+					}
+				}
 			break
 			case "int":
-				def = RtInt(1)
+				def = RtInt(0)
 				min = RtInt(0)
 				max = RtInt(0)
+
+				if len(param.Default) > 0 {
+					if i,err := strconv.Atoi(param.Default); err != nil {
+						return nil,err
+					} else {
+						def = RtInt(i)
+					}
+				}
+				if len(param.Min) > 0 {
+					if i,err := strconv.Atoi(param.Min); err != nil { 
+						return nil,err
+					} else {
+						min = RtInt(i)
+					}
+				}
+				if len(param.Max) > 0 {
+					if i,err := strconv.Atoi(param.Max); err != nil {
+						return nil,err
+					} else {
+						max = RtInt(i)
+					}
+				}
+
 			break
 			case "color":
-				def = RtColor{1,1,1}
+				def = RtColor{0,0,0}
 				min = RtColor{0,0,0}
-				max = RtColor{1,1,1}
+				max = RtColor{0,0,0}
+
+				if len(param.Default) > 0 {
+					def = Str2Color(param.Default)
+				}
+				if len(param.Min) > 0 {
+					min = Str2Color(param.Min)
+				}
+				if len(param.Max) > 0 {
+					max = Str2Color(param.Max)
+				}				
+
 			break
+			case "normal":
+				def = RtNormal{0,0,0}
+				min = RtNormal{0,0,0}
+				max = RtNormal{0,0,0}
+
+				if len(param.Default) > 0 {
+					def = Str2Normal(param.Default)
+				}
+				if len(param.Min) > 0 {
+					min = Str2Normal(param.Min)
+				}
+				if len(param.Max) > 0 {
+					max = Str2Normal(param.Max)
+				}
+			break			
 			default:
 				return nil,fmt.Errorf("Unknown Type %s=[%s]",param.Name,param.Type)
 			break
@@ -145,6 +219,23 @@ func Parse(name string,data []byte) (Bxdfer,error) {
 	
 	return general,nil
 }
+
+func ParseArgsFile(name string) (Bxdfer,error) {
+
+	rmantree := os.Getenv("RMANTREE")
+	if len(rmantree) == 0 {
+		return nil,fmt.Errorf("is RMANTREE set?")
+	}
+
+	file,err := ioutil.ReadFile(rmantree + "/lib/RIS/bxdf/Args/" + name + ".args")
+	if err != nil {
+		return nil,err
+	}
+
+	return Parse(name,file)
+}
+
+
 
 
 

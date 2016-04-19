@@ -107,6 +107,30 @@ func Test_Parser(t *testing.T) {
 		So(widget.NameSpec(),ShouldEqual,RtToken("color emitColor"))
 		So(widget.Label(),ShouldEqual,RtString("Emit Color"))
 	})
+
+	Convey("Parse PxrConstant.args",t,func() {
+
+		constant,err := ParseArgsFile("PxrConstant")
+		So(err,ShouldBeNil)
+		So(constant,ShouldNotBeNil)
+		names := constant.Names()
+		So(len(names),ShouldEqual,2)
+	})
+
+	Convey("Parse PxrDiffuse.args",t,func() {
+
+		diffuse,err := ParseArgsFile("PxrDiffuse")
+		So(err,ShouldBeNil)
+		So(diffuse,ShouldNotBeNil)
+
+		w := diffuse.Widget("bumpNormal")
+		So(w,ShouldNotBeNil)
+		wn,ok := w.(*RtNormalWidget)
+		So(ok,ShouldBeTrue)
+		So(wn,ShouldNotBeNil)
+		So(wn.Value(),ShouldEqual,RtNormal{0,0,0})
+
+	})
 }
 
 

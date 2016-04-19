@@ -12,7 +12,7 @@ type Widget interface {
 	SetValue(value Rter) error
 	GetValue() Rter
 	Help() RtString
-	Bounds() (Rter,Rter) /* min anbd max if set */
+	Bounds() (Rter,Rter) /* min and max if set */
 	Default() error
 
 	Next() Widget
@@ -34,8 +34,8 @@ type Bxdfer interface {
 	Value(name RtToken) Rter
 }
 
+/* old implemention ;;
 
-/* An ideal (Lambertian) diffuse material. */
 type PxrDiffuse struct {
 	DiffuseColor RtColor
 	TransmissionColor RtColor
@@ -52,8 +52,6 @@ func NewPxrDiffuse() *PxrDiffuse {
 }
 
 
-/* A material with constant color: an emitter with no reflection. 
- * Independent of illumination and viewing direction. */
 type PxrConstant struct {
 	EmitColor RtColor
 }
@@ -68,10 +66,6 @@ func NewPxrConstant() *PxrConstant {
 	return bxdf
 }
 
-/* PxrASSurface is an implementation of the Ashikhmin-Shirley BRDF 
- * from "An Anisotropic Phong BDRF Model" by Michael Ashikhmin and 
- * Peter Shirley.
- */
 type PxrASSurface struct {
 	DiffuseColor RtColor
 	SpecularColor RtColor
@@ -96,9 +90,6 @@ func NewPxrASSurface() *PxrASSurface {
 }
 
 
-/* PxrSubsurface A simple subsurface scattering-only material. The scattering 
- * model is a simple approximation of beam diffusion and single-scattering.
- */
 type PxrSubsurface struct {
 	Albedo RtColor
 	DiffuseMeanFreePath RtColor
@@ -117,13 +108,10 @@ func NewPxrSubsurface() *PxrSubsurface {
 	bxdf.Albedo = RtColor{0.830,0.791,0.753}
 	bxdf.DiffuseMeanFreePath = RtColor{8.51,5.57,3.95}
 	bxdf.UnitLength = 0.1
-	bxdf.IndirectAtSss = 0 /* NOTE: could use bool? */
+	bxdf.IndirectAtSss = 0 
 	return bxdf
 }
 
-/* PxrBeerGlass A smooth glass material with Fresnel reflection and refraction 
- * and Beer's law (exponential fall-off) in the interior, the PxrBeerGlass Bxdf 
- * is a good example of a simple Bxdf with an interior integrator. */
 type PxrBeerGlass struct {
 	Eta RtFloat
 	Absorption RtColor
@@ -139,8 +127,6 @@ func NewPxrBeerGlass() *PxrBeerGlass {
 	return bxdf
 }
 
-/* PxrSmoothDielectric A smooth dielectric material such as plastic with diffuse 
- * and specular reflection determined by a Fresnel term. */
 type PxrSmoothDielectric struct {
 	DiffuseColor RtColor
 	SpecularColor RtColor
@@ -157,7 +143,7 @@ func NewPxrSmoothDielectric() *PxrSmoothDielectric {
 	return bxdf
 }
 
-/* PxrConductor A smooth or rough conductor material such as metal. */
+
 type PxrConductor struct {
 	SpecularColor RtColor
 	Roughness RtFloat
@@ -174,6 +160,7 @@ func NewPxrConductor() *PxrConductor {
 	return bxdf
 }
 
+*/
 
 
 

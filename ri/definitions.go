@@ -4,6 +4,7 @@ package ri
 import (
 	"fmt"
 	"strings"
+	"strconv"
 )
 
 const (
@@ -209,6 +210,29 @@ func (c RtColor) Equal(o RtColor) bool {
 	return true
 }
 
+func Str2Color(str string) RtColor {
+
+  parts := strings.Split(strings.TrimSpace(str)," ")
+	out := make([]RtFloat,0)
+
+	for _,part := range parts {
+		if f,err := strconv.ParseFloat(part,64); err != nil {
+			/* eat error */
+			continue
+		} else {
+			out = append(out,RtFloat(f))
+		}
+	}
+
+	return RtColor(out)
+}		
+
+
+
+
+
+
+
 /* RtPoint */
 type RtPoint [3]RtFloat
 
@@ -275,6 +299,28 @@ func (n RtNormal) String() string {
 func (n RtNormal) Serialise() string {
 	return fmt.Sprintf("[%s %s %s]", reduce(n[0]), reduce(n[1]), reduce(n[2]))
 }
+
+func Str2Normal(str string) RtNormal {
+
+  parts := strings.Split(strings.TrimSpace(str)," ")
+
+	if len(parts) != 3 {
+		return RtNormal{0,0,0}
+	}
+	out := RtNormal{0,0,0}
+
+	for i,part := range parts {
+		if f,err := strconv.ParseFloat(part,64); err != nil {
+			/* eat error */
+			continue
+		} else {
+			out[i] = RtFloat(f)
+		}
+	}
+
+	return out
+}		
+
 
 /* RtHpoint */
 type RtHpoint [4]RtFloat

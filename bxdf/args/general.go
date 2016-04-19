@@ -8,6 +8,9 @@ import (
 	. "github.com/mae-global/rigo/bxdf"
 )
 
+var (
+	ErrTypeMismatch = fmt.Errorf("Type Mismatch")
+)
 
 
 type RtColorWidget struct {
@@ -18,26 +21,43 @@ type RtColorWidget struct {
 }	
 
 func (r *RtColorWidget) Name() RtToken {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Name
 }
 
 func (r *RtColorWidget) NameSpec() RtToken {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return RtToken(string(r.param.Type) + " " + string(r.param.Name))
 }
 
 func (r *RtColorWidget) Label() RtString {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Label
 }
 
 func (r *RtColorWidget) SetValue(value Rter) error {
-	return r.parent.SetValue(r.param.Name,value)
+	r.param.Lock()
+	defer r.param.Unlock()
+
+	if r.param.Value.Type() == value.Type() {
+		return ErrTypeMismatch
+	}
+
+	r.param.Value = value
 }
 
 func (r *RtColorWidget) GetValue() Rter {
-	return r.parent.Value(r.param.Name)
+	r.param.RLock()
+	defer r.param.RUnlock()
+	return r.param.Value
 }
 
 func (r *RtColorWidget) Help() RtString {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Help
 }
 
@@ -54,16 +74,24 @@ func (r *RtColorWidget) Prev() Widget {
 }
 
 func (r *RtColorWidget) Default() error {
-	return r.parent.SetValue(r.param.Name,r.param.Default)
+	r.param.Lock()
+	defer r.param.Unlock()
+	r.param.Value = r.param.Default
+	return nil /* FIXME, remove error */
 }
 
 func (r *RtColorWidget) Value() RtColor {
-	return r.parent.Value(r.param.Name).(RtColor)
+	r.param.RLock()
+	defer r.param.RUnlock()
+	return r.param.Value.(RtColor)
 }
 
 func (r *RtColorWidget) Set(color RtColor) error {
 	/* TODO: set to min/max */
-	return r.parent.SetValue(r.param.Name,color)
+	r.param.Lock()
+	defer r.param.Unlock()
+	r.param.Value = color
+	return nil /* FIXME, remove error */
 }
 
 type RtIntWidget struct {
@@ -183,6 +211,66 @@ func (r *RtFloatWidget) Set(value RtFloat) error {
 } 
 
 
+type RtNormalWidget struct {
+	param *Param
+	parent *GeneralBxdf
+
+	next RtToken
+	prev RtToken
+}
+
+func (r *RtNormalWidget) Name() RtToken {
+	return r.param.Name
+}
+
+func (r *RtNormalWidget) NameSpec() RtToken {
+	return RtToken(string(r.param.Type) + " " + string(r.param.Name))
+}
+
+func (r *RtNormalWidget) Label() RtString {
+	return r.param.Label
+}
+
+func (r *RtNormalWidget) SetValue(value Rter) error {
+	return r.parent.SetValue(r.param.Name,value) 
+}
+
+func (r *RtNormalWidget) GetValue() Rter {
+	return r.parent.Value(r.param.Name)
+}
+
+func (r *RtNormalWidget) Help() RtString {
+	return r.param.Help
+}
+
+func (r *RtNormalWidget) Bounds() (Rter,Rter) {
+	return nil,nil
+}
+
+func (r *RtNormalWidget) Next() Widget {
+	return r.parent.Widget(r.next)
+}
+
+func (r *RtNormalWidget) Prev() Widget {
+	return r.parent.Widget(r.prev)
+}
+
+func (r *RtNormalWidget) Default() error {
+	return r.parent.SetValue(r.param.Name,r.param.Default)
+}
+
+func (r *RtNormalWidget) Value() RtNormal {
+	val := r.parent.Value(r.param.Name)
+	return val.(RtNormal)
+}
+
+func (r *RtNormalWidget) Set(value RtNormal) error {
+	/* TODO: check the min and max */
+	//if r.param.Min != r.param.Max {
+		
+	return r.parent.SetValue(r.param.Name,value)
+} 
+
 
 type Param struct {
 	Label RtString
@@ -193,6 +281,9 @@ type Param struct {
 	Max Rter
 	Widget RtToken
 	Help RtString
+	Value Rter
+
+	sync.RWMutex
 
 	/* TODO: add option hints dictionary here */
 }
@@ -204,9 +295,7 @@ type GeneralBxdf struct {
 	classification RtString
 
 	params []Param /* inorder of definition */
-	values map[RtToken] Rter
 
-	mux sync.RWMutex
 }
 
 func (g *GeneralBxdf) Write() []Rter {
@@ -226,8 +315,6 @@ func (g *GeneralBxdf) Classifiation() RtString {
 }
 
 func (g *GeneralBxdf) Widget(name RtToken) Widget {
-	g.mux.Lock()
-	defer g.mux.Unlock()
 
 	var next,prev RtToken
 	var p *Param
@@ -235,6 +322,8 @@ func (g *GeneralBxdf) Widget(name RtToken) Widget {
 
 	for i,param := range g.params {
 		if param.Name == name {
+			param.RLock()
+			defer param.RUnlock()
 			p = &param
 			found = i
 			break
@@ -261,28 +350,24 @@ func (g *GeneralBxdf) Widget(name RtToken) Widget {
 
 	switch p.Type {
 		case "color":
-			cw := &RtColorWidget{param:p,parent:g,next:next,prev:prev}
-
-			w = cw
+			w = &RtColorWidget{param:p,parent:g,next:next,prev:prev}
 		break
 		case "float":
-			fw := &RtFloatWidget{param:p,parent:g,next:next,prev:prev}
-
-			w = fw
+			w = &RtFloatWidget{param:p,parent:g,next:next,prev:prev}
 		break
 		case "int":
-			iw := &RtIntWidget{param:p,parent:g,next:next,prev:prev}
-
-			w = iw
+			w = &RtIntWidget{param:p,parent:g,next:next,prev:prev}
 		break
+		case "normal":
+			w = &RtNormalWidget{param:p,parent:g,next:next,prev:prev}
+		break
+		/* TODO: add normal etc.. here*/
 	}
 
 	return w
 }
 
 func (g *GeneralBxdf) Names() []RtToken {
-	g.mux.RLock()
-	defer g.mux.RUnlock()
 	names := make([]RtToken,len(g.params))
 	for i,param := range g.params {
 		names[i] = param.Name
@@ -291,8 +376,6 @@ func (g *GeneralBxdf) Names() []RtToken {
 }
 
 func (g *GeneralBxdf)	NamesSpec() []RtToken {
-	g.mux.RLock()
-	defer g.mux.RUnlock()
 	names := make([]RtToken,len(g.params))
 	for i,param := range g.params {
 		names[i] = RtToken(string(param.Type) + " " + string(param.Name)) /* FIXME, this is not a complete spec : missing [n] */
@@ -300,30 +383,36 @@ func (g *GeneralBxdf)	NamesSpec() []RtToken {
 	return names
 }
 
-
 func (g *GeneralBxdf)	SetValue(name RtToken,value Rter) error {
-	g.mux.Lock()
-	defer g.mux.Unlock()
+	
+	var val Rter
+	for _,param := range g.params {
+		if param.Name == name {
+			param.Lock()
+			defer param.Unlock()
 
-	if r,ok := g.values[name]; ok {
-		if r.Type() != value.Type() {
-			return fmt.Errorf("Type mismatch, setting with \"%s\", wants \"%s\"",value.Type(),r.Type())
+			if param.Value.Type() != value.Type() {
+				return fmt.Errorf("Type mismatch, setting with \"%s\", wants \"%s\"",value.Type(),param.Value.Type())
+			}
+
+			param.Value = value
+			return nil
 		}
-
-		g.values[name] = value
-		return nil
 	}
 	return fmt.Errorf("Unknown parameter %s",name)
 }
 
 func (g *GeneralBxdf) Value(name RtToken) Rter {
-	g.mux.RLock()
-	defer g.mux.RUnlock()
 
-	if r,ok := g.values[name]; ok {
-		return r
-	}	
+	for _,param := range g.params {
+		if param.Name == name {
+			param.RLock()
+			defer param.RUnlock()
 
+			return para.Value
+		}
+	}
 	return nil
 }
+
 
