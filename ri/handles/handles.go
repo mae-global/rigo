@@ -56,7 +56,7 @@ type ObjectHandler interface {
 }
 
 
-/* RtShaderHandler */
+/* RtShaderHandler - used in RIS */
 type RtShaderHandle string
 
 func (l RtShaderHandle) Type() string {
@@ -70,6 +70,94 @@ func (l RtShaderHandle) String() string {
 func (l RtShaderHandle) Serialise() string {
 	return fmt.Sprintf("\"%s\"",string(l))
 }
+
+/* ShaderNumberGenerator */
+type ShaderNumberGenerator struct {
+	current uint
+	mux sync.RWMutex
+	format string
+}
+
+func (g *ShaderNumberGenerator) Generate() (RtShaderHandle,error) {
+	g.mux.Lock()
+	defer g.mux.Unlock()
+	
+	h := fmt.Sprintf(g.format,g.current)
+	g.current ++
+	return RtShaderHandle(h),nil
+}
+
+func (g *ShaderNumberGenerator) Check(h RtShaderHandle) error {
+	return nil /* FIXME */
+}
+
+func (g *ShaderNumberGenerator) Example() RtShaderHandle {
+	g.mux.RLock()
+	defer g.mux.RUnlock()
+	return RtShaderHandle(fmt.Sprintf(g.format,0))
+}
+
+/* NewShaderNumberGenerator */
+func NewShaderNumberGenerator() *ShaderNumberGenerator {
+	return &ShaderNumberGenerator{format:"%d"}
+}
+
+/* NewPrefixShaderNumberGenerator */
+func NewPrefixShaderNumberGenerator(prefix string) *ShaderNumberGenerator {
+	if len(prefix) == 0 {
+		return NewShaderNumberGenerator()
+	}
+	return &ShaderNumberGenerator{format:prefix + "%d"}
+}
+
+/* ShaderUniqueGenerator */
+type ShaderUniqueGenerator struct {
+	mux sync.RWMutex
+	size   int
+	format string
+}
+
+func (g *ShaderUniqueGenerator) Generate() (RtShaderHandle,error) {
+	g.mux.Lock()
+	defer g.mux.Unlock()
+
+	b := make([]byte,g.size)
+	n,err := io.ReadFull(rand.Reader,b)
+	if err != nil {
+		return "",err
+	}
+	h := fmt.Sprintf(g.format,hex.EncodeToString(b[:n]))
+	return RtShaderHandle(h),nil
+}
+
+func (g *ShaderUniqueGenerator) Check(h RtShaderHandle) error {
+	return nil /* FIXME */
+}
+
+func (g *ShaderUniqueGenerator) Example() RtShaderHandle {
+	g.mux.RLock()
+	defer g.mux.RUnlock()
+	example := []byte("abcdefghijklnmopqrstuvw123456789") /* FIXME */
+	return RtShaderHandle(fmt.Sprintf(g.format,hex.EncodeToString(example[:g.size])))
+}	
+
+/* NewShaderUniqueGenerator */
+func NewShaderUniqueGenerator() *ShaderUniqueGenerator {
+	return &ShaderUniqueGenerator{format:"%s",size:4}
+}
+
+/* NewPrefixShaderUniqueGenerator */
+func NewPrefixShaderUniqueGenerator(prefix string) *ShaderUniqueGenerator {
+	if len(prefix) == 0 {
+		return NewShaderUniqueGenerator()
+	}
+	return &ShaderUniqueGenerator{format:prefix + "%s",size:4}
+}
+ 
+
+
+
+
 
 
 /* LightNumberGenerator implements the old style of int handles */
