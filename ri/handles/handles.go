@@ -56,6 +56,22 @@ type ObjectHandler interface {
 }
 
 
+/* RtShaderHandler */
+type RtShaderHandle string
+
+func (l RtShaderHandle) Type() string {
+	return "shaderhandle"
+}
+
+func (l RtShaderHandle) String() string {
+	return l.Serialise()
+}
+
+func (l RtShaderHandle) Serialise() string {
+	return fmt.Sprintf("\"%s\"",string(l))
+}
+
+
 /* LightNumberGenerator implements the old style of int handles */
 type LightNumberGenerator struct {
 	current uint

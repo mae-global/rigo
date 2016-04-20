@@ -1,9 +1,8 @@
-package bxdf
+package ris
 
 import (
 	"sync"
 	"fmt"
-//	"strings"
 
 	. "github.com/mae-global/rigo/ri"
 )
@@ -29,7 +28,8 @@ type Param struct {
 	/* TODO: add option hints dictionary here */
 }
 
-type GeneralBxdf struct {
+type GeneralShader struct {
+	shadertype RtName
 	nodeid RtToken
 	name RtToken
 	classification RtString
@@ -37,13 +37,13 @@ type GeneralBxdf struct {
 	params []*Param
 }
 
-func NewGeneralBxdf(name,nodeid RtToken,classification RtString) *GeneralBxdf {
-	g := &GeneralBxdf{name:name,nodeid:nodeid,classification:classification}
+func NewGeneralShader(shadertype RtName,name,nodeid RtToken,classification RtString) *GeneralShader {
+	g := &GeneralShader{shadertype:shadertype,name:name,nodeid:nodeid,classification:classification}
 	g.params = make([]*Param,0)
 	return g
 }
 
-func (g *GeneralBxdf) AddParam(p *Param) error {
+func (g *GeneralShader) AddParam(p *Param) error {
 	if p == nil {
 		return ErrInvalidParam
 	}
@@ -54,6 +54,10 @@ func (g *GeneralBxdf) AddParam(p *Param) error {
 	}
 	g.params = append(g.params,p)
 	return nil
+}
+
+func (g *GeneralShader) ShaderType() RtName {
+	return g.shadertype
 }		
 
 func namespec(name,typeof RtToken) RtToken {
@@ -61,17 +65,11 @@ func namespec(name,typeof RtToken) RtToken {
 }
 
 
-func (g *GeneralBxdf) Write() (RtName,[]Rter,[]Rter) {
+func (g *GeneralShader) Write() (RtName,[]Rter,[]Rter) {
 
 	args := make([]Rter,0)
 	params := make([]Rter,0)
 
-	/*
-	n := strings.ToLower(string(g.name))
-	name := string(n[0]) + string(g.name[1:])
-	
-	args = append(args,RtToken(name))
-*/
 
 	args = append(args,RtToken(g.name)) /* FIXME, add handle */
 	args = append(args,RtToken("fixme___name"))
@@ -85,22 +83,22 @@ func (g *GeneralBxdf) Write() (RtName,[]Rter,[]Rter) {
 		param.RUnlock()
 	}
 
-	return RtName("Bxdf"),args,params
+	return g.shadertype,args,params 
 }
 
-func (g *GeneralBxdf) Name() RtToken {
+func (g *GeneralShader) Name() RtToken {
 	return g.name
 }
 
-func (g *GeneralBxdf) NodeId() RtToken {
+func (g *GeneralShader) NodeId() RtToken {
 	return g.nodeid 
 }
 
-func (g *GeneralBxdf) Classifiation() RtString {
+func (g *GeneralShader) Classifiation() RtString {
 	return g.classification
 }
 
-func (g *GeneralBxdf) Widget(name RtToken) Widget {
+func (g *GeneralShader) Widget(name RtToken) Widget {
 
 	var next,prev RtToken
 	var p *Param
@@ -153,14 +151,14 @@ func (g *GeneralBxdf) Widget(name RtToken) Widget {
 	return w
 }
 
-func (g *GeneralBxdf) FirstWidget() Widget {
+func (g *GeneralShader) FirstWidget() Widget {
 	if len(g.params) == 0 {
 		return nil
 	}
 	return g.Widget(g.params[0].Name)
 }
 
-func (g *GeneralBxdf) LastWidget() Widget {
+func (g *GeneralShader) LastWidget() Widget {
 	if len(g.params) == 0 {
 		return nil
 	}
@@ -168,7 +166,7 @@ func (g *GeneralBxdf) LastWidget() Widget {
 }
 	
 
-func (g *GeneralBxdf) Names() []RtToken {
+func (g *GeneralShader) Names() []RtToken {
 	names := make([]RtToken,len(g.params))
 	for i,param := range g.params {
 		names[i] = param.Name
@@ -176,7 +174,7 @@ func (g *GeneralBxdf) Names() []RtToken {
 	return names
 }
 
-func (g *GeneralBxdf)	NamesSpec() []RtToken {
+func (g *GeneralShader)	NamesSpec() []RtToken {
 	names := make([]RtToken,len(g.params))
 	for i,param := range g.params {
 		names[i] = RtToken(string(param.Type) + " " + string(param.Name)) /* FIXME, this is not a complete spec : missing [n] */
@@ -184,7 +182,7 @@ func (g *GeneralBxdf)	NamesSpec() []RtToken {
 	return names
 }
 
-func (g *GeneralBxdf)	SetValue(name RtToken,value Rter) error {
+func (g *GeneralShader)	SetValue(name RtToken,value Rter) error {
 	
 	for _,param := range g.params {
 		if param.Name == name {
@@ -202,7 +200,7 @@ func (g *GeneralBxdf)	SetValue(name RtToken,value Rter) error {
 	return fmt.Errorf("Unknown parameter %s",name)
 }
 
-func (g *GeneralBxdf) Value(name RtToken) Rter {
+func (g *GeneralShader) Value(name RtToken) Rter {
 
 	for _,param := range g.params {
 		if param.Name == name {
