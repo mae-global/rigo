@@ -19,11 +19,16 @@ type Contexter interface {
 	CheckLightHandle(RtLightHandle) error
 	ObjectHandle() (RtObjectHandle, error)
 	CheckObjectHandle(RtObjectHandle) error
+	ShaderHandle() (RtShaderHandle, error)
+	CheckShaderHandle(RtShaderHandle) error
+
+	GetShader(RtShaderHandle) ShaderWriter
 }
 
 type TestContext struct {
 	lights  uint
 	objects uint
+	shaders uint
 	depth   int
 
 	raw *testArchiveWriter /* single instance only */
@@ -115,14 +120,34 @@ func (b *TestContext) CheckObjectHandle(h RtObjectHandle) error {
 	return nil
 }
 
+func (b *TestContext) ShaderHandle() (RtShaderHandle,error) {
+	h := RtShaderHandle(fmt.Sprintf("%s",b.shaders))
+	b.shaders++
+
+	return h,nil
+}
+
+func (b *TestContext) CheckShaderHandle(h RtShaderHandle) error {
+	if i,err := strconv.Atoi(string(h)); err != nil || uint(i) >= b.shaders {
+		return ErrBadHandle
+	}
+	return nil
+}
+
+func (b *TestContext) GetShader(h RtShaderHandle) ShaderWriter {
+	return nil
+}
+
+
 func NewTest() *Ri {
-	return &Ri{&TestContext{0, 0, 0,nil}}
+	return &Ri{&TestContext{0, 0, 0, 0,nil}}
 }
 
 /* Ri is the main interface */
 type Ri struct {
 	Contexter
 }
+
 
 /* User special func for client libraries to write to */
 func (r *Ri) User(w RterWriter) error {

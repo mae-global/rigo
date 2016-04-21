@@ -5,10 +5,48 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	. "github.com/mae-global/rigo/ri/handles"
 )
 
+var dashed = RtShaderHandle("-")
+
+type RisContexter interface {
+	ShaderHandle() (RtShaderHandle,error)
+
+	SetShader(RtShaderHandle,Shader) 
+	GetShader(RtShaderHandle) Shader
+}
+
+type Ris struct {
+	RisContexter
+}
+
+func (ris *Ris) Bxdf(name string,sh RtShaderHandle) (Shader,error) {
+	
+	if s := ris.GetShader(sh); s != nil {
+		return s,nil
+	}
+	
+	if len(sh) == 0 || sh == dashed {
+		if h,err := ris.ShaderHandle(); err != nil {
+			return nil,err
+		} else {
+			sh = h
+		}
+	}
+		
+	bxdf,err := Bxdf(name,sh)
+	if err != nil {
+		return nil,err
+	}
+
+	ris.SetShader(sh,bxdf)
+
+	return bxdf,nil
+}
+
 /* Load a bxdf shader from RMANTREE */
-func Bxdf(name string) (Shader,error) {
+func Bxdf(name string,sh RtShaderHandle) (Shader,error) {
 
 	rmantree := os.Getenv("RMANTREE")
 	if len(rmantree) == 0 {
@@ -22,11 +60,35 @@ func Bxdf(name string) (Shader,error) {
 		return nil,err
 	}
 
-	return Parse(name,file)
+	return Parse(name,sh,file)
+}
+
+func (ris *Ris) Integrator(name string,sh RtShaderHandle) (Shader,error) {
+
+	if s := ris.GetShader(sh); s != nil {
+		return s,nil
+	}
+
+	if len(sh) == 0 || sh == dashed {
+		if h,err := ris.ShaderHandle(); err != nil {
+			return nil,err
+		} else {
+			sh = h
+		}
+	}
+
+	integrator,err := Integrator(name,sh)
+	if err != nil {
+		return nil,err
+	}
+
+	ris.SetShader(sh,integrator)
+	
+	return integrator,nil
 }
 
 /* Load a integrator shader from RMANTREE */
-func Integrator(name string) (Shader,error) {
+func Integrator(name string,sh RtShaderHandle) (Shader,error) {
 
 	rmantree := os.Getenv("RMANTREE")
 	if len(rmantree) == 0 {
@@ -40,11 +102,35 @@ func Integrator(name string) (Shader,error) {
 		return nil,err
 	}
 
-	return Parse(name,file)
+	return Parse(name,sh,file)
+}
+
+func (ris *Ris) LightFilter(name string,sh RtShaderHandle) (Shader,error) {
+
+	if s := ris.GetShader(sh); s != nil {
+		return s,nil
+	}
+
+	if len(sh) == 0 || sh == dashed {
+		if h,err := ris.ShaderHandle(); err != nil {
+			return nil,err
+		} else {
+			sh = h
+		}
+	}
+
+	lightfilter,err := LightFilter(name,sh)
+	if err != nil {
+		return nil,err
+	}
+
+	ris.SetShader(sh,lightfilter)
+	
+	return lightfilter,nil
 }
 
 /* Load a light shader from RMANTREE */
-func LightFilter(name string) (Shader,error) {
+func LightFilter(name string,sh RtShaderHandle) (Shader,error) {
 
 	rmantree := os.Getenv("RMANTREE")
 	if len(rmantree) == 0 {
@@ -58,11 +144,35 @@ func LightFilter(name string) (Shader,error) {
 		return nil,err 
 	}
 
-	return Parse(name,file)
+	return Parse(name,sh,file)
+}
+
+func (ris *Ris) Projection(name string,sh RtShaderHandle) (Shader,error) {
+
+	if s := ris.GetShader(sh); s != nil {
+		return s,nil
+	}
+
+	if len(sh) == 0 || sh == dashed {
+		if h,err := ris.ShaderHandle(); err != nil {
+			return nil,err
+		} else {
+			sh = h
+		}
+	}
+
+	projection,err := Projection(name,sh)
+	if err != nil {
+		return nil,err
+	}
+
+	ris.SetShader(sh,projection)
+
+	return projection,nil
 }
 
 /* Load a projection shader from RMANTREE */
-func Projection(name string) (Shader,error) {
+func Projection(name string,sh RtShaderHandle) (Shader,error) {
 
 	rmantree := os.Getenv("RMANTREE")
 	if len(rmantree) == 0 {
@@ -76,11 +186,35 @@ func Projection(name string) (Shader,error) {
 		return nil,err
 	}
 
-	return Parse(name,file)
+	return Parse(name,sh,file)
+}
+
+func (ris *Ris) Pattern(name string,sh RtShaderHandle) (Shader,error) {
+	
+	if s := ris.GetShader(sh); s != nil {
+		return s,nil
+	}
+
+	if len(sh) == 0 || sh == dashed {
+		if h,err := ris.ShaderHandle(); err != nil {
+			return nil,err
+		} else {
+			sh = h
+		}
+	}
+
+	pattern,err := Pattern(name,sh)
+	if err != nil {
+		return nil,err
+	}
+
+	ris.SetShader(sh,pattern)
+	
+	return pattern,nil
 }
 
 /* Load a pattern shader from RMANTREE */
-func Pattern(name string) (Shader,error) {
+func Pattern(name string,sh RtShaderHandle) (Shader,error) {
 
 	rmantree := os.Getenv("RMANTREE")
 	if len(rmantree) == 0 {
@@ -94,7 +228,7 @@ func Pattern(name string) (Shader,error) {
 		return nil,err
 	}
 	
-	return Parse(name,file)
+	return Parse(name,sh,file)
 }
 
 

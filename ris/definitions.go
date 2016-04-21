@@ -2,6 +2,7 @@ package ris
 
 import (
 	. "github.com/mae-global/rigo/ri"
+	. "github.com/mae-global/rigo/ri/handles"
 )
 /* https://renderman.pixar.com/resources/current/RenderMan/devExamples.html */
 
@@ -20,7 +21,8 @@ type Widget interface {
 }
 
 type Shader interface {
-	Write() (RtName,[]Rter,[]Rter)
+	/* name, shaderhandle,args,params,values */
+	Write() (RtName,RtShaderHandle,[]Rter,[]Rter,[]Rter)
 	ShaderType() RtName
 	Name() RtToken
 	NodeId() RtToken
@@ -32,6 +34,7 @@ type Shader interface {
 
 	Names() []RtToken
 	NamesSpec() []RtToken
+	Handle() RtShaderHandle
 
 	SetValue(name RtToken,value Rter) error 
 	Value(name RtToken) Rter	

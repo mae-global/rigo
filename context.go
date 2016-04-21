@@ -7,6 +7,7 @@ import (
 
 	. "github.com/mae-global/rigo/ri"
 	. "github.com/mae-global/rigo/ri/handles"
+	. "github.com/mae-global/rigo/ris"
 )
 
 const (
@@ -217,8 +218,11 @@ type Context struct {
 	pipe *Pipe
 	objects ObjectHandler
 	lights LightHandler
+	shaders ShaderHandler
 
 	files map[RtToken]bool
+
+	cache map[RtShaderHandle] Shader
 
 	Info
 }
@@ -279,6 +283,18 @@ func (ctx *Context) Depth(d int) {
 	ctx.Info.Depth += d /* TODO: this is a little clunky */
 }
 
+func (ctx *Context) ShaderHandle() (RtShaderHandle,error) {
+	ctx.mux.Lock()
+	defer ctx.mux.Unlock()
+	return ctx.shaders.Generate()
+}
+
+func (ctx *Context) CheckShaderHandler(sh RtShaderHandle) error {
+	ctx.mux.Lock()
+	defer ctx.mux.Unlock()
+	return ctx.shaders.Check(sh)
+}
+
 func (ctx *Context) LightHandle() (RtLightHandle, error) {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
@@ -302,13 +318,28 @@ func (ctx *Context) CheckObjectHandle(oh RtObjectHandle) error {
 	defer ctx.mux.RUnlock()
 	return ctx.objects.Check(oh)
 }
+	
 
-
-func New(pipe *Pipe, config *Configuration) *Ri {
-	return NewCustom(pipe,nil,nil,config)
+func (ctx *Context) SetShader(sh RtShaderHandle,s Shader) {
+	ctx.mux.Lock() 
+	defer ctx.mux.Unlock()
+	ctx.cache[sh] = s
 }
 
-func NewCustom(pipe *Pipe,lights LightHandler,objects ObjectHandler,config *Configuration) *Ri {
+func (ctx *Context) GetShader(sh RtShaderHandle) Shader {
+	ctx.mux.Lock()
+	defer ctx.mux.Unlock()
+	if s,ok := ctx.cache[sh]; ok {
+		return s
+	}
+	return nil
+}
+
+func New(pipe *Pipe, config *Configuration) *Ri {
+	return NewCustom(pipe,nil,nil,nil,config)
+}
+
+func NewCustom(pipe *Pipe,lights LightHandler,objects ObjectHandler,shaders ShaderHandler,config *Configuration) *Ri {
 	if pipe == nil {
 		pipe = DefaultFilePipe()
 	}
@@ -322,13 +353,24 @@ func NewCustom(pipe *Pipe,lights LightHandler,objects ObjectHandler,config *Conf
 	if objects == nil {
 		objects = NewObjectNumberGenerator()
 	}
+	if shaders == nil {
+		shaders = NewShaderNumberGenerator()
+	}	
 
-	ctx := &Context{pipe:pipe,lights:lights,objects:objects,Info:Info{Name: "", Entity: config.Entity, Formal: config.Formal,PrettyPrint: config.PrettyPrint}}
+	ctx := &Context{pipe:pipe,lights:lights,objects:objects,shaders:shaders,Info:Info{Name: "", Entity: config.Entity, Formal: config.Formal,PrettyPrint: config.PrettyPrint}}
+
+	/* cache for the shaders */
+	ctx.cache = make(map[RtShaderHandle]Shader,0)
 	return &Ri{ctx}
 }
 
 func NewEntity(pipe *Pipe) *Ri {
 	return New(pipe, &Configuration{Entity: true, Formal: false})
 }
+
+func RIS(ctx *Context) *Ris {
+	return &Ris{ctx}
+}
+
 
 

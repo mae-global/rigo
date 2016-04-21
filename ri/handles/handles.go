@@ -55,6 +55,13 @@ type ObjectHandler interface {
 	Example() RtObjectHandle
 }
 
+/* ShaderHandler */
+type ShaderHandler interface {
+	Generate() (RtShaderHandle,error)
+	Check(RtShaderHandle) error 
+	Example() RtShaderHandle
+}
+
 
 /* RtShaderHandler - used in RIS */
 type RtShaderHandle string

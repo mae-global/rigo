@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	. "github.com/mae-global/rigo/ri"
+	. "github.com/mae-global/rigo/ri/handles"
 )
 
 var (
@@ -33,12 +34,13 @@ type GeneralShader struct {
 	nodeid RtToken
 	name RtToken
 	classification RtString
+	handle RtShaderHandle
 	
 	params []*Param
 }
 
-func NewGeneralShader(shadertype RtName,name,nodeid RtToken,classification RtString) *GeneralShader {
-	g := &GeneralShader{shadertype:shadertype,name:name,nodeid:nodeid,classification:classification}
+func NewGeneralShader(shadertype RtName,name,nodeid RtToken,classification RtString,handle RtShaderHandle) *GeneralShader {
+	g := &GeneralShader{shadertype:shadertype,name:name,nodeid:nodeid,classification:classification,handle:handle}
 	g.params = make([]*Param,0)
 	return g
 }
@@ -56,6 +58,10 @@ func (g *GeneralShader) AddParam(p *Param) error {
 	return nil
 }
 
+func (g *GeneralShader) Handle() RtShaderHandle {
+	return g.handle
+}
+
 func (g *GeneralShader) ShaderType() RtName {
 	return g.shadertype
 }		
@@ -64,26 +70,24 @@ func namespec(name,typeof RtToken) RtToken {
 	return RtToken(string(typeof) + " " + string(name))
 }
 
-
-func (g *GeneralShader) Write() (RtName,[]Rter,[]Rter) {
+func (g *GeneralShader) Write() (RtName,RtShaderHandle,[]Rter,[]Rter,[]Rter) {
 
 	args := make([]Rter,0)
 	params := make([]Rter,0)
+	values := make([]Rter,0)
 
-
-	args = append(args,RtToken(g.name)) /* FIXME, add handle */
-	args = append(args,RtToken("fixme___name"))
-
+	args = append(args,RtToken(g.name))
+	
 	for _,param := range g.params {
 		param.RLock()
 
 		params = append(params,namespec(param.Name,param.Type))
-		params = append(params,param.Value)
+		values = append(values,param.Value)
 
 		param.RUnlock()
 	}
 
-	return g.shadertype,args,params 
+	return g.shadertype,g.handle,args,params,values
 }
 
 func (g *GeneralShader) Name() RtToken {

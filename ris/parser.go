@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	. "github.com/mae-global/rigo/ri"
+	. "github.com/mae-global/rigo/ri/handles"
 )
 
 const (
@@ -93,7 +94,7 @@ func ParseArgsXML(data []byte) (*Args,error) {
 	return &a,nil
 }
 
-func Parse(name string,data []byte) (Shader,error) {
+func Parse(name string,handle RtShaderHandle,data []byte) (Shader,error) {
 
 	args,err := ParseArgsXML(data)
 	if err != nil {
@@ -109,7 +110,7 @@ func Parse(name string,data []byte) (Shader,error) {
 
 
 	general := NewGeneralShader(RtName(shader),RtToken(name),
-															RtToken(args.Rfmdata.NodeId),RtString(args.Rfmdata.Classification))
+															RtToken(args.Rfmdata.NodeId),RtString(args.Rfmdata.Classification),handle)
 	
 	for _,param := range args.Params {
 
