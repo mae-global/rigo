@@ -16,6 +16,7 @@ import (
 
 func Test_BxdfExamples(t *testing.T) {
 
+
 	Convey("Bxdf Constant Example",t,func() {
 
 		cuser,err := user.Current()
@@ -30,7 +31,7 @@ func Test_BxdfExamples(t *testing.T) {
 		ctx.ArchiveRecord("structure","Creator %s",Author)
 		ctx.ArchiveRecord("structure","CreationDate %s",time.Now())
 		ctx.ArchiveRecord("structure","For %s",cuser.Username)
-		ctx.ArchiveRecord("structure","Frame 1")
+		ctx.ArchiveRecord("structure","Frames 1")
 
 		ctx.Display("bxdf_sphere.tif","file","rgb")
 		ctx.Format(320,240,1)

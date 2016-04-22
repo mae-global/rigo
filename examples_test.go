@@ -191,7 +191,7 @@ func Test_SimpleExample(t *testing.T) {
 		/* use a custom unique generator with a prefix for the light handles */
 		lights := NewPrefixLightUniqueGenerator("light_")
 	
-		ctx := NewCustom(pipe,lights,nil,&Configuration{PrettyPrint:true})
+		ctx := NewCustom(pipe,lights,nil,nil,&Configuration{PrettyPrint:true})
 		ctx.Begin("output/simple.rib")
 		ctx.Display("sphere.tif","file","rgb")
 		ctx.Format(320,240,1)
@@ -232,7 +232,7 @@ func Test_SimpleExampleWithConditionals(t *testing.T) {
 		/* use a custom unique generator with a prefix for the light handles */
 		lights := NewPrefixLightUniqueGenerator("light_")
 	
-		ctx := NewCustom(pipe,lights,nil,&Configuration{PrettyPrint:true})
+		ctx := NewCustom(pipe,lights,nil,nil,&Configuration{PrettyPrint:true})
 		ctx.Begin("output/simpleconditionals.rib")
 		ctx.Display("sphere.tif","file","rgb")
 		ctx.Format(320,240,1)
@@ -352,7 +352,7 @@ func Benchmark_SimpleExampleUniqueHandlers(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		pipe := NullPipe()
-		ctx := NewCustom(pipe,NewLightUniqueGenerator(),nil,nil)
+		ctx := NewCustom(pipe,NewLightUniqueGenerator(),nil,nil,nil)
 		ctx.Begin("simple.rib")
 		ctx.Display("sphere.tif","file","rgb")
 		ctx.Format(320,240,1)

@@ -22,7 +22,7 @@ type Contexter interface {
 	ShaderHandle() (RtShaderHandle, error)
 	CheckShaderHandle(RtShaderHandle) error
 
-	GetShader(RtShaderHandle) ShaderWriter
+	Shader(RtShaderHandle) ShaderWriter
 }
 
 type TestContext struct {
@@ -134,7 +134,7 @@ func (b *TestContext) CheckShaderHandle(h RtShaderHandle) error {
 	return nil
 }
 
-func (b *TestContext) GetShader(h RtShaderHandle) ShaderWriter {
+func (b *TestContext) Shader(h RtShaderHandle) ShaderWriter {
 	return nil
 }
 

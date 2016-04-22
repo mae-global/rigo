@@ -15,7 +15,7 @@ type ShaderWriter interface {
 /* Integrator procedure is used to specify an integrator. RIS-Mode only. */
 func (r *Ri) Integrator(name RtToken,handle RtShaderHandle,parameterlist... Rter) error {
 
-	integrator := r.Contexter.GetShader(handle)
+	integrator := r.Contexter.Shader(handle)
 
 	if integrator == nil {
 
@@ -67,7 +67,7 @@ func (r *Ri) Bxdf(name RtToken,handle RtShaderHandle,parameterlist... Rter) erro
 	 * basis for the output. All the parameterlist are thus applied ontop of the basis.
 	 */
 		
-	bxdf := r.Contexter.GetShader(handle)
+	bxdf := r.Contexter.Shader(handle)
 
 	if bxdf == nil {
 	
@@ -78,9 +78,11 @@ func (r *Ri) Bxdf(name RtToken,handle RtShaderHandle,parameterlist... Rter) erro
 		return r.writef("Bxdf",list...)
 	} 
 		
-	n,h,args,params,values := bxdf.Write()
-	list := []Rter{n,h}
+	_,h,args,params,values := bxdf.Write()
+	
+	list := []Rter{}
 	list = append(list,args...)
+	list = append(list,h)
 	list = append(list,PARAMETERLIST)
 
 	oparams := make([]Rter,0)
@@ -115,7 +117,7 @@ func (r *Ri) Bxdf(name RtToken,handle RtShaderHandle,parameterlist... Rter) erro
 /* Pattern is used to wire in textures and patterns. */
 func (r *Ri) Pattern(name RtToken,handle RtShaderHandle,parameterlist... Rter) error {
 
-	pattern := r.Contexter.GetShader(handle)
+	pattern := r.Contexter.Shader(handle)
 
 	if pattern == nil {
 		list := []Rter{name,handle,PARAMETERLIST}

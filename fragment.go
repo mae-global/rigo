@@ -6,6 +6,7 @@ import (
 
 	. "github.com/mae-global/rigo/ri"
 	. "github.com/mae-global/rigo/ri/handles"
+	. "github.com/mae-global/rigo/ris"
 )
 
 type Fragmenter interface {
@@ -29,7 +30,9 @@ type Fragment struct {
 	mux sync.RWMutex
 	lights LightHandler
 	objects ObjectHandler
+	shaders ShaderHandler
 	statements []FragmentStatement	
+	cache map[RtShaderHandle]Shader
 }
 
 func (f *Fragment) Ri() *Ri {
@@ -150,19 +153,57 @@ func (f *Fragment) CheckObjectHandle(oh RtObjectHandle) error {
 	return f.objects.Check(oh)
 }
 
-func NewFragment(name RtName) *Fragment {
-	return NewCustomFragment(name,nil,nil)
+func (f *Fragment) ShaderHandle() (RtShaderHandle,error) {
+	f.mux.Lock()
+	defer f.mux.Unlock()
+	return f.shaders.Generate()
 }
 
-func NewCustomFragment(name RtName,lights LightHandler,objects ObjectHandler) *Fragment {
+func (f *Fragment) CheckShaderHandle(h RtShaderHandle) error {
+	f.mux.RLock()
+	defer f.mux.Unlock()
+	return f.shaders.Check(h)
+}
+
+func (f *Fragment) GetShader(h RtShaderHandle) Shader {
+	f.mux.RLock()
+	defer f.mux.RUnlock()
+	if s,ok := f.cache[h]; ok {
+		return s
+	}
+	return nil
+}
+
+func (f *Fragment) SetShader(h RtShaderHandle,s Shader)  {
+	f.mux.Lock()
+	defer f.mux.Unlock()
+	f.cache[h] = s
+}
+
+func (f *Fragment) Shader(h RtShaderHandle) ShaderWriter {
+	return f.GetShader(h)
+}
+	 
+
+
+
+func NewFragment(name RtName) *Fragment {
+	return NewCustomFragment(name,nil,nil,nil)
+}
+
+func NewCustomFragment(name RtName,lights LightHandler,objects ObjectHandler,shaders ShaderHandler) *Fragment {
 	if lights == nil {
 		lights = NewLightNumberGenerator()
 	}
 	if objects == nil {
 		objects = NewObjectNumberGenerator()
 	}
-	f := &Fragment{Name:name,lights:lights,objects:objects}
+	if shaders == nil {
+		shaders = NewShaderNumberGenerator()
+	}
+	f := &Fragment{Name:name,lights:lights,objects:objects,shaders:shaders}
 	f.statements = make([]FragmentStatement,0)
+	f.cache = make(map[RtShaderHandle]Shader,0)
 	return f
 }
 

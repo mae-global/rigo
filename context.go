@@ -289,7 +289,7 @@ func (ctx *Context) ShaderHandle() (RtShaderHandle,error) {
 	return ctx.shaders.Generate()
 }
 
-func (ctx *Context) CheckShaderHandler(sh RtShaderHandle) error {
+func (ctx *Context) CheckShaderHandle(sh RtShaderHandle) error {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
 	return ctx.shaders.Check(sh)
@@ -335,6 +335,33 @@ func (ctx *Context) GetShader(sh RtShaderHandle) Shader {
 	return nil
 }
 
+func (ctx *Context) Shader(sh RtShaderHandle) ShaderWriter {
+	return ctx.GetShader(sh)
+}
+
+func NewContext(pipe *Pipe,lights LightHandler,objects ObjectHandler,shaders ShaderHandler,config *Configuration) *Context {
+	if pipe == nil {
+		pipe = DefaultFilePipe()
+	}
+	if config == nil {
+		config = &Configuration{Entity: false,Formal: false,PrettyPrint: false}
+	}
+	if lights == nil {
+		lights = NewLightNumberGenerator()
+	}
+	if objects == nil {
+		objects = NewObjectNumberGenerator()
+	}
+	if shaders == nil {
+		shaders = NewShaderNumberGenerator()
+	}
+
+	ctx := &Context{pipe:pipe,lights:lights,objects:objects,shaders:shaders,Info:Info{Name:"",Entity:config.Entity,Formal: config.Formal,PrettyPrint: config.PrettyPrint}}
+	ctx.cache = make(map[RtShaderHandle]Shader,0)
+	return ctx
+}
+	 
+
 func New(pipe *Pipe, config *Configuration) *Ri {
 	return NewCustom(pipe,nil,nil,nil,config)
 }
@@ -372,5 +399,8 @@ func RIS(ctx *Context) *Ris {
 	return &Ris{ctx}
 }
 
+func RI(ctx *Context) *Ri {
+	return &Ri{ctx}
+}
 
 
