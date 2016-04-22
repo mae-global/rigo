@@ -12,31 +12,49 @@ type RtColorWidget struct {
 }
 
 func (r *RtColorWidget) Name() RtToken {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Name
 }
 
 func (r *RtColorWidget) NameSpec() RtToken {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return RtToken(string(r.param.Type) + " " + string(r.param.Name))
 }
 
 func (r *RtColorWidget) Label() RtString {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Label
 }
 
 func (r *RtColorWidget) SetValue(value Rter) error {
-	return r.parent.SetValue(r.param.Name,value)
+	r.param.Lock()
+	defer r.param.Unlock()
+	if _,ok := value.(RtColor); !ok {
+		return ErrInvalidType
+	}
+	r.param.Value = value 
+	return  nil	
 }
 
 func (r *RtColorWidget) GetValue() Rter {
-	return r.parent.Value(r.param.Name)
+	r.param.RLock()
+	defer r.param.RUnlock()
+	return r.param.Name
 }
 
 func (r *RtColorWidget) Help() RtString {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Help
 }
 
 func (r *RtColorWidget) Bounds() (Rter,Rter) {
-	return nil,nil
+	r.param.RLock()
+	defer r.param.RUnlock()
+	return r.param.Min,r.param.Max
 }
 
 func (r *RtColorWidget) Next() Widget {
@@ -48,14 +66,22 @@ func (r *RtColorWidget) Prev() Widget {
 }
 
 func (r *RtColorWidget) Default() error {
-	return r.parent.SetValue(r.param.Name,r.param.Default)
+	r.param.Lock()
+	defer r.param.Unlock()
+	r.param.Value = r.param.Default
+	return nil
 }
 
 func (r *RtColorWidget) Value() RtColor {
-	return r.parent.Value(r.param.Name).(RtColor)
+	r.param.RLock()
+	defer r.param.RUnlock()
+	return r.param.Value.(RtColor)
 }
 
 func (r *RtColorWidget) Set(value RtColor) error {
 	/* TODO: check min/max */
-	return r.parent.SetValue(r.param.Name,value)
+	r.param.Lock()
+	defer r.param.Unlock()
+	r.param.Value = value
+	return nil
 }

@@ -12,31 +12,49 @@ type RtNormalWidget struct {
 }
 
 func (r *RtNormalWidget) Name() RtToken {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Name
 }
 
 func (r *RtNormalWidget) NameSpec() RtToken {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return RtToken(string(r.param.Type) + " " + string(r.param.Name))
 }
 
 func (r *RtNormalWidget) Label() RtString {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Label
 }
 
 func (r *RtNormalWidget) SetValue(value Rter) error {
-	return r.parent.SetValue(r.param.Name,value)
+	r.param.Lock()
+	defer r.param.Unlock()
+	if _,ok := value.(RtNormal); !ok {
+		return ErrInvalidType
+	}
+	r.param.Value = value 
+	return  nil	
 }
 
 func (r *RtNormalWidget) GetValue() Rter {
-	return r.parent.Value(r.param.Name)
+	r.param.RLock()
+	defer r.param.RUnlock()
+	return r.param.Name
 }
 
 func (r *RtNormalWidget) Help() RtString {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Help
 }
 
 func (r *RtNormalWidget) Bounds() (Rter,Rter) {
-	return nil,nil
+	r.param.RLock()
+	defer r.param.RUnlock()
+	return r.param.Min,r.param.Max
 }
 
 func (r *RtNormalWidget) Next() Widget {
@@ -48,14 +66,22 @@ func (r *RtNormalWidget) Prev() Widget {
 }
 
 func (r *RtNormalWidget) Default() error {
-	return r.parent.SetValue(r.param.Name,r.param.Default)
+	r.param.Lock()
+	defer r.param.Unlock()
+	r.param.Value = r.param.Default
+	return nil
 }
 
 func (r *RtNormalWidget) Value() RtNormal {
-	return r.parent.Value(r.param.Name).(RtNormal)
+	r.param.RLock()
+	defer r.param.RUnlock()
+	return r.param.Value.(RtNormal)
 }
 
 func (r *RtNormalWidget) Set(value RtNormal) error {
 	/* TODO: check min/max */
-	return r.parent.SetValue(r.param.Name,value)
+	r.param.Lock()
+	defer r.param.Unlock()
+	r.param.Value = value
+	return nil
 }

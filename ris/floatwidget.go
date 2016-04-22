@@ -12,31 +12,49 @@ type RtFloatWidget struct {
 }
 
 func (r *RtFloatWidget) Name() RtToken {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Name
 }
 
 func (r *RtFloatWidget) NameSpec() RtToken {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return RtToken(string(r.param.Type) + " " + string(r.param.Name))
 }
 
 func (r *RtFloatWidget) Label() RtString {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Label
 }
 
 func (r *RtFloatWidget) SetValue(value Rter) error {
-	return r.parent.SetValue(r.param.Name,value)
+	r.param.Lock()
+	defer r.param.Unlock()
+	if _,ok := value.(RtInt); !ok {
+		return ErrInvalidType
+	}
+	r.param.Value = value
+	return nil
 }
 
 func (r *RtFloatWidget) GetValue() Rter {
-	return r.parent.Value(r.param.Name)
+	r.param.RLock()
+	defer r.param.RUnlock()
+	return r.param.Value
 }
 
 func (r *RtFloatWidget) Help() RtString {
+	r.param.RLock()
+	defer r.param.RUnlock()
 	return r.param.Help
 }
 
 func (r *RtFloatWidget) Bounds() (Rter,Rter) {
-	return nil,nil
+	r.param.RLock()
+	defer r.param.RUnlock()
+	return r.param.Min,r.param.Max
 }
 
 func (r *RtFloatWidget) Next() Widget {
@@ -48,14 +66,24 @@ func (r *RtFloatWidget) Prev() Widget {
 }
 
 func (r *RtFloatWidget) Default() error {
-	return r.parent.SetValue(r.param.Name,r.param.Default)
+	r.param.Lock()
+	defer r.param.Unlock()
+	r.param.Value = r.param.Default
+	return nil
 }
 
 func (r *RtFloatWidget) Value() RtFloat {
-	return r.parent.Value(r.param.Name).(RtFloat)
+	r.param.RLock()
+	defer r.param.RUnlock()	
+	return r.param.Value.(RtFloat)
 }
 
 func (r *RtFloatWidget) Set(value RtFloat) error {
 	/* TODO: check min/max */
-	return r.parent.SetValue(r.param.Name,value)
+	r.param.Lock()
+	defer r.param.Unlock()	
+	r.param.Value = value
+	return nil
 }
+
+

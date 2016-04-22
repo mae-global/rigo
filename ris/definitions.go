@@ -3,8 +3,14 @@ package ris
 import (
 	. "github.com/mae-global/rigo/ri"
 	. "github.com/mae-global/rigo/ri/handles"
+	"fmt"
 )
 /* https://renderman.pixar.com/resources/current/RenderMan/devExamples.html */
+
+var (
+	ErrInvalidType = fmt.Errorf("invalid type")
+)
+
 
 type Widget interface {
 	Name() RtToken

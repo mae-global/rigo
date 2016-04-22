@@ -327,6 +327,15 @@ func (n RtNormal) Serialise() string {
 	return fmt.Sprintf("[%s %s %s]", reduce(n[0]), reduce(n[1]), reduce(n[2]))
 }
 
+func (n RtNormal) Equal(o RtNormal) bool {
+	for i := 0; i < 3; i++ {
+		if n[i] != o[i] {
+			return false
+		}
+	}
+	return true
+} 
+
 func Str2Normal(str string) RtNormal {
 
   parts := strings.Split(strings.TrimSpace(str)," ")
