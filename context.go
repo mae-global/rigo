@@ -27,29 +27,30 @@ var (
 type Result struct {
 	Name RtName
 	Args []Rter
-	List []Rter
+	Params []Rter
+	Values []Rter
 	Info *Info
 	Err  error
 }
 
 func Done() *Result {
-	return &Result{"", nil, nil,nil, ErrPipeDone}
+	return &Result{"", nil, nil,nil,nil, ErrPipeDone}
 }
 
-func Next(name RtName, args,list []Rter, info Info) *Result {
-	return &Result{name, args,list, info.Copy(), nil}
+func Next(name RtName, args,params,values []Rter, info Info) *Result {
+	return &Result{name, args,params,values, info.Copy(), nil}
 }
 
 func InError(err error) *Result {
-	return &Result{"", nil, nil,nil, err}
+	return &Result{"", nil, nil,nil,nil, err}
 }
 
 func Errored(message RtString) *Result {
-	return &Result{"", nil, nil,nil, fmt.Errorf(string(message))}
+	return &Result{"", nil, nil,nil,nil, fmt.Errorf(string(message))}
 }
 
 func EndOfLine() *Result {
-	return &Result{"", nil, nil,nil, ErrEndOfLine}
+	return &Result{"", nil, nil,nil,nil, ErrEndOfLine}
 }
 
 type Pipe struct {
@@ -114,13 +115,15 @@ func (p *Pipe) Run(name RtName, args,list []Rter, info Info) error {
 	}
 
 	nblocks := make([]Piper, 0)
+	
+	params,values := Unmix(list)
 
 	for _, b := range p.blocks {
 		if b == nil {
 			continue
 		}
 
-		r := b.Write(name, args,list, info)
+		r := b.Write(name, args,params,values, info)
 		if r.Err != nil {
 			if r.Err == ErrPipeDone {
 				nblocks = append(nblocks, b)
@@ -139,8 +142,13 @@ func (p *Pipe) Run(name RtName, args,list []Rter, info Info) error {
 		if r.Args != nil {
 			args = r.Args
 		}
-		if r.List != nil {
-			list = r.List
+		if r.Params != nil {
+			params = make([]Rter,len(r.Params))
+			copy(params,r.Params)
+		}
+		if r.Values != nil {
+			values = make([]Rter,len(r.Values))
+			copy(values,r.Values)
 		}
 	}
 
@@ -175,7 +183,8 @@ func NewPipe() *Pipe {
 }
 
 type Piper interface {
-	Write(RtName, []Rter,[]Rter, Info) *Result
+	/* name, []args,[]params,[]values,info */
+	Write(RtName, []Rter,[]Rter,[]Rter, Info) *Result
 	Name() string
 	ToRaw() ArchiveWriter
 }
