@@ -93,7 +93,7 @@ func (p *Pipe) Run(name RtName, args,list []Rter, info Info) error {
 			continue
 		}
 
-		r := b.Write(name, args,params,values, info)
+		r := b.Pipe(name, args,params,values, info)
 		if r.Err != nil {
 			if r.Err == ErrPipeDone {
 				nblocks = append(nblocks, b)
@@ -208,13 +208,10 @@ func (info Info) Copy() *Info {
 
 type Piper interface {
 	/* name, []args,[]params,[]values,info */
-	Write(RtName, []Rter,[]Rter,[]Rter, Info) *Result
+	Pipe(RtName, []Rter,[]Rter,[]Rter, Info) *Result
 	Name() string
 	ToRaw() ArchiveWriter
 }
 
-type Filter interface {
-	
-	
-}
+
 

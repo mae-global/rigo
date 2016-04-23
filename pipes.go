@@ -35,7 +35,7 @@ func (p PipeTimer) Name() string {
 	return "default-pipe-timer"
 }
 
-func (p *PipeTimer) Write(name RtName,args,params,values []Rter, info Info) *Result {
+func (p *PipeTimer) Pipe(name RtName,args,params,values []Rter, info Info) *Result {
 	switch string(name) {
 	case "Begin", "RiBegin":
 		p.start = time.Now()
@@ -69,7 +69,7 @@ func (p PipeToStats) Name() string {
 	return "default-pipe-to-stats"
 }
 
-func (p *PipeToStats) Write(name RtName,args,params,values []Rter, info Info) *Result {
+func (p *PipeToStats) Pipe(name RtName,args,params,values []Rter, info Info) *Result {
 	if p.Stats == nil {
 		p.Stats = make(map[RtName]int, 0)
 	}
@@ -140,7 +140,7 @@ func (p PipeToFile) Name() string {
 	return "default-pipe-to-file"
 }
 
-func (p *PipeToFile) Write(name RtName,args,params,values []Rter, info Info) *Result {
+func (p *PipeToFile) Pipe(name RtName,args,params,values []Rter, info Info) *Result {
 
 	list := Mix(params,values)
 
@@ -220,7 +220,7 @@ func (p *PipeToFile) Write(name RtName,args,params,values []Rter, info Info) *Re
 	return Done()
 }
 
-/* Convert String Handlers back to Int Handlers */
+
 type FilterStringHandles struct {
 	/* FIXME: this should actually be a filter */
 }
@@ -233,7 +233,7 @@ func (p FilterStringHandles) Name() string {
 	return "default-filter-string-handles"
 }
 
-func (p *FilterStringHandles) Write(name RtName,args,params,values []Rter, info Info) *Result {
+func (p *FilterStringHandles) Pipe(name RtName,args,params,values []Rter, info Info) *Result {
 
 	/* TODO: add filter to only those proceedures the include light and object handles */
 		
