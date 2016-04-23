@@ -10,7 +10,7 @@ import (
 const USEDEBUG = false
 
 
-type Contexter interface {
+type RiContexter interface {
 	Write(RtName, []Rter,[]Rter) error
 	OpenRaw(RtToken) (ArchiveWriter,error)
 	CloseRaw(RtToken) error
@@ -145,7 +145,7 @@ func NewTest() *Ri {
 
 /* Ri is the main interface */
 type Ri struct {
-	Contexter
+	RiContexter
 }
 
 
@@ -166,7 +166,7 @@ func (r *Ri) User(w RterWriter) error {
 	
 
 func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
-	if r.Contexter == nil {
+	if r.RiContexter == nil {
 		return ErrProtocolBotch
 	}
 

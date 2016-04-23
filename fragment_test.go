@@ -18,25 +18,24 @@ func Test_ExampleOrangeBall(t *testing.T) {
 		cuser,err := user.Current()
 		So(err,ShouldBeNil)
 
-		pipe := DefaultFilePipe()
-		So(pipe,ShouldNotBeNil)
+		ri,pipe := DefaultPipeline(&Configuration{PrettyPrint:true})
 
-		ctx := New(pipe,&Configuration{PrettyPrint:true})
-		ctx.Begin("output/exampleOrangeBall.rib")
-		ctx.ArchiveRecord("structure","Scene Orange Ball")
-		ctx.ArchiveRecord("structure","Creator %s",Author)
-		ctx.ArchiveRecord("structure","CreationDate %s",time.Now())
-		ctx.ArchiveRecord("structure","For %s",cuser.Username)
-		ctx.ArchiveRecord("structure","Frames 5")
+		ri.Begin("output/exampleOrangeBall.rib")
+		ri.ArchiveRecord("structure","Scene Orange Ball")
+		ri.ArchiveRecord("structure","Creator %s",Author)
+		ri.ArchiveRecord("structure","CreationDate %s",time.Now())
+		ri.ArchiveRecord("structure","For %s",cuser.Username)
+		ri.ArchiveRecord("structure","Frames 5")
 
-		light,err := ctx.LightHandle()
+		light,err := ri.LightHandle()
 		So(err,ShouldBeNil)
 		So(light.String(),ShouldEqual,"\"0\"")
 		
-		frag := NewFragment("orangeball_fragment")
+		frag := DefaultFragment("orangeball_fragment")
 		So(frag,ShouldNotBeNil)
+
 		/* grab the Renderman Interface from the fragment */
-		fri := frag.Ri()
+		fri := RI(frag)
 		So(fri,ShouldNotBeNil)
 
 		fri.Format(640,480,-1)
@@ -63,15 +62,15 @@ func Test_ExampleOrangeBall(t *testing.T) {
 		So(frag.Statements(),ShouldEqual,18)
 
 		for frame := 1; frame <= 5; frame++ {
-			ctx.FrameBegin(RtInt(frame))
-			ctx.Display(RtToken(fmt.Sprintf("orange_%03d.tif",frame)),"file","rgba")		
+			ri.FrameBegin(RtInt(frame))
+			ri.Display(RtToken(fmt.Sprintf("orange_%03d.tif",frame)),"file","rgba")		
 
-			frag.Replay(ctx)
+			frag.Replay(ri)
 
-			ctx.FrameEnd()
+			ri.FrameEnd()
 		}
 
-		So(ctx.End(),ShouldBeNil)
+		So(ri.End(),ShouldBeNil)
 
 		p := pipe.GetByName(PipeToStats{}.Name())
 		So(p,ShouldNotBeNil)

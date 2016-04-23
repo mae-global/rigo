@@ -35,11 +35,8 @@ type Fragment struct {
 	cache map[RtShaderHandle]Shader
 }
 
-func (f *Fragment) Ri() *Ri {
-	return &Ri{f}
-}
 
-func (f *Fragment) Replay(ctx Contexter) error {
+func (f *Fragment) Replay(ctx RiContexter) error {
 	f.mux.RLock()
 	defer f.mux.RUnlock()
 
@@ -58,7 +55,7 @@ func (f *Fragment) Replay(ctx Contexter) error {
 	return nil
 }
 
-func (f *Fragment) ReplayPartial(ctx Contexter,start,finish uint) error {
+func (f *Fragment) ReplayPartial(ctx RiContexter,start,finish uint) error {
 	f.mux.RLock()
 	defer f.mux.RUnlock()
 
@@ -185,13 +182,7 @@ func (f *Fragment) Shader(h RtShaderHandle) ShaderWriter {
 }
 	 
 
-
-
-func NewFragment(name RtName) *Fragment {
-	return NewCustomFragment(name,nil,nil,nil)
-}
-
-func NewCustomFragment(name RtName,lights LightHandler,objects ObjectHandler,shaders ShaderHandler) *Fragment {
+func NewFragment(name RtName,lights LightHandler,objects ObjectHandler,shaders ShaderHandler) *Fragment {
 	if lights == nil {
 		lights = NewLightNumberGenerator()
 	}

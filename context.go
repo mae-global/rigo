@@ -10,18 +10,11 @@ import (
 	. "github.com/mae-global/rigo/ris"
 )
 
-
-
-
-
 type Configuration struct {
 	Entity bool
 	Formal bool
 	PrettyPrint bool
 }
-
-
-
 
 type Context struct {
 	mux sync.RWMutex
@@ -149,6 +142,9 @@ func (ctx *Context) Shader(sh RtShaderHandle) ShaderWriter {
 	return ctx.GetShader(sh)
 }
 
+
+
+
 func NewContext(pipe *Pipe,lights LightHandler,objects ObjectHandler,shaders ShaderHandler,config *Configuration) *Context {
 	if pipe == nil {
 		pipe = DefaultFilePipe()
@@ -172,44 +168,11 @@ func NewContext(pipe *Pipe,lights LightHandler,objects ObjectHandler,shaders Sha
 }
 	 
 
-func New(pipe *Pipe, config *Configuration) *Ri {
-	return NewCustom(pipe,nil,nil,nil,config)
-}
-
-func NewCustom(pipe *Pipe,lights LightHandler,objects ObjectHandler,shaders ShaderHandler,config *Configuration) *Ri {
-	if pipe == nil {
-		pipe = DefaultFilePipe()
-	}
-	if config == nil {
-		config = &Configuration{Entity: false,Formal: false,PrettyPrint: false}
-	}
-	
-	if lights == nil {
-		lights = NewLightNumberGenerator()
-	}
-	if objects == nil {
-		objects = NewObjectNumberGenerator()
-	}
-	if shaders == nil {
-		shaders = NewShaderNumberGenerator()
-	}	
-
-	ctx := &Context{pipe:pipe,lights:lights,objects:objects,shaders:shaders,Info:Info{Name: "", Entity: config.Entity, Formal: config.Formal,PrettyPrint: config.PrettyPrint}}
-
-	/* cache for the shaders */
-	ctx.cache = make(map[RtShaderHandle]Shader,0)
-	return &Ri{ctx}
-}
-
-func NewEntity(pipe *Pipe) *Ri {
-	return New(pipe, &Configuration{Entity: true, Formal: false})
-}
-
-func RIS(ctx *Context) *Ris {
+func RIS(ctx RisContexter) *Ris {
 	return &Ris{ctx}
 }
 
-func RI(ctx *Context) *Ri {
+func RI(ctx RiContexter) *Ri {
 	return &Ri{ctx}
 }
 

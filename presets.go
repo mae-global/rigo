@@ -6,11 +6,34 @@ import (
 	. "github.com/mae-global/rigo/ri/handles"
 )
 
+func DefaultPipeline(config *Configuration) (*Ri,*Pipe) {
+
+	pipe := DefaultFilePipe()
+
+	return RI(NewContext(pipe,NewLightNumberGenerator(),NewObjectNumberGenerator(),NewShaderNumberGenerator(),config)),pipe
+}
 
 func StrictPipeline() (*Ri,*Pipe) {
 
 	pipe := NewPipe()
 	pipe.Append(&PipeTimer{}).Append(&PipeToStats{}).Append(&FilterStringHandles{}).Append(&PipeToFile{})
 
-	return NewCustom(pipe,NewLightNumberGenerator(),NewObjectNumberGenerator(),nil,nil),pipe
+	ctx := NewContext(pipe,NewLightNumberGenerator(),NewObjectNumberGenerator(),NewShaderNumberGenerator(),nil)
+
+	return RI(ctx),pipe
 }
+
+func EntityPipeline() (*Ri,*Pipe) {
+
+	pipe := DefaultFilePipe()
+
+	ctx := NewContext(pipe,nil,nil,nil,&Configuration{Entity:true,Formal:false})
+
+	return RI(ctx),pipe
+}
+
+func DefaultFragment(name RtName) *Fragment {
+	return NewFragment(name,nil,nil,nil)
+}
+
+

@@ -15,7 +15,7 @@ type ShaderWriter interface {
 /* Integrator procedure is used to specify an integrator. RIS-Mode only. */
 func (r *Ri) Integrator(name RtToken,handle RtShaderHandle,parameterlist... Rter) error {
 
-	integrator := r.Contexter.Shader(handle)
+	integrator := r.RiContexter.Shader(handle)
 
 	if integrator == nil {
 
@@ -67,7 +67,7 @@ func (r *Ri) Bxdf(name RtToken,handle RtShaderHandle,parameterlist... Rter) erro
 	 * basis for the output. All the parameterlist are thus applied ontop of the basis.
 	 */
 		
-	bxdf := r.Contexter.Shader(handle)
+	bxdf := r.RiContexter.Shader(handle)
 
 	if bxdf == nil {
 	
@@ -117,7 +117,7 @@ func (r *Ri) Bxdf(name RtToken,handle RtShaderHandle,parameterlist... Rter) erro
 /* Pattern is used to wire in textures and patterns. */
 func (r *Ri) Pattern(name RtToken,handle RtShaderHandle,parameterlist... Rter) error {
 
-	pattern := r.Contexter.Shader(handle)
+	pattern := r.RiContexter.Shader(handle)
 
 	if pattern == nil {
 		list := []Rter{name,handle,PARAMETERLIST}
