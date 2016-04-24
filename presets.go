@@ -32,8 +32,11 @@ func EntityPipeline() (*Ri,*Pipe) {
 	return RI(ctx),pipe
 }
 
-func DefaultFragment(name RtName) *Fragment {
-	return NewFragment(name,nil,nil,nil)
+func CustomEntityPipeline(pipe *Pipe) *Ri {
+
+	ctx := NewContext(pipe,nil,nil,nil,&Configuration{Entity:true,Formal:false})
+	return RI(ctx)
 }
+
 
 

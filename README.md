@@ -49,49 +49,49 @@ func (t *MyTimer) Pipe(name RtName,args,params,values []Rter,info Info) *Result 
 pipe := NewPipe()
 pipe.Append(&MyTimer{}).Append(&PipeToFile{})
 
-ctx := NewEntity(pipe)
+ri := CustomEntityPipeline(pipe)
 
 /* Do all our Ri calls */
-ctx.Begin("unitcube.rib")
-ctx.AttributeBegin("begin unit cube")
-ctx.Attribute("identifier", RtToken("name"), RtToken("unitcube"))
-ctx.Bound(RtBound{-.5, .5, -.5, .5, -.5, .5})
-ctx.TransformBegin()
+ri.Begin("unitcube.rib")
+ri.AttributeBegin("begin unit cube")
+ri.Attribute("identifier", RtToken("name"), RtToken("unitcube"))
+ri.Bound(RtBound{-.5, .5, -.5, .5, -.5, .5})
+ri.TransformBegin()
 
 points := RtFloatArray{.5, .5, .5, -.5, .5, .5, -.5, -.5, .5, .5, -.5, .5}
 
-ctx.Comment("far face")
-ctx.Polygon(4, RtToken("P"), points)
-ctx.Rotate(90, 0, 1, 0)
+ri.Comment("far face")
+ri.Polygon(4, RtToken("P"), points)
+ri.Rotate(90, 0, 1, 0)
 
-ctx.Comment("right face")
-ctx.Polygon(4, RtToken("P"), points)
-ctx.Rotate(90, 0, 1, 0)
+ri.Comment("right face")
+ri.Polygon(4, RtToken("P"), points)
+ri.Rotate(90, 0, 1, 0)
 
-ctx.Comment("near face")
-ctx.Polygon(4, RtToken("P"), points)
-ctx.Rotate(90, 0, 1, 0)
+ri.Comment("near face")
+ri.Polygon(4, RtToken("P"), points)
+ri.Rotate(90, 0, 1, 0)
 
-ctx.Comment("left face")
-ctx.Polygon(4, RtToken("P"), points)
+ri.Comment("left face")
+ri.Polygon(4, RtToken("P"), points)
 
-ctx.TransformEnd()
-ctx.TransformBegin()
+ri.TransformEnd()
+ri.TransformBegin()
 
-ctx.Comment("bottom face")
-ctx.Rotate(90, 1, 0, 0)
-ctx.Polygon(4, RtToken("P"), points)
+ri.Comment("bottom face")
+ri.Rotate(90, 1, 0, 0)
+ri.Polygon(4, RtToken("P"), points)
 
-ctx.TransformEnd()
-ctx.TransformBegin()
+ri.TransformEnd()
+ri.TransformBegin()
 
-ctx.Comment("top face")
-ctx.Rotate(-90, 1, 0, 0)
-ctx.Polygon(4, RtToken("P"), points)
+ri.Comment("top face")
+ri.Rotate(-90, 1, 0, 0)
+ri.Polygon(4, RtToken("P"), points)
 
-ctx.TransformEnd()
-ctx.AttributeEnd("end unit cube")
-ctx.End()	
+ri.TransformEnd()
+ri.AttributeEnd("end unit cube")
+ri.End()	
 		
 /* grab our timer back and print the duration */
 p = pipe.GetByName(MyTimer{}.Name())
@@ -132,160 +132,7 @@ AttributeBegin #begin unit cube
 	TransformEnd 
 AttributeEnd #end unit cube
 ```
-We can remove duplicate work, by using the fragments interface.
 
-```go
-ctx,pipe := StrictPipeline()
-ctx.Begin("output/orangeball.rib")
-ctx.ArchiveRecord("structure","Scene Orange Ball")
-ctx.ArchiveRecord("structure","Frames 5")
-		
-frag := NewFragment("orangeball_fragment")
-/* grab the Renderman Interface from the fragment */
-fri := frag.Ri()
-
-fri.Format(640,480,-1)
-fri.ShadingRate(1)
-fri.Projection(Perspective,RtString("fov"),RtInt(30))
-fri.FrameAspectRatio(1.33)
-fri.Identity()
-fri.LightSource("distantlight",RtInt(1))
-fri.Translate(0,0,5)
-fri.WorldBegin()
-fri.Identity()
-fri.AttributeBegin()
-fri.Color(RtColor{1.0,0.6,0.0})
-fri.Surface("plastic",RtString("Ka"),RtFloat(1),RtString("Kd"),RtFloat(0.5),
-										  RtString("Ks"),RtFloat(1),RtString("roughness"),RtFloat(0.1))
-fri.TransformBegin()
-fri.Rotate(90,1,0,0)
-fri.Sphere(1,-1,1,360)
-fri.TransformEnd()
-fri.AttributeEnd()
-fri.WorldEnd()
-
-
-for frame := 1; frame <= 5; frame++ {
-	ctx.FrameBegin(RtInt(frame))
-	ctx.Display(RtToken(fmt.Sprintf("orange_%03d.tif",frame)),"file","rgba")		
-
-	frag.Replay(ctx)
-
-	ctx.FrameEnd()
-}
-
-ctx.End()
-```
-```
-##RenderMan RIB-Structure 1.1
-##Scene Orange Ball
-##Frames 5
-FrameBegin 1
-	Display "orange_001.tif" "file" "rgba"
-	Format 640 480 -1
-	ShadingRate 1
-	Projection "perspective" "fov" 30
-	FrameAspectRatio 1.33
-	Identity 
-	LightSource "distantlight" "0"
-	Translate 0 0 5
-	WorldBegin 
-		Identity 
-		AttributeBegin 
-			Color [1 .6 0]
-			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
-			TransformBegin 
-				Rotate 90 1 0 0
-				Sphere 1 -1 1 360
-			TransformEnd 
-		AttributeEnd 
-	WorldEnd 
-FrameEnd 
-FrameBegin 2
-	Display "orange_002.tif" "file" "rgba"
-	Format 640 480 -1
-	ShadingRate 1
-	Projection "perspective" "fov" 30
-	FrameAspectRatio 1.33
-	Identity 
-	LightSource "distantlight" "0"
-	Translate 0 0 5
-	WorldBegin 
-		Identity 
-		AttributeBegin 
-			Color [1 .6 0]
-			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
-			TransformBegin 
-				Rotate 90 1 0 0
-				Sphere 1 -1 1 360
-			TransformEnd 
-		AttributeEnd 
-	WorldEnd 
-FrameEnd 
-FrameBegin 3
-	Display "orange_003.tif" "file" "rgba"
-	Format 640 480 -1
-	ShadingRate 1
-	Projection "perspective" "fov" 30
-	FrameAspectRatio 1.33
-	Identity 
-	LightSource "distantlight" "0"
-	Translate 0 0 5
-	WorldBegin 
-		Identity 
-		AttributeBegin 
-			Color [1 .6 0]
-			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
-			TransformBegin 
-				Rotate 90 1 0 0
-				Sphere 1 -1 1 360
-			TransformEnd 
-		AttributeEnd 
-	WorldEnd 
-FrameEnd 
-FrameBegin 4
-	Display "orange_004.tif" "file" "rgba"
-	Format 640 480 -1
-	ShadingRate 1
-	Projection "perspective" "fov" 30
-	FrameAspectRatio 1.33
-	Identity 
-	LightSource "distantlight" "0"
-	Translate 0 0 5
-	WorldBegin 
-		Identity 
-		AttributeBegin 
-			Color [1 .6 0]
-			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
-			TransformBegin 
-				Rotate 90 1 0 0
-				Sphere 1 -1 1 360
-			TransformEnd 
-		AttributeEnd 
-	WorldEnd 
-FrameEnd 
-FrameBegin 5
-	Display "orange_005.tif" "file" "rgba"
-	Format 640 480 -1
-	ShadingRate 1
-	Projection "perspective" "fov" 30
-	FrameAspectRatio 1.33
-	Identity 
-	LightSource "distantlight" "0"
-	Translate 0 0 5
-	WorldBegin 
-		Identity 
-		AttributeBegin 
-			Color [1 .6 0]
-			Surface "plastic" "Ka" 1 "Kd" .5 "Ks" 1 "roughness" .1
-			TransformBegin 
-				Rotate 90 1 0 0
-				Sphere 1 -1 1 360
-			TransformEnd 
-		AttributeEnd 
-	WorldEnd 
-FrameEnd 
-```
 An example light handler generator, which generates unique names so that lights can be tracked more easily. 
 
 ```go
@@ -294,19 +141,20 @@ pipe := DefaultFilePipe()
 /* use a custom unique generator with a prefix for the light handles */
 lights := NewPrefixLightUniqueGenerator("light_")
 	
-ctx := NewCustom(pipe,lights,nil,&Configuration{PrettyPrint:true})
-ctx.Begin("output/simple.rib")
-ctx.Display("sphere.tif","file","rgb")
-ctx.Format(320,240,1)
-ctx.Projection(Perspective,RtString("fov"),RtFloat(30))
-ctx.Translate(0,0,6)
-ctx.WorldBegin()
-ctx.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
-ctx.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
-ctx.Color(RtColor{1,0,0})
-ctx.Sphere(1,-1,1,360)
-ctx.WorldEnd()
-ctx.End()
+ctx := NewContext(pipe,lights,nil,&Configuration{PrettyPrint:true})
+ri := RI(ctx)
+ri.Begin("output/simple.rib")
+ri.Display("sphere.tif","file","rgb")
+ri.Format(320,240,1)
+ri.Projection(Perspective,RtString("fov"),RtFloat(30))
+ri.Translate(0,0,6)
+ri.WorldBegin()
+ri.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
+ri.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
+ri.Color(RtColor{1,0,0})
+ri.Sphere(1,-1,1,360)
+ri.WorldEnd()
+ri.End()
 ```
 
 ```
