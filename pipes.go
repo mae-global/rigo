@@ -207,6 +207,9 @@ func (p *PipeToFile) Pipe(name RtName,args,params,values []Rter, info Info) *Res
 				prefix += "\t"
 			}
 		}
+		if name == "Option" {
+			fmt.Printf("Writing Option to RIB stream [%v %v]\n",args,list)
+		}
 
 		if _, err := p.file.Write([]byte(prefix + name.Serialise() + " " + Serialise(args) + " " + Serialise(list) + "\n")); err != nil {
 			return InError(err)
@@ -250,6 +253,14 @@ func (p *FilterStringHandles) Pipe(name RtName,args,params,values []Rter, info I
 		} 
 		if oh,ok := args[i].(RtObjectHandle); ok {
 			id,err := strconv.Atoi(string(oh))
+			if err != nil {
+				return InError(err)
+			}
+			args1[i] = RtInt(id)
+			continue
+		}
+		if sh,ok := args[i].(RtShaderHandle); ok {
+			id,err := strconv.Atoi(string(sh))
 			if err != nil {
 				return InError(err)
 			}

@@ -220,6 +220,7 @@ func Test_SimpleExample(t *testing.T) {
 }
 
 func Test_SimpleExampleWithConditionals(t *testing.T) {
+	/* FIXME: there appears to be an unknown error writing ri.Option... */
 
 	Convey("Simple Example with Conditionals",t,func() {
 	
@@ -234,7 +235,8 @@ func Test_SimpleExampleWithConditionals(t *testing.T) {
 		ri.Display("sphere.tif","file","rgb")
 		ri.Format(320,240,1)
 		ri.Projection(PERSPECTIVE,RtString("fov"),RtFloat(30))
-		ri.Translate(0,0,6)
+		ri.Translate(0,0,6)		
+		ri.Option("user",RtString("string renderpass"),RtString("red"))
 		ri.WorldBegin()
 		ri.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
 		ri.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
@@ -319,6 +321,7 @@ func Test_Archive(t *testing.T) {
 		fmt.Printf("%s%s", s, t)
 	})
 }
+
 
 
 /* go test -bench=. */

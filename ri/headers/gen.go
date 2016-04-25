@@ -1,6 +1,8 @@
 /* RtToken generator */
 package main
 
+/* This tool will read ri.h and generate all the known tokens */
+
 import (
 	"io/ioutil"
 	"strings"
