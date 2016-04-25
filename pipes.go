@@ -207,9 +207,7 @@ func (p *PipeToFile) Pipe(name RtName,args,params,values []Rter, info Info) *Res
 				prefix += "\t"
 			}
 		}
-		if name == "Option" {
-			fmt.Printf("Writing Option to RIB stream [%v %v]\n",args,list)
-		}
+		
 
 		if _, err := p.file.Write([]byte(prefix + name.Serialise() + " " + Serialise(args) + " " + Serialise(list) + "\n")); err != nil {
 			return InError(err)

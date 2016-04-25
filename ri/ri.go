@@ -197,14 +197,14 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	for i,r := range list {
 		ar := r		
 		if i % 2 == 0 {
-			t,ok := r.(RtToken)
+			_,ok := r.(RtToken)
 			if !ok {
 				return ErrBadArgument  			
 			}
 		
-			cl,ty,nam,n := ClassTypeNameCount(t)
+		//	cl,ty,nam,n := ClassTypeNameCount(t)
 			/* TODO: parse token, lookup class and type then check inputs of values */
-			fmt.Printf("Debug,Ri.writef token, class=%s,type=%s,name=%s,count=%d\n",cl,ty,nam,n)
+		//	fmt.Printf("Debug,Ri.writef token, class=%s,type=%s,name=%s,count=%d\n",cl,ty,nam,n)
 
 		} else {
 			if a,ok := r.(RtString); ok {

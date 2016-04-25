@@ -16,7 +16,7 @@ func Test_ExampleD14(t *testing.T) {
 
 	Convey("Example D1.4", t, func() {
 
-		sgroup := RtString("shadinggroup")
+		sgroup := RtToken("shadinggroup")
 		frames := 2
 		cuser, err := user.Current()
 		So(err, ShouldBeNil)
@@ -44,8 +44,8 @@ func Test_ExampleD14(t *testing.T) {
 		ri.Transform(RtMatrix{.707107, -.408248, 0.57735, 0, 0, .816497, -.57735, 0, -.707107, -.408248, -.57735, 0, 0, 0, 17.3205, 1})
 		ri.WorldBegin()
 		ri.AttributeBegin()
-		ri.Attribute("identifier", RtString("name"), RtString("myball"))
-		ri.Displacement("MyUserShader", RtString("squish"), RtInt(5))
+		ri.Attribute("identifier", RtToken("name"), RtString("myball"))
+		ri.Displacement("MyUserShader", RtToken("squish"), RtInt(5))
 		ri.AttributeBegin()
 		ri.Attribute("identifier", sgroup, RtStringArray{"tophalf"})
 		ri.Surface("plastic")
@@ -58,8 +58,8 @@ func Test_ExampleD14(t *testing.T) {
 		ri.AttributeEnd()
 		ri.AttributeEnd()
 		ri.AttributeBegin()
-		ri.Attribute("identifier", RtString("name"), RtStringArray{"floor"})
-		ri.Surface("PIXARwood", RtString("roughness"), RtFloatArray{.3}, RtToken("d"), RtIntArray{1})
+		ri.Attribute("identifier", RtToken("name"), RtStringArray{"floor"})
+		ri.Surface("PIXARwood", RtToken("roughness"), RtFloatArray{.3}, RtToken("d"), RtIntArray{1})
 		ri.Comment("geometry for floor")
 		ri.Polygon(4, RtToken("P"), RtFloatArray{-100, 0, -100, -100, 0, 100, 100, 0, 100, 10, 0, -100})
 		ri.AttributeEnd()
@@ -72,7 +72,7 @@ func Test_ExampleD14(t *testing.T) {
 		ri.Transform(RtMatrix{.707107, -.57735, -.408248, 0, 0, .57735, -.815447, 0, -.707107, -.57735, -.408248, 0, 0, 0, 24.4949, 1})
 		ri.WorldBegin()
 		ri.AttributeBegin()
-		ri.Attribute("identifier", RtString("name"), RtStringArray{"myball"})
+		ri.Attribute("identifier", RtToken("name"), RtStringArray{"myball"})
 		ri.AttributeBegin()
 		ri.Attribute("identifier", sgroup, RtStringArray{"tophalf"})
 		ri.Surface("PIXARmarble")
@@ -86,7 +86,7 @@ func Test_ExampleD14(t *testing.T) {
 		ri.AttributeEnd()
 		ri.AttributeEnd()
 		ri.AttributeBegin()
-		ri.Attribute("identifier", RtString("name"), RtStringArray{"floor"})
+		ri.Attribute("identifier", RtToken("name"), RtStringArray{"floor"})
 		ri.Surface("PIXARwood", RtToken("roughness"), RtFloatArray{.3}, RtToken("d"), RtIntArray{1})
 		ri.Comment("geometry for floor")
 		ri.Polygon(4, RtToken("P"), RtFloatArray{-100, 0, -100, -100, 0, 100, 100, 0, 100, 10, 0, -100})
@@ -191,11 +191,11 @@ func Test_SimpleExample(t *testing.T) {
 		ri.Begin("output/simple.rib")
 		ri.Display("sphere.tif","file","rgb")
 		ri.Format(320,240,1)
-		ri.Projection(PERSPECTIVE,RtString("fov"),RtFloat(30))
+		ri.Projection(PERSPECTIVE,RtToken("fov"),RtFloat(30))
 		ri.Translate(0,0,6)
 		ri.WorldBegin()
-		ri.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
-		ri.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
+		ri.LightSource("ambientlight",RtToken("intensity"),RtFloat(0.5))
+		ri.LightSource("distantlight",RtToken("intensity"),RtFloat(1.2),RtToken("from"),RtIntArray{0,0,-6},RtToken("to"),RtIntArray{0,0,0})
 		ri.Color(RtColor{1,0,0})
 		ri.Sphere(1,-1,1,360)
 		ri.WorldEnd()
@@ -220,7 +220,6 @@ func Test_SimpleExample(t *testing.T) {
 }
 
 func Test_SimpleExampleWithConditionals(t *testing.T) {
-	/* FIXME: there appears to be an unknown error writing ri.Option... */
 
 	Convey("Simple Example with Conditionals",t,func() {
 	
@@ -236,12 +235,11 @@ func Test_SimpleExampleWithConditionals(t *testing.T) {
 		ri.Format(320,240,1)
 		ri.Projection(PERSPECTIVE,RtString("fov"),RtFloat(30))
 		ri.Translate(0,0,6)		
-		ri.Option("user",RtString("string renderpass"),RtString("red"))
+		ri.Option("user",RtToken("string renderpass"),RtString("red"))
 		ri.WorldBegin()
-		ri.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
-		ri.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
-
-		ri.Option("user",RtString("string renderpass"),RtString("red"))
+		ri.LightSource("ambientlight",RtToken("intensity"),RtFloat(0.5))
+		ri.LightSource("distantlight",RtToken("intensity"),RtFloat(1.2),RtToken("from"),RtIntArray{0,0,-6},RtToken("to"),RtIntArray{0,0,0})
+	
 		ri.IfBegin("$user:renderpass == 'red'")
 		ri.Color(RtColor{1,0,0})
 		ri.ElseIf("$user:renderpass == 'blue'")
@@ -301,7 +299,7 @@ func Test_Archive(t *testing.T) {
 		aw.Write([]byte(hello_world))
 		So(ri.ArchiveEnd("test"),ShouldBeNil)
 
-		ri.ArchiveInstance("test",RtString("string name"),RtString("Alice"))
+		ri.ArchiveInstance("test",RtToken("string name"),RtString("Alice"))
 
 		So(ri.End(),ShouldBeNil)	
 
@@ -336,7 +334,7 @@ func Benchmark_SimpleExampleNumberHandlers(b *testing.B) {
 		ri.Translate(0,0,6)
 		ri.WorldBegin()
 		ri.LightSource("ambientlight",RtToken("intensity"),RtFloat(0.5))
-		ri.LightSource("distantlight",RtToken("intensity"),RtFloat(1.2),RtToken("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
+		ri.LightSource("distantlight",RtToken("intensity"),RtFloat(1.2),RtToken("from"),RtIntArray{0,0,-6},RtToken("to"),RtIntArray{0,0,0})
 		ri.Color(RtColor{1,0,0})
 		ri.Sphere(1,-1,1,360)
 		ri.WorldEnd()
@@ -353,11 +351,11 @@ func Benchmark_SimpleExampleUniqueHandlers(b *testing.B) {
 		ri.Begin("simple.rib")
 		ri.Display("sphere.tif","file","rgb")
 		ri.Format(320,240,1)
-		ri.Projection(PERSPECTIVE,RtString("fov"),RtFloat(30))
+		ri.Projection(PERSPECTIVE,RtToken("fov"),RtFloat(30))
 		ri.Translate(0,0,6)
 		ri.WorldBegin()
-		ri.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
-		ri.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
+		ri.LightSource("ambientlight",RtToken("intensity"),RtFloat(0.5))
+		ri.LightSource("distantlight",RtToken("intensity"),RtFloat(1.2),RtToken("from"),RtIntArray{0,0,-6},RtToken("to"),RtIntArray{0,0,0})
 		ri.Color(RtColor{1,0,0})
 		ri.Sphere(1,-1,1,360)
 		ri.WorldEnd()
