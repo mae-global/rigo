@@ -7,11 +7,9 @@ import (
 	. "github.com/mae-global/rigo/ri"
 )
 
-
 const (
 	Author RtToken = "RiGO;ver 0"
 )
-
 
 var (
 	ErrInvalidContextHandle = fmt.Errorf("Invalid Context Handle")
@@ -21,7 +19,6 @@ var (
 	ErrPipeDone             = fmt.Errorf("Pipe Done")
 	ErrEndOfLine            = fmt.Errorf("End of Line")
 )
-
 
 type Pipe struct {
 	blocks []Piper
@@ -76,7 +73,7 @@ func (p *Pipe) GetByName(name string) Piper {
 	return nil
 }
 
-func (p *Pipe) Run(name RtName, args,list []Rter, info Info) error {
+func (p *Pipe) Run(name RtName, args, list []Rter, info Info) error {
 	p.Lock()
 	defer p.Unlock()
 
@@ -85,15 +82,15 @@ func (p *Pipe) Run(name RtName, args,list []Rter, info Info) error {
 	}
 
 	nblocks := make([]Piper, 0)
-	
-	params,values := Unmix(list)
+
+	params, values := Unmix(list)
 
 	for _, b := range p.blocks {
 		if b == nil {
 			continue
 		}
 
-		r := b.Pipe(name, args,params,values, info)
+		r := b.Pipe(name, args, params, values, info)
 		if r.Err != nil {
 			if r.Err == ErrPipeDone {
 				nblocks = append(nblocks, b)
@@ -113,12 +110,12 @@ func (p *Pipe) Run(name RtName, args,list []Rter, info Info) error {
 			args = r.Args
 		}
 		if r.Params != nil {
-			params = make([]Rter,len(r.Params))
-			copy(params,r.Params)
+			params = make([]Rter, len(r.Params))
+			copy(params, r.Params)
 		}
 		if r.Values != nil {
-			values = make([]Rter,len(r.Values))
-			copy(values,r.Values)
+			values = make([]Rter, len(r.Values))
+			copy(values, r.Values)
 		}
 	}
 
@@ -134,7 +131,7 @@ func (p *Pipe) ToRaw() ArchiveWriter {
 		return nil
 	}
 
-	for _,b := range p.blocks {
+	for _, b := range p.blocks {
 		if b == nil {
 			continue
 		}
@@ -144,7 +141,6 @@ func (p *Pipe) ToRaw() ArchiveWriter {
 	}
 	return nil
 }
-	
 
 func NewPipe() *Pipe {
 	pipe := Pipe{}
@@ -152,36 +148,34 @@ func NewPipe() *Pipe {
 	return &pipe
 }
 
-
 type Result struct {
-	Name RtName
-	Args []Rter
+	Name   RtName
+	Args   []Rter
 	Params []Rter
 	Values []Rter
-	Info *Info
-	Err  error
+	Info   *Info
+	Err    error
 }
 
 func Done() *Result {
-	return &Result{"", nil, nil,nil,nil, ErrPipeDone}
+	return &Result{"", nil, nil, nil, nil, ErrPipeDone}
 }
 
-func Next(name RtName, args,params,values []Rter, info Info) *Result {
-	return &Result{name, args,params,values, info.Copy(), nil}
+func Next(name RtName, args, params, values []Rter, info Info) *Result {
+	return &Result{name, args, params, values, info.Copy(), nil}
 }
 
 func InError(err error) *Result {
-	return &Result{"", nil, nil,nil,nil, err}
+	return &Result{"", nil, nil, nil, nil, err}
 }
 
 func Errored(message RtString) *Result {
-	return &Result{"", nil, nil,nil,nil, fmt.Errorf(string(message))}
+	return &Result{"", nil, nil, nil, nil, fmt.Errorf(string(message))}
 }
 
 func EndOfLine() *Result {
-	return &Result{"", nil, nil,nil,nil, ErrEndOfLine}
+	return &Result{"", nil, nil, nil, nil, ErrEndOfLine}
 }
-
 
 type Info struct {
 	Name        string
@@ -205,13 +199,9 @@ func (info Info) Copy() *Info {
 	return &n
 }
 
-
 type Piper interface {
 	/* name, []args,[]params,[]values,info */
-	Pipe(RtName, []Rter,[]Rter,[]Rter, Info) *Result
+	Pipe(RtName, []Rter, []Rter, []Rter, Info) *Result
 	Name() string
 	ToRaw() ArchiveWriter
 }
-
-
-

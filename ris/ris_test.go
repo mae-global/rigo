@@ -1,53 +1,51 @@
 package ris
 
 import (
-	"testing"
 	. "github.com/smartystreets/goconvey/convey"
+	"testing"
 )
 
 func Test_RIS(t *testing.T) {
 
-	Convey("RIS test",t,func() {
-		Convey("Load Bxdf",func() {
-			
-			bxdf,err := Bxdf("PxrConstant","-")
-			So(err,ShouldBeNil)
-			So(bxdf,ShouldNotBeNil)
+	Convey("RIS test", t, func() {
+		Convey("Load Bxdf", func() {
+
+			bxdf, err := Bxdf("PxrConstant", "-")
+			So(err, ShouldBeNil)
+			So(bxdf, ShouldNotBeNil)
 
 		})
 
-		Convey("Load Integrator",func() {
-	
-			integrator,err := Integrator("PxrDefault","-")
-			So(err,ShouldBeNil)	
-			So(integrator,ShouldNotBeNil)
-		
-		})
+		Convey("Load Integrator", func() {
 
-		Convey("Load LightFilter",func() {
-
-			light,err := LightFilter("PxrGobo","-")
-			So(err,ShouldBeNil)
-			So(light,ShouldNotBeNil)			
+			integrator, err := Integrator("PxrDefault", "-")
+			So(err, ShouldBeNil)
+			So(integrator, ShouldNotBeNil)
 
 		})
 
-		Convey("Load Projection",func() {
+		Convey("Load LightFilter", func() {
 
-			projection,err := Projection("PxrCamera","-")
-			So(err,ShouldBeNil)
-			So(projection,ShouldNotBeNil)
-		
+			light, err := LightFilter("PxrGobo", "-")
+			So(err, ShouldBeNil)
+			So(light, ShouldNotBeNil)
+
 		})
 
-		Convey("Load Pattern",func() {
+		Convey("Load Projection", func() {
 
-			pattern,err := Pattern("PxrBlend","-")
-			So(err,ShouldBeNil)
-			So(pattern,ShouldNotBeNil)
+			projection, err := Projection("PxrCamera", "-")
+			So(err, ShouldBeNil)
+			So(projection, ShouldNotBeNil)
+
+		})
+
+		Convey("Load Pattern", func() {
+
+			pattern, err := Pattern("PxrBlend", "-")
+			So(err, ShouldBeNil)
+			So(pattern, ShouldNotBeNil)
 
 		})
 	})
 }
-
-

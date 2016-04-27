@@ -5,7 +5,7 @@ func (r *Ri) Polygon(nvertices RtInt, parameterlist ...Rter) error {
 
 	/* NOTE: we don't need nvertices in the RIB output */
 	var out = []Rter{PARAMETERLIST}
-	out = append(out,parameterlist...)
+	out = append(out, parameterlist...)
 	return r.writef("Polygon", out...)
 }
 
@@ -13,7 +13,7 @@ func (r *Ri) Polygon(nvertices RtInt, parameterlist ...Rter) error {
 func (r *Ri) GeneralPolygon(nloops RtInt, nvertices RtIntArray, parameterlist ...Rter) error {
 
 	/* NOTE: we don't need nloops in the RIB output */
-	var out = []Rter{nvertices,PARAMETERLIST}
+	var out = []Rter{nvertices, PARAMETERLIST}
 	out = append(out, parameterlist...)
 	return r.writef("GeneralPolygon", out...)
 }
@@ -22,7 +22,7 @@ func (r *Ri) GeneralPolygon(nloops RtInt, nvertices RtIntArray, parameterlist ..
 func (r *Ri) PointsPolygons(npolys RtInt, nvertices RtIntArray, vertices RtIntArray, parameterlist ...Rter) error {
 
 	/* NOTE: we don't need npolys in the RIB output */
-	var out = []Rter{nvertices, vertices,PARAMETERLIST}
+	var out = []Rter{nvertices, vertices, PARAMETERLIST}
 	out = append(out, parameterlist...)
 	return r.writef("PointsPolygon", out...)
 }
@@ -30,7 +30,7 @@ func (r *Ri) PointsPolygons(npolys RtInt, nvertices RtIntArray, vertices RtIntAr
 /* PointsGeneralPolygons */
 func (r *Ri) PointsGeneralPolygons(nploys RtInt, nloops, nvertices, vertices RtIntArray, parameterlist ...Rter) error {
 
-	var out = []Rter{nloops, nvertices, vertices,PARAMETERLIST}
+	var out = []Rter{nloops, nvertices, vertices, PARAMETERLIST}
 	out = append(out, parameterlist...)
 	return r.writef("PointsGeneralPolygons", out...)
 }

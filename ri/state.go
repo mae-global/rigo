@@ -4,7 +4,7 @@ func (r *Ri) Begin(name RtString) error {
 	if err := r.writef("Begin", name); err != nil {
 		return err
 	}
-	return r.writef("version",Version)
+	return r.writef("version", Version)
 }
 
 func (r *Ri) End() error {
@@ -68,7 +68,7 @@ func (r *Ri) CropWindow(xmin, xmax, ymin, ymax RtFloat) error {
 
 /* Projection the project determines how camera coordinates are converted to screen coordinates */
 func (r *Ri) Projection(token RtToken, parameterlist ...Rter) error {
-	var out = []Rter{token,PARAMETERLIST}
+	var out = []Rter{token, PARAMETERLIST}
 	out = append(out, parameterlist...)
 	return r.writef("Projection", out...)
 }

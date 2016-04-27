@@ -1,23 +1,23 @@
 package ris
 
 import (
+	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
-	"fmt"
 
 	. "github.com/mae-global/rigo/ri"
 )
 
-func ShouldEqualFloat(actual interface{},expected ...interface{}) string {
+func ShouldEqualFloat(actual interface{}, expected ...interface{}) string {
 
 	a := actual.(Rter)
 	b := expected[0].(Rter)
 
-	ac,ok := a.(RtFloat)
+	ac, ok := a.(RtFloat)
 	if !ok {
 		return "Expected: RtFloat\nActual: "
 	}
-	bc,ok := b.(RtFloat)
+	bc, ok := b.(RtFloat)
 	if !ok {
 		return "Expected: RtFloat for comparison"
 	}
@@ -26,32 +26,32 @@ func ShouldEqualFloat(actual interface{},expected ...interface{}) string {
 		return ""
 	}
 
-	return fmt.Sprintf("Expected: %v\nActual: %v",ac,bc)
+	return fmt.Sprintf("Expected: %v\nActual: %v", ac, bc)
 }
 
 func Test_FloatWidget(t *testing.T) {
 
-	Convey("FloatWidget",t,func() {
-		
-		shader,err := Parse("TestFloatWidget","-",[]byte(floatwidget))
-		So(err,ShouldBeNil)
-		So(shader,ShouldNotBeNil)
+	Convey("FloatWidget", t, func() {
 
-		fw,ok := shader.Widget("intensity").(*RtFloatWidget)
-		So(ok,ShouldBeTrue)
-		So(fw,ShouldNotBeNil)
+		shader, err := Parse("TestFloatWidget", "-", []byte(floatwidget))
+		So(err, ShouldBeNil)
+		So(shader, ShouldNotBeNil)
 
-		So(fw.Name(),ShouldEqual,"intensity")
-		So(fw.NameSpec(),ShouldEqual,"float intensity")
-		So(fw.Label(),ShouldEqual,"Intensity")
-		So(fw.Help(),ShouldBeEmpty)
-		So(fw.Value(),ShouldEqualFloat,RtFloat(0.9))
+		fw, ok := shader.Widget("intensity").(*RtFloatWidget)
+		So(ok, ShouldBeTrue)
+		So(fw, ShouldNotBeNil)
 
-		min,max := fw.Bounds()
-		So(min,ShouldEqualFloat,RtFloat(0.0))
-		So(max,ShouldEqualFloat,RtFloat(1.0))
-		
-		So(fw.Set(RtFloat(0.5)),ShouldBeNil)
+		So(fw.Name(), ShouldEqual, "intensity")
+		So(fw.NameSpec(), ShouldEqual, "float intensity")
+		So(fw.Label(), ShouldEqual, "Intensity")
+		So(fw.Help(), ShouldBeEmpty)
+		So(fw.Value(), ShouldEqualFloat, RtFloat(0.9))
+
+		min, max := fw.Bounds()
+		So(min, ShouldEqualFloat, RtFloat(0.0))
+		So(max, ShouldEqualFloat, RtFloat(1.0))
+
+		So(fw.Set(RtFloat(0.5)), ShouldBeNil)
 	})
 }
 
@@ -68,4 +68,3 @@ const floatwidget = `
 	<rfmdata node="101" classification="shader/surface:rendernode/RenderMan/bxdf:swatch/rmanSwatch" />
 </args>
 `
-

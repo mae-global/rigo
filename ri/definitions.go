@@ -3,17 +3,16 @@ package ri
 
 import (
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 const (
 	ImplementationVersion = "3.2.1 November 2005"
-	Major = 3
-	Minor = 2
-	Patch = 1
+	Major                 = 3
+	Minor                 = 2
+	Patch                 = 1
 )
-
 
 type Rter interface {
 	String() string
@@ -23,9 +22,8 @@ type Rter interface {
 }
 
 type RterWriter interface {
-	Write() (RtName,[]Rter,[]Rter)
+	Write() (RtName, []Rter, []Rter)
 }
-
 
 /* RtName internal use for RIB command names */
 type RtName string
@@ -43,8 +41,8 @@ func (s RtName) Serialise() string {
 }
 
 func (s RtName) Equal(o Rter) bool {
-	if name,ok := o.(RtName); ok {
-		return (name == s)	
+	if name, ok := o.(RtName); ok {
+		return (name == s)
 	}
 	return false
 }
@@ -76,7 +74,7 @@ func (s RtBoolean) Serialise() string {
 }
 
 func (s RtBoolean) Equal(o Rter) bool {
-	if other,ok := o.(RtBoolean); ok {
+	if other, ok := o.(RtBoolean); ok {
 		return (other == s)
 	}
 	return false
@@ -98,10 +96,10 @@ func (i RtInt) Serialise() string {
 }
 
 func (i RtInt) Equal(o Rter) bool {
-	if other,ok := o.(RtInt); ok {
+	if other, ok := o.(RtInt); ok {
 		return (other == i)
 	}
-	return false 
+	return false
 }
 
 /* RtIntArray integer array */
@@ -127,7 +125,7 @@ func (a RtIntArray) Serialise() string {
 }
 
 func (a RtIntArray) Equal(o Rter) bool {
-	if other,ok := o.(RtIntArray); ok {
+	if other, ok := o.(RtIntArray); ok {
 		if len(other) != len(a) {
 			return false
 		}
@@ -157,7 +155,7 @@ func (f RtFloat) Serialise() string {
 }
 
 func (f RtFloat) Equal(o Rter) bool {
-	if other,ok := o.(RtFloat); ok {
+	if other, ok := o.(RtFloat); ok {
 		return (other == f)
 	}
 	return false
@@ -186,7 +184,7 @@ func (a RtFloatArray) Serialise() string {
 }
 
 func (a RtFloatArray) Equal(o Rter) bool {
-	if other,ok := o.(RtFloatArray); ok {
+	if other, ok := o.(RtFloatArray); ok {
 		if len(other) != len(a) {
 			return false
 		}
@@ -216,7 +214,7 @@ func (s RtToken) Serialise() string {
 }
 
 func (s RtToken) Equal(o Rter) bool {
-	if other,ok := o.(RtToken); ok {
+	if other, ok := o.(RtToken); ok {
 		return (other == s)
 	}
 	return false
@@ -245,7 +243,7 @@ func (a RtTokenArray) Serialise() string {
 }
 
 func (a RtTokenArray) Equal(o Rter) bool {
-	if other,ok := o.(RtTokenArray); ok {
+	if other, ok := o.(RtTokenArray); ok {
 		if len(other) != len(a) {
 			return false
 		}
@@ -258,7 +256,6 @@ func (a RtTokenArray) Equal(o Rter) bool {
 	}
 	return false
 }
-
 
 /* RtColor implemented as an array */
 type RtColor []RtFloat
@@ -283,7 +280,7 @@ func (c RtColor) Serialise() string {
 }
 
 func (c RtColor) Equal(o Rter) bool {
-	if other,ok := o.(RtColor); ok {
+	if other, ok := o.(RtColor); ok {
 		if len(other) != len(c) {
 			return false
 		}
@@ -291,7 +288,7 @@ func (c RtColor) Equal(o Rter) bool {
 			if other[i] != c[i] {
 				return false
 			}
-		}	
+		}
 		return true
 	}
 	return false
@@ -299,26 +296,20 @@ func (c RtColor) Equal(o Rter) bool {
 
 func Str2Color(str string) RtColor {
 
-  parts := strings.Split(strings.TrimSpace(str)," ")
-	out := make([]RtFloat,0)
+	parts := strings.Split(strings.TrimSpace(str), " ")
+	out := make([]RtFloat, 0)
 
-	for _,part := range parts {
-		if f,err := strconv.ParseFloat(part,64); err != nil {
+	for _, part := range parts {
+		if f, err := strconv.ParseFloat(part, 64); err != nil {
 			/* eat error */
 			continue
 		} else {
-			out = append(out,RtFloat(f))
+			out = append(out, RtFloat(f))
 		}
 	}
 
 	return RtColor(out)
-}		
-
-
-
-
-
-
+}
 
 /* RtPoint */
 type RtPoint [3]RtFloat
@@ -336,7 +327,7 @@ func (p RtPoint) Serialise() string {
 }
 
 func (p RtPoint) Equal(o Rter) bool {
-	if other,ok := o.(RtPoint); ok {
+	if other, ok := o.(RtPoint); ok {
 		return (other[0] == p[0] && other[1] == p[1] && other[2] == p[2])
 	}
 	return false
@@ -365,7 +356,7 @@ func (p RtPointArray) Serialise() string {
 }
 
 func (p RtPointArray) Equal(o Rter) bool {
-	if other,ok := o.(RtPointArray); ok {
+	if other, ok := o.(RtPointArray); ok {
 		if len(other) != len(p) {
 			return false
 		}
@@ -380,7 +371,6 @@ func (p RtPointArray) Equal(o Rter) bool {
 	}
 	return false
 }
-
 
 /* RtVector */
 type RtVector [3]RtFloat
@@ -398,23 +388,23 @@ func (v RtVector) Serialise() string {
 }
 
 func (v RtVector) Equal(o Rter) bool {
-	if other,ok := o.(RtVector); ok {
+	if other, ok := o.(RtVector); ok {
 		return (other[0] == v[0] && other[1] == v[1] && other[2] == v[2])
 	}
 	return false
 }
 
 func Str2Vector(str string) RtVector {
- 
-	parts := strings.Split(strings.TrimSpace(str)," ")
+
+	parts := strings.Split(strings.TrimSpace(str), " ")
 
 	if len(parts) != 3 {
-		return RtVector{0,0,0}
+		return RtVector{0, 0, 0}
 	}
-	out := RtVector{0,0,0}
+	out := RtVector{0, 0, 0}
 
-	for i,part := range parts {
-		if f,err := strconv.ParseFloat(part,64); err != nil {
+	for i, part := range parts {
+		if f, err := strconv.ParseFloat(part, 64); err != nil {
 			/* eat error */
 			continue
 		} else {
@@ -423,9 +413,7 @@ func Str2Vector(str string) RtVector {
 	}
 
 	return out
-}		
-
-	
+}
 
 /* RtNormal */
 type RtNormal [3]RtFloat
@@ -443,7 +431,7 @@ func (n RtNormal) Serialise() string {
 }
 
 func (n RtNormal) Equal(o Rter) bool {
-	if other,ok := o.(RtNormal); ok {
+	if other, ok := o.(RtNormal); ok {
 		return (other[0] == n[0] && other[1] == n[1] && other[2] == n[2])
 	}
 	return false
@@ -451,15 +439,15 @@ func (n RtNormal) Equal(o Rter) bool {
 
 func Str2Normal(str string) RtNormal {
 
-  parts := strings.Split(strings.TrimSpace(str)," ")
+	parts := strings.Split(strings.TrimSpace(str), " ")
 
 	if len(parts) != 3 {
-		return RtNormal{0,0,0}
+		return RtNormal{0, 0, 0}
 	}
-	out := RtNormal{0,0,0}
+	out := RtNormal{0, 0, 0}
 
-	for i,part := range parts {
-		if f,err := strconv.ParseFloat(part,64); err != nil {
+	for i, part := range parts {
+		if f, err := strconv.ParseFloat(part, 64); err != nil {
 			/* eat error */
 			continue
 		} else {
@@ -468,8 +456,7 @@ func Str2Normal(str string) RtNormal {
 	}
 
 	return out
-}		
-
+}
 
 /* RtHpoint */
 type RtHpoint [4]RtFloat
@@ -487,7 +474,7 @@ func (h RtHpoint) Serialise() string {
 }
 
 func (h RtHpoint) Equal(o Rter) bool {
-	if other,ok := o.(RtHpoint); ok {
+	if other, ok := o.(RtHpoint); ok {
 		return (other[0] == h[0] && other[1] == h[1] && other[2] == h[2] && other[3] == h[3])
 	}
 	return false
@@ -517,7 +504,7 @@ func (m RtMatrix) Serialise() string {
 }
 
 func (m RtMatrix) Equal(o Rter) bool {
-	if other,ok := o.(RtMatrix); ok {
+	if other, ok := o.(RtMatrix); ok {
 		for i := 0; i < 16; i++ {
 			if other[i] != m[i] {
 				return false
@@ -551,7 +538,7 @@ func (b RtBasis) Serialise() string {
 }
 
 func (b RtBasis) Equal(o Rter) bool {
-	if other,ok := o.(RtBasis); ok {
+	if other, ok := o.(RtBasis); ok {
 		for i := 0; i < 16; i++ {
 			if other[i] != b[i] {
 				return false
@@ -578,7 +565,7 @@ func (b RtBound) Serialise() string {
 }
 
 func (b RtBound) Equal(o Rter) bool {
-	if other,ok := o.(RtBound); ok {
+	if other, ok := o.(RtBound); ok {
 		for i := 0; i < 6; i++ {
 			if other[i] != b[i] {
 				return false
@@ -588,7 +575,6 @@ func (b RtBound) Equal(o Rter) bool {
 	}
 	return false
 }
-
 
 /* RtString */
 type RtString string
@@ -606,7 +592,7 @@ func (s RtString) Serialise() string {
 }
 
 func (s RtString) Equal(o Rter) bool {
-	if other,ok := o.(RtString); ok {
+	if other, ok := o.(RtString); ok {
 		return (other == s)
 	}
 	return false
@@ -635,10 +621,10 @@ func (a RtStringArray) Serialise() string {
 }
 
 func (a RtStringArray) Equal(o Rter) bool {
-	if other,ok := o.(RtStringArray); ok {
+	if other, ok := o.(RtStringArray); ok {
 		if len(other) != len(a) {
 			return false
-		}		
+		}
 		for i := 0; i < len(a); i++ {
 			if other[i] != a[i] {
 				return false
@@ -648,7 +634,6 @@ func (a RtStringArray) Equal(o Rter) bool {
 	}
 	return false
 }
-
 
 /* RtFilterFunc */
 type RtFilterFunc string
@@ -666,7 +651,7 @@ func (s RtFilterFunc) Serialise() string {
 }
 
 func (s RtFilterFunc) Equal(o Rter) bool {
-	if other,ok := o.(RtFilterFunc); ok {
+	if other, ok := o.(RtFilterFunc); ok {
 		return (other == s)
 	}
 	return false
@@ -688,7 +673,7 @@ func (s RtProcSubdivFunc) Serialise() string {
 }
 
 func (s RtProcSubdivFunc) Equal(o Rter) bool {
-	if other,ok := o.(RtProcSubdivFunc); ok {
+	if other, ok := o.(RtProcSubdivFunc); ok {
 		return (other == s)
 	}
 	return false
@@ -710,7 +695,7 @@ func (s RtProcFreeFunc) Serialise() string {
 }
 
 func (s RtProcFreeFunc) Equal(o Rter) bool {
-	if other,ok := o.(RtProcFreeFunc); ok {
+	if other, ok := o.(RtProcFreeFunc); ok {
 		return (other == s)
 	}
 	return false
@@ -732,7 +717,7 @@ func (s RtArchiveCallbackFunc) Serialise() string {
 }
 
 func (s RtArchiveCallbackFunc) Equal(o Rter) bool {
-	if other,ok := o.(RtArchiveCallbackFunc); ok {
+	if other, ok := o.(RtArchiveCallbackFunc); ok {
 		return (other == s)
 	}
 	return false
@@ -757,21 +742,17 @@ func (s RtAnnotation) Serialise() string {
 }
 
 func (s RtAnnotation) Equal(o Rter) bool {
-	if other,ok := o.(RtAnnotation); ok {
+	if other, ok := o.(RtAnnotation); ok {
 		return (other == s)
 	}
 	return false
 }
 
-
-
 const (
 	PARAMETERLIST RtToken = "_PARAMETERLIST_"
-	DEPTH RtName = "_DEPTH_"
-	DEBUGBARRIER RtName = "-->"
+	DEPTH         RtName  = "_DEPTH_"
+	DEBUGBARRIER  RtName  = "-->"
 )
-
-
 
 const (
 	BoxFilter        RtFilterFunc = "box"
@@ -781,13 +762,10 @@ const (
 	SincFilter       RtFilterFunc = "sinc"
 
 	ReadArchiveCallback RtArchiveCallbackFunc = "ReadArchive"
-	
-	Uniform			 RtToken = "uniform"
-	Vertex       RtToken = "vertex"
-	Varying			 RtToken = "varying"
 
-	
-	
+	Uniform RtToken = "uniform"
+	Vertex  RtToken = "vertex"
+	Varying RtToken = "varying"
 
 	ProcDelayedReadArchive RtProcSubdivFunc = "DelayedReadArchive"
 	ProcRunProgram         RtProcSubdivFunc = "RunProgram"

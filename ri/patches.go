@@ -20,7 +20,7 @@ func (r *Ri) Patch(typeof RtToken, parameterlist ...Rter) error {
 /* PatchMesh This primitive is a compact way of specifying a quadrilateral mesh of patches */
 func (r *Ri) PatchMesh(typeof RtToken, nu RtInt, uwrap RtToken, nv RtInt, vwrap RtToken, parameterlist ...Rter) error {
 
-	var out = []Rter{typeof, nu, uwrap, nv, vwrap,PARAMETERLIST}
+	var out = []Rter{typeof, nu, uwrap, nv, vwrap, PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("PatchMesh", out...)
@@ -29,7 +29,7 @@ func (r *Ri) PatchMesh(typeof RtToken, nu RtInt, uwrap RtToken, nv RtInt, vwrap 
 /* NuPatch */
 func (r *Ri) NuPatch(nu, uorder RtInt, uknot RtFloatArray, umin, umax RtFloat, nv, vorder RtInt, vknot RtFloatArray, vmin, vmax RtFloat, parameterlist ...Rter) error {
 
-	var out = []Rter{nu, uorder, uknot, umin, umax, nv, vorder, vknot, vmin, vmax,PARAMETERLIST}
+	var out = []Rter{nu, uorder, uknot, umin, umax, nv, vorder, vknot, vmin, vmax, PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("NuPatch", out...)

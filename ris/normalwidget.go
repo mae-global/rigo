@@ -5,10 +5,10 @@ import (
 )
 
 type RtNormalWidget struct {
-	param *Param
+	param  *Param
 	parent Shader
 
-	next,prev RtToken
+	next, prev RtToken
 }
 
 func (r *RtNormalWidget) Name() RtToken {
@@ -32,11 +32,11 @@ func (r *RtNormalWidget) Label() RtString {
 func (r *RtNormalWidget) SetValue(value Rter) error {
 	r.param.Lock()
 	defer r.param.Unlock()
-	if _,ok := value.(RtNormal); !ok {
+	if _, ok := value.(RtNormal); !ok {
 		return ErrInvalidType
 	}
-	r.param.Value = value 
-	return  nil	
+	r.param.Value = value
+	return nil
 }
 
 func (r *RtNormalWidget) GetValue() Rter {
@@ -51,10 +51,10 @@ func (r *RtNormalWidget) Help() RtString {
 	return r.param.Help
 }
 
-func (r *RtNormalWidget) Bounds() (Rter,Rter) {
+func (r *RtNormalWidget) Bounds() (Rter, Rter) {
 	r.param.RLock()
 	defer r.param.RUnlock()
-	return r.param.Min,r.param.Max
+	return r.param.Min, r.param.Max
 }
 
 func (r *RtNormalWidget) Next() Widget {

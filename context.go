@@ -2,7 +2,6 @@
 package rigo
 
 import (
-
 	"sync"
 
 	. "github.com/mae-global/rigo/ri"
@@ -10,71 +9,70 @@ import (
 )
 
 type Configuration struct {
-	Entity bool
-	Formal bool
+	Entity      bool
+	Formal      bool
 	PrettyPrint bool
 }
 
 type Context struct {
-	mux sync.RWMutex
-	pipe *Pipe
+	mux     sync.RWMutex
+	pipe    *Pipe
 	objects ObjectHandler
-	lights LightHandler
+	lights  LightHandler
 	shaders ShaderHandler
 
 	files map[RtToken]bool
 
-	cache map[RtShaderHandle] Shader
+	cache map[RtShaderHandle]Shader
 
 	Info
 }
 
-func (ctx *Context) Write(name RtName, args,list []Rter) error {
+func (ctx *Context) Write(name RtName, args, list []Rter) error {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
 	if ctx.Formal {
 		name = name.Prefix("Ri")
 	}
-	return ctx.pipe.Run(name, args,list, ctx.Info)
+	return ctx.pipe.Run(name, args, list, ctx.Info)
 }
 
-func (ctx *Context) OpenRaw(id RtToken) (ArchiveWriter,error) {
+func (ctx *Context) OpenRaw(id RtToken) (ArchiveWriter, error) {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
 
 	if ctx.files == nil {
-		ctx.files = make(map[RtToken]bool,0)
+		ctx.files = make(map[RtToken]bool, 0)
 	}
 
-	if _,exists := ctx.files[id]; exists {
-		return nil,ErrNotSupported
+	if _, exists := ctx.files[id]; exists {
+		return nil, ErrNotSupported
 	}
 
-	for _,r := range ctx.files {
+	for _, r := range ctx.files {
 		if r {
-			return nil,ErrNotSupported
+			return nil, ErrNotSupported
 		}
 	}
 
 	ctx.files[id] = true
 
-	return ctx.pipe.ToRaw(),nil
+	return ctx.pipe.ToRaw(), nil
 }
 
 func (ctx *Context) CloseRaw(id RtToken) error {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
-	
+
 	if ctx.files == nil {
 		return ErrNotSupported
 	}
 
-
-	if _,exists := ctx.files[id]; !exists {
+	if _, exists := ctx.files[id]; !exists {
 		return ErrNotSupported
 	}
 
-	delete(ctx.files,id)
+	delete(ctx.files, id)
 
 	return nil
 }
@@ -85,7 +83,7 @@ func (ctx *Context) Depth(d int) {
 	ctx.Info.Depth += d /* TODO: this is a little clunky */
 }
 
-func (ctx *Context) ShaderHandle() (RtShaderHandle,error) {
+func (ctx *Context) ShaderHandle() (RtShaderHandle, error) {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
 	return ctx.shaders.Generate()
@@ -120,10 +118,9 @@ func (ctx *Context) CheckObjectHandle(oh RtObjectHandle) error {
 	defer ctx.mux.RUnlock()
 	return ctx.objects.Check(oh)
 }
-	
 
-func (ctx *Context) SetShader(sh RtShaderHandle,s Shader) {
-	ctx.mux.Lock() 
+func (ctx *Context) SetShader(sh RtShaderHandle, s Shader) {
+	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
 	ctx.cache[sh] = s
 }
@@ -131,7 +128,7 @@ func (ctx *Context) SetShader(sh RtShaderHandle,s Shader) {
 func (ctx *Context) GetShader(sh RtShaderHandle) Shader {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
-	if s,ok := ctx.cache[sh]; ok {
+	if s, ok := ctx.cache[sh]; ok {
 		return s
 	}
 	return nil
@@ -141,15 +138,12 @@ func (ctx *Context) Shader(sh RtShaderHandle) ShaderWriter {
 	return ctx.GetShader(sh)
 }
 
-
-
-
-func NewContext(pipe *Pipe,lights LightHandler,objects ObjectHandler,shaders ShaderHandler,config *Configuration) *Context {
+func NewContext(pipe *Pipe, lights LightHandler, objects ObjectHandler, shaders ShaderHandler, config *Configuration) *Context {
 	if pipe == nil {
 		pipe = DefaultFilePipe()
 	}
 	if config == nil {
-		config = &Configuration{Entity: false,Formal: false,PrettyPrint: false}
+		config = &Configuration{Entity: false, Formal: false, PrettyPrint: false}
 	}
 	if lights == nil {
 		lights = NewLightNumberGenerator()
@@ -161,11 +155,10 @@ func NewContext(pipe *Pipe,lights LightHandler,objects ObjectHandler,shaders Sha
 		shaders = NewShaderNumberGenerator()
 	}
 
-	ctx := &Context{pipe:pipe,lights:lights,objects:objects,shaders:shaders,Info:Info{Name:"",Entity:config.Entity,Formal: config.Formal,PrettyPrint: config.PrettyPrint}}
-	ctx.cache = make(map[RtShaderHandle]Shader,0)
+	ctx := &Context{pipe: pipe, lights: lights, objects: objects, shaders: shaders, Info: Info{Name: "", Entity: config.Entity, Formal: config.Formal, PrettyPrint: config.PrettyPrint}}
+	ctx.cache = make(map[RtShaderHandle]Shader, 0)
 	return ctx
 }
-	 
 
 func RIS(ctx RisContexter) *Ris {
 	return &Ris{ctx}
@@ -174,5 +167,3 @@ func RIS(ctx RisContexter) *Ris {
 func RI(ctx RiContexter) *Ri {
 	return &Ri{ctx}
 }
-
-

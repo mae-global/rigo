@@ -39,12 +39,12 @@ func Test_Utilities(t *testing.T) {
 			So(reducev([]RtFloat{0.05, 1.0500, 0.0, -.1}), ShouldEqual, ".05 1.05 0 -.1")
 		})
 
-		Convey("ClassTypeNameCount",func() {
-			c,t,n,count := ClassTypeNameCount("varying float[2] st")
-			So(c,ShouldEqual,RtToken("varying"))
-			So(t,ShouldEqual,RtToken("float"))
-			So(n,ShouldEqual,ST)
-			So(count,ShouldEqual,2)
+		Convey("ClassTypeNameCount", func() {
+			c, t, n, count := ClassTypeNameCount("varying float[2] st")
+			So(c, ShouldEqual, RtToken("varying"))
+			So(t, ShouldEqual, RtToken("float"))
+			So(n, ShouldEqual, ST)
+			So(count, ShouldEqual, 2)
 		})
 
 	})

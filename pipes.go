@@ -3,9 +3,9 @@ package rigo
 import (
 	"fmt"
 	"os"
-	"time"
 	"sort"
 	"strconv"
+	"time"
 
 	. "github.com/mae-global/rigo/ri"
 )
@@ -34,7 +34,7 @@ func (p PipeTimer) Name() string {
 	return "default-pipe-timer"
 }
 
-func (p *PipeTimer) Pipe(name RtName,args,params,values []Rter, info Info) *Result {
+func (p *PipeTimer) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
 	switch string(name) {
 	case "Begin", "RiBegin":
 		p.start = time.Now()
@@ -68,7 +68,7 @@ func (p PipeToStats) Name() string {
 	return "default-pipe-to-stats"
 }
 
-func (p *PipeToStats) Pipe(name RtName,args,params,values []Rter, info Info) *Result {
+func (p *PipeToStats) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
 	if p.Stats == nil {
 		p.Stats = make(map[RtName]int, 0)
 	}
@@ -81,16 +81,15 @@ func (p *PipeToStats) Pipe(name RtName,args,params,values []Rter, info Info) *Re
 }
 
 type record struct {
-	Name RtName
+	Name  RtName
 	Count int
 }
 
 type byCount []record
 
-func (bc byCount) Len() int { return len(bc) }
-func (bc byCount) Less(i,j int) bool { return bc[i].Count < bc[j].Count }
-func (bc byCount) Swap(i,j int) { bc[i],bc[j] = bc[j],bc[i] }
-
+func (bc byCount) Len() int           { return len(bc) }
+func (bc byCount) Less(i, j int) bool { return bc[i].Count < bc[j].Count }
+func (bc byCount) Swap(i, j int)      { bc[i], bc[j] = bc[j], bc[i] }
 
 func (p *PipeToStats) String() string {
 	if p.Stats == nil {
@@ -102,14 +101,14 @@ func (p *PipeToStats) String() string {
 	}
 
 	max := 0
-	records := make([]record,0)
+	records := make([]record, 0)
 
 	for n, v := range p.Stats {
 		if v > max {
 			max = v
 		}
-		
-		records = append(records,record{n,v})
+
+		records = append(records, record{n, v})
 	}
 
 	sort.Sort(byCount(records))
@@ -118,7 +117,7 @@ func (p *PipeToStats) String() string {
 
 	out := fmt.Sprintf("stats %d [\n", len(p.Stats))
 	for _, r := range records {
-		out += fmt.Sprintf(dfmt + " call(s).....%s\n", r.Count,r.Name)
+		out += fmt.Sprintf(dfmt+" call(s).....%s\n", r.Count, r.Name)
 	}
 	return out + "]\n"
 }
@@ -139,9 +138,9 @@ func (p PipeToFile) Name() string {
 	return "default-pipe-to-file"
 }
 
-func (p *PipeToFile) Pipe(name RtName,args,params,values []Rter, info Info) *Result {
+func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
 
-	list := Mix(params,values)
+	list := Mix(params, values)
 
 	if info.Formal {
 		name = name.Trim("Ri")
@@ -160,7 +159,7 @@ func (p *PipeToFile) Pipe(name RtName,args,params,values []Rter, info Info) *Res
 		}
 
 		f, err := os.Create(file)
-		fmt.Printf("\tfile %s created\n",file)
+		fmt.Printf("\tfile %s created\n", file)
 		if err != nil {
 			return InError(err)
 		}
@@ -177,7 +176,7 @@ func (p *PipeToFile) Pipe(name RtName,args,params,values []Rter, info Info) *Res
 	}
 
 	if name == "End" {
-		fmt.Printf("FileToPipe Write, name=End, p.File=%v\n",p.file)
+		fmt.Printf("FileToPipe Write, name=End, p.File=%v\n", p.file)
 		if p.file == nil {
 			return InError(ErrProtocolBotch)
 		}
@@ -199,14 +198,13 @@ func (p *PipeToFile) Pipe(name RtName,args,params,values []Rter, info Info) *Res
 	}
 
 	if name != "##" {
-	  /* TODO: change this to a configurable scheme, N-spaces or \t character etc */
+		/* TODO: change this to a configurable scheme, N-spaces or \t character etc */
 		prefix := ""
 		if info.PrettyPrint {
 			for i := 0; i < info.Depth; i++ {
 				prefix += "\t"
 			}
 		}
-		
 
 		if _, err := p.file.Write([]byte(prefix + name.Serialise() + " " + Serialise(args) + " " + Serialise(list) + "\n")); err != nil {
 			return InError(err)
@@ -220,7 +218,6 @@ func (p *PipeToFile) Pipe(name RtName,args,params,values []Rter, info Info) *Res
 	return Done()
 }
 
-
 type FilterStringHandles struct {
 	/* FIXME: this should actually be a filter */
 }
@@ -233,31 +230,31 @@ func (p FilterStringHandles) Name() string {
 	return "default-filter-string-handles"
 }
 
-func (p *FilterStringHandles) Pipe(name RtName,args,params,values []Rter, info Info) *Result {
+func (p *FilterStringHandles) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
 
 	/* TODO: add filter to only those proceedures the include light and object handles */
-		
-	args1 := make([]Rter,len(args))
-	
-	for i := 0; i < len(args); i ++ {
-		if lh,ok := args[i].(RtLightHandle); ok {
-			id,err := strconv.Atoi(string(lh))
-			if err != nil {
-				return InError(err)
-			}
-			args1[i] = RtInt(id)
-			continue
-		} 
-		if oh,ok := args[i].(RtObjectHandle); ok {
-			id,err := strconv.Atoi(string(oh))
+
+	args1 := make([]Rter, len(args))
+
+	for i := 0; i < len(args); i++ {
+		if lh, ok := args[i].(RtLightHandle); ok {
+			id, err := strconv.Atoi(string(lh))
 			if err != nil {
 				return InError(err)
 			}
 			args1[i] = RtInt(id)
 			continue
 		}
-		if sh,ok := args[i].(RtShaderHandle); ok {
-			id,err := strconv.Atoi(string(sh))
+		if oh, ok := args[i].(RtObjectHandle); ok {
+			id, err := strconv.Atoi(string(oh))
+			if err != nil {
+				return InError(err)
+			}
+			args1[i] = RtInt(id)
+			continue
+		}
+		if sh, ok := args[i].(RtShaderHandle); ok {
+			id, err := strconv.Atoi(string(sh))
 			if err != nil {
 				return InError(err)
 			}
@@ -267,15 +264,5 @@ func (p *FilterStringHandles) Pipe(name RtName,args,params,values []Rter, info I
 		args1[i] = args[i]
 	}
 
-	return Next(name, args1,params,values, info)
+	return Next(name, args1, params, values, info)
 }
-
-
-
-
-
-
-
-
-
-

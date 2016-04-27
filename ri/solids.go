@@ -1,6 +1,5 @@
 package ri
 
-
 /* SolidBegin */
 func (r *Ri) SolidBegin(operation RtToken) error {
 	defer func() { r.Depth(1) }()

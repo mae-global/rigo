@@ -7,7 +7,7 @@ import (
 /* MakeTexture Convert an image in a standard picture file whise name is picturename */
 func (r *Ri) MakeTexture(picturename, texturename RtString, swrap, twrap RtToken, filterfunc RtFilterFunc, swidth, twidth RtFloat, parameterlist ...Rter) error {
 
-	var out = []Rter{picturename, texturename, swrap, twrap, filterfunc, swidth, twidth,PARAMETERLIST}
+	var out = []Rter{picturename, texturename, swrap, twrap, filterfunc, swidth, twidth, PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("MakeTexture", out...)
@@ -16,7 +16,7 @@ func (r *Ri) MakeTexture(picturename, texturename RtString, swrap, twrap RtToken
 /* MakeLatLongEnvironment */
 func (r *Ri) MakeLatLongEnvironment(picturename, texturename RtString, filterfunc RtFilterFunc, swidth, twidth RtFloat, parameterlist ...Rter) error {
 
-	var out = []Rter{picturename, texturename, filterfunc, swidth, twidth,PARAMETERLIST}
+	var out = []Rter{picturename, texturename, filterfunc, swidth, twidth, PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("MakeLatLongEnvironment", out...)
@@ -25,7 +25,7 @@ func (r *Ri) MakeLatLongEnvironment(picturename, texturename RtString, filterfun
 /* MakeCubeFaceEnviroment */
 func (r *Ri) MakeCubeFaceEnvironment(px, nx, py, ny, pz, nz, texturename RtString, fov RtFloat, filterfunc RtFilterFunc, swidth, twidth RtFloat, parameterlist ...Rter) error {
 
-	var out = []Rter{px, nx, py, ny, pz, nz, texturename, fov, filterfunc, swidth, twidth,PARAMETERLIST}
+	var out = []Rter{px, nx, py, ny, pz, nz, texturename, fov, filterfunc, swidth, twidth, PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("MakeCubeFaceEnvironment", out...)
@@ -34,7 +34,7 @@ func (r *Ri) MakeCubeFaceEnvironment(px, nx, py, ny, pz, nz, texturename RtStrin
 /* MakeShadow */
 func (r *Ri) MakeShadow(picturename, texturename RtString, parameterlist ...Rter) error {
 
-	var out = []Rter{picturename, texturename,PARAMETERLIST}
+	var out = []Rter{picturename, texturename, PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("MakeShadow", out...)
@@ -63,11 +63,10 @@ func (r *Ri) ArchiveRecord(typeof RtToken, format RtString, args ...interface{})
 	return err
 }
 
-
 /* ReadArchive */
 func (r *Ri) ReadArchive(name RtToken, callback RtArchiveCallbackFunc, parameterlist ...Rter) error {
 	/* FIXME, take care of callback ? */
-	var out = []Rter{name,PARAMETERLIST}
+	var out = []Rter{name, PARAMETERLIST}
 	out = append(out, parameterlist...)
 
 	return r.writef("ReadArchive", out...)

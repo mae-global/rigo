@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-/* RtLightHandle 
+/* RtLightHandle
  * note -- updated to string handles [Siggraph 2009 course 9; Byron Bashforth] */
 type RtLightHandle string
 
@@ -23,7 +23,7 @@ func (l RtLightHandle) Serialise() string {
 }
 
 func (l RtLightHandle) Equal(o Rter) bool {
-	if other,ok := o.(RtLightHandle); ok {
+	if other, ok := o.(RtLightHandle); ok {
 		return (other == l)
 	}
 	return false
@@ -32,28 +32,27 @@ func (l RtLightHandle) Equal(o Rter) bool {
 /* LightHandler */
 type LightHandler interface {
 	/* Generate or provide a RtLightHandle */
-	Generate() (RtLightHandle,error)
- 	/* Check an existing RtLightHandle */
+	Generate() (RtLightHandle, error)
+	/* Check an existing RtLightHandle */
 	Check(RtLightHandle) error
 	/* Example output of this generator */
 	Example() RtLightHandle
 }
 
-
 /* LightNumberGenerator implements the old style of int handles */
 type LightNumberGenerator struct {
 	current uint
-	mux sync.RWMutex
-	format string
+	mux     sync.RWMutex
+	format  string
 }
 
-func (g *LightNumberGenerator) Generate() (RtLightHandle,error) {
+func (g *LightNumberGenerator) Generate() (RtLightHandle, error) {
 	g.mux.Lock()
 	defer g.mux.Unlock()
-	
-	h := fmt.Sprintf(g.format,g.current)
-	g.current ++
-	return RtLightHandle(h),nil
+
+	h := fmt.Sprintf(g.format, g.current)
+	g.current++
+	return RtLightHandle(h), nil
 }
 
 func (g *LightNumberGenerator) Check(h RtLightHandle) error {
@@ -63,12 +62,12 @@ func (g *LightNumberGenerator) Check(h RtLightHandle) error {
 func (g *LightNumberGenerator) Example() RtLightHandle {
 	g.mux.RLock()
 	defer g.mux.RUnlock()
-	return RtLightHandle(fmt.Sprintf(g.format,0))
+	return RtLightHandle(fmt.Sprintf(g.format, 0))
 }
 
 /* NewLightNumberGenerator */
 func NewLightNumberGenerator() *LightNumberGenerator {
-	return &LightNumberGenerator{format:"%d"}
+	return &LightNumberGenerator{format: "%d"}
 }
 
 /* NewPrefixLightNumberGenerator */
@@ -76,25 +75,25 @@ func NewPrefixLightNumberGenerator(prefix string) *LightNumberGenerator {
 	if len(prefix) == 0 {
 		return NewLightNumberGenerator()
 	}
-	return &LightNumberGenerator{format:prefix + "%d"}
+	return &LightNumberGenerator{format: prefix + "%d"}
 }
 
 /* LightUniqueGenerator */
 type LightUniqueGenerator struct {
-	mux sync.RWMutex
+	mux    sync.RWMutex
 	size   int
 	format string
 }
 
-func (g *LightUniqueGenerator) Generate() (RtLightHandle,error) {
+func (g *LightUniqueGenerator) Generate() (RtLightHandle, error) {
 	g.mux.Lock()
 	defer g.mux.Unlock()
 
-	un,err := read(g.size)
+	un, err := read(g.size)
 	if err != nil {
-		return "",err
+		return "", err
 	}
-	return RtLightHandle(fmt.Sprintf(g.format,un)),nil
+	return RtLightHandle(fmt.Sprintf(g.format, un)), nil
 }
 
 func (g *LightUniqueGenerator) Check(h RtLightHandle) error {
@@ -104,12 +103,12 @@ func (g *LightUniqueGenerator) Check(h RtLightHandle) error {
 func (g *LightUniqueGenerator) Example() RtLightHandle {
 	g.mux.RLock()
 	defer g.mux.RUnlock()
-	return RtLightHandle(fmt.Sprintf(g.format,readExample(g.size)))
-}	
+	return RtLightHandle(fmt.Sprintf(g.format, readExample(g.size)))
+}
 
 /* NewLightUniqueGenerator */
 func NewLightUniqueGenerator() *LightUniqueGenerator {
-	return &LightUniqueGenerator{format:"%s",size:4}
+	return &LightUniqueGenerator{format: "%s", size: 4}
 }
 
 /* NewPrefixLightUniqueGenerator */
@@ -117,12 +116,5 @@ func NewPrefixLightUniqueGenerator(prefix string) *LightUniqueGenerator {
 	if len(prefix) == 0 {
 		return NewLightUniqueGenerator()
 	}
-	return &LightUniqueGenerator{format:prefix + "%s",size:4}
+	return &LightUniqueGenerator{format: prefix + "%s", size: 4}
 }
-
-
-
-
-
-
-

@@ -5,10 +5,10 @@ import (
 )
 
 type RtColorWidget struct {
-	param *Param
+	param  *Param
 	parent Shader
 
-	next,prev RtToken
+	next, prev RtToken
 }
 
 func (r *RtColorWidget) Name() RtToken {
@@ -32,11 +32,11 @@ func (r *RtColorWidget) Label() RtString {
 func (r *RtColorWidget) SetValue(value Rter) error {
 	r.param.Lock()
 	defer r.param.Unlock()
-	if _,ok := value.(RtColor); !ok {
+	if _, ok := value.(RtColor); !ok {
 		return ErrInvalidType
 	}
-	r.param.Value = value 
-	return  nil	
+	r.param.Value = value
+	return nil
 }
 
 func (r *RtColorWidget) GetValue() Rter {
@@ -51,10 +51,10 @@ func (r *RtColorWidget) Help() RtString {
 	return r.param.Help
 }
 
-func (r *RtColorWidget) Bounds() (Rter,Rter) {
+func (r *RtColorWidget) Bounds() (Rter, Rter) {
 	r.param.RLock()
 	defer r.param.RUnlock()
-	return r.param.Min,r.param.Max
+	return r.param.Min, r.param.Max
 }
 
 func (r *RtColorWidget) Next() Widget {

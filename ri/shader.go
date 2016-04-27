@@ -18,37 +18,37 @@ func (l RtShaderHandle) String() string {
 }
 
 func (l RtShaderHandle) Serialise() string {
-	return fmt.Sprintf("\"%s\"",string(l))
+	return fmt.Sprintf("\"%s\"", string(l))
 }
 
 func (l RtShaderHandle) Equal(o Rter) bool {
-	if other,ok := o.(RtShaderHandle); ok {
+	if other, ok := o.(RtShaderHandle); ok {
 		return (other == l)
 	}
 	return false
 }
 
-
 /* ShaderHandler */
 type ShaderHandler interface {
-	Generate() (RtShaderHandle,error)
-	Check(RtShaderHandle) error 
+	Generate() (RtShaderHandle, error)
+	Check(RtShaderHandle) error
 	Example() RtShaderHandle
 }
+
 /* ShaderNumberGenerator */
 type ShaderNumberGenerator struct {
 	current uint
-	mux sync.RWMutex
-	format string
+	mux     sync.RWMutex
+	format  string
 }
 
-func (g *ShaderNumberGenerator) Generate() (RtShaderHandle,error) {
+func (g *ShaderNumberGenerator) Generate() (RtShaderHandle, error) {
 	g.mux.Lock()
 	defer g.mux.Unlock()
-	
-	h := fmt.Sprintf(g.format,g.current)
-	g.current ++
-	return RtShaderHandle(h),nil
+
+	h := fmt.Sprintf(g.format, g.current)
+	g.current++
+	return RtShaderHandle(h), nil
 }
 
 func (g *ShaderNumberGenerator) Check(h RtShaderHandle) error {
@@ -58,12 +58,12 @@ func (g *ShaderNumberGenerator) Check(h RtShaderHandle) error {
 func (g *ShaderNumberGenerator) Example() RtShaderHandle {
 	g.mux.RLock()
 	defer g.mux.RUnlock()
-	return RtShaderHandle(fmt.Sprintf(g.format,0))
+	return RtShaderHandle(fmt.Sprintf(g.format, 0))
 }
 
 /* NewShaderNumberGenerator */
 func NewShaderNumberGenerator() *ShaderNumberGenerator {
-	return &ShaderNumberGenerator{format:"%d"}
+	return &ShaderNumberGenerator{format: "%d"}
 }
 
 /* NewPrefixShaderNumberGenerator */
@@ -71,27 +71,27 @@ func NewPrefixShaderNumberGenerator(prefix string) *ShaderNumberGenerator {
 	if len(prefix) == 0 {
 		return NewShaderNumberGenerator()
 	}
-	return &ShaderNumberGenerator{format:prefix + "%d"}
+	return &ShaderNumberGenerator{format: prefix + "%d"}
 }
 
 /* ShaderUniqueGenerator */
 type ShaderUniqueGenerator struct {
-	mux sync.RWMutex
+	mux    sync.RWMutex
 	size   int
 	format string
 }
 
-func (g *ShaderUniqueGenerator) Generate() (RtShaderHandle,error) {
+func (g *ShaderUniqueGenerator) Generate() (RtShaderHandle, error) {
 	g.mux.Lock()
 	defer g.mux.Unlock()
 
-	un,err := read(g.size)
+	un, err := read(g.size)
 	if err != nil {
-		return "",err
+		return "", err
 	}
 
-	h := fmt.Sprintf(g.format,un)
-	return RtShaderHandle(h),nil
+	h := fmt.Sprintf(g.format, un)
+	return RtShaderHandle(h), nil
 }
 
 func (g *ShaderUniqueGenerator) Check(h RtShaderHandle) error {
@@ -101,12 +101,12 @@ func (g *ShaderUniqueGenerator) Check(h RtShaderHandle) error {
 func (g *ShaderUniqueGenerator) Example() RtShaderHandle {
 	g.mux.RLock()
 	defer g.mux.RUnlock()
-	return RtShaderHandle(fmt.Sprintf(g.format,readExample(g.size)))
-}	
+	return RtShaderHandle(fmt.Sprintf(g.format, readExample(g.size)))
+}
 
 /* NewShaderUniqueGenerator */
 func NewShaderUniqueGenerator() *ShaderUniqueGenerator {
-	return &ShaderUniqueGenerator{format:"%s",size:4}
+	return &ShaderUniqueGenerator{format: "%s", size: 4}
 }
 
 /* NewPrefixShaderUniqueGenerator */
@@ -114,8 +114,5 @@ func NewPrefixShaderUniqueGenerator(prefix string) *ShaderUniqueGenerator {
 	if len(prefix) == 0 {
 		return NewShaderUniqueGenerator()
 	}
-	return &ShaderUniqueGenerator{format:prefix + "%s",size:4}
+	return &ShaderUniqueGenerator{format: prefix + "%s", size: 4}
 }
- 
-
-

@@ -4,34 +4,33 @@ import (
 	. "github.com/mae-global/rigo/ri"
 )
 
-func Mix(params,values []Rter) []Rter {
+func Mix(params, values []Rter) []Rter {
 
-	out := make([]Rter,0)
+	out := make([]Rter, 0)
 
 	for i := 0; i < len(params); i++ {
 
-		out = append(out,params[i])
-		out = append(out,values[i])
+		out = append(out, params[i])
+		out = append(out, values[i])
 	}
 	return out
 }
 
-func Unmix(list []Rter) ([]Rter,[]Rter) {
+func Unmix(list []Rter) ([]Rter, []Rter) {
 
-	params := make([]Rter,0)
-	values := make([]Rter,0)
+	params := make([]Rter, 0)
+	values := make([]Rter, 0)
 
 	flipflop := false
 
-	for _,param := range list {
+	for _, param := range list {
 		if !flipflop {
-			params = append(params,param)
+			params = append(params, param)
 		} else {
-			values = append(values,param)
+			values = append(values, param)
 		}
 		flipflop = !flipflop
 	}
 
-	return params,values
+	return params, values
 }
-

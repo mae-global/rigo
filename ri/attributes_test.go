@@ -80,30 +80,23 @@ func Test_Attributes(t *testing.T) {
 
 func Test_AttributesExample(t *testing.T) {
 
-	Convey("Attributes Example from pg. 74 of 'Advanced RenderMan'",t,func() {
+	Convey("Attributes Example from pg. 74 of 'Advanced RenderMan'", t, func() {
 		ctx := NewTest()
-		So(ctx,ShouldNotBeNil)
+		So(ctx, ShouldNotBeNil)
 
 		ctx.Begin("attributes.rib")
 		ctx.AttributeBegin()
 		ctx.Comment("Hemispherical wooden dome in a dense fog")
-		ctx.Declare("density","uniform float")
-		ctx.Color(RtColor{.2,.45,.8})
-		ctx.Opacity(RtColor{1,1,1})
+		ctx.Declare("density", "uniform float")
+		ctx.Color(RtColor{.2, .45, .8})
+		ctx.Opacity(RtColor{1, 1, 1})
 		ctx.Sides(2)
 		ctx.ShadingRate(1.0)
-		ctx.Surface("paintedplastic",RtToken("texturename"),RtString("wood.tx"))
-		ctx.Atmosphere("myfog",RtToken("density"),RtFloat(1.48))
-		ctx.Sphere(1,0,1,360)
-		ctx.Disk(0,1,360)
+		ctx.Surface("paintedplastic", RtToken("texturename"), RtString("wood.tx"))
+		ctx.Atmosphere("myfog", RtToken("density"), RtFloat(1.48))
+		ctx.Sphere(1, 0, 1, 360)
+		ctx.Disk(0, 1, 360)
 		ctx.AttributeEnd()
 		ctx.End()
 	})
 }
-
-
-
-
-
-
-

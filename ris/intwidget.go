@@ -5,10 +5,10 @@ import (
 )
 
 type RtIntWidget struct {
-	param *Param
+	param  *Param
 	parent Shader
 
-	next,prev RtToken
+	next, prev RtToken
 }
 
 func (r *RtIntWidget) Name() RtToken {
@@ -32,7 +32,7 @@ func (r *RtIntWidget) Label() RtString {
 func (r *RtIntWidget) SetValue(value Rter) error {
 	r.param.Lock()
 	defer r.param.Unlock()
-	if _,ok := value.(RtInt); !ok {
+	if _, ok := value.(RtInt); !ok {
 		return ErrInvalidType
 	}
 	r.param.Value = value
@@ -51,10 +51,10 @@ func (r *RtIntWidget) Help() RtString {
 	return r.param.Help
 }
 
-func (r *RtIntWidget) Bounds() (Rter,Rter) {
+func (r *RtIntWidget) Bounds() (Rter, Rter) {
 	r.param.RLock()
 	defer r.param.RUnlock()
-	return r.param.Min,r.param.Max
+	return r.param.Min, r.param.Max
 }
 
 func (r *RtIntWidget) Next() Widget {
@@ -74,16 +74,14 @@ func (r *RtIntWidget) Default() error {
 
 func (r *RtIntWidget) Value() RtInt {
 	r.param.RLock()
-	defer r.param.RUnlock()	
+	defer r.param.RUnlock()
 	return r.param.Value.(RtInt)
 }
 
 func (r *RtIntWidget) Set(value RtInt) error {
 	/* TODO: check min/max */
 	r.param.Lock()
-	defer r.param.Unlock()	
+	defer r.param.Unlock()
 	r.param.Value = value
 	return nil
 }
-
-

@@ -3,19 +3,18 @@ package ri
 
 import (
 	"crypto/rand"
-	"io"
 	"encoding/hex"
+	"io"
 )
 
+func read(n int) (string, error) {
 
-func read(n int) (string,error) {
-
-	b := make([]byte,n)
-	n,err := io.ReadFull(rand.Reader,b)
+	b := make([]byte, n)
+	n, err := io.ReadFull(rand.Reader, b)
 	if err != nil {
-		return "",err
+		return "", err
 	}
-	return hex.EncodeToString(b[:n]),nil
+	return hex.EncodeToString(b[:n]), nil
 }
 
 func readExample(n int) string {
@@ -25,28 +24,3 @@ func readExample(n int) string {
 	}
 	return hex.EncodeToString(example[:n])
 }
-	
-	
-	
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-	
-
-
