@@ -1,0 +1,9 @@
+##RenderMan RIB-Structure 1.1
+version 3.04 
+Display "001_redsphere.tif" "file" "rgb" 
+Format 300 300 1 
+Translate 0 0 6 
+WorldBegin  
+	Color [1 0 0] 
+	Sphere 1 -1 1 360 
+WorldEnd  
