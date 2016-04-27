@@ -4,6 +4,7 @@ import (
 	"os"
 	"fmt"
 	"io/ioutil"
+	"strings"
 
 	. "github.com/mae-global/rigo/ri/handles"
 )
@@ -53,6 +54,11 @@ func Bxdf(name string,sh RtShaderHandle) (Shader,error) {
 		return nil,fmt.Errorf("is RMANTREE set?")
 	}
 
+	debug := os.Getenv("DEBUG")
+	if debug == "testing" {
+		name = strings.Replace(name,"Pxr","Test",-1)
+	}
+
 	filepath := rmantree + "/lib/RIS/bxdf/Args/" + name + ".args"
 
 	file,err := ioutil.ReadFile(filepath)
@@ -95,6 +101,12 @@ func Integrator(name string,sh RtShaderHandle) (Shader,error) {
 		return nil,fmt.Errorf("is RMANTREE set?")
 	}
 
+	debug := os.Getenv("DEBUG")
+	if debug == "testing" {
+		name = strings.Replace(name,"Pxr","Test",-1)
+	}
+
+
 	filepath := rmantree + "/lib/RIS/integrator/Args/" + name + ".args"
 	
 	file,err := ioutil.ReadFile(filepath)
@@ -135,6 +147,11 @@ func LightFilter(name string,sh RtShaderHandle) (Shader,error) {
 	rmantree := os.Getenv("RMANTREE")
 	if len(rmantree) == 0 {
 		return nil,fmt.Errorf("is RMANTREE set?")
+	}
+
+	debug := os.Getenv("DEBUG")
+	if debug == "testing" {
+		name = strings.Replace(name,"Pxr","Test",-1)
 	}
 
 	filepath := rmantree + "/lib/RIS/light/Args/" + name + ".args"
@@ -179,6 +196,11 @@ func Projection(name string,sh RtShaderHandle) (Shader,error) {
 		return nil,fmt.Errorf("is RMANTREE set?")
 	}
 
+	debug := os.Getenv("DEBUG")
+	if debug == "testing" {
+		name = strings.Replace(name,"Pxr","Test",-1)
+	}
+
 	filepath := rmantree + "/lib/RIS/projection/Args/" + name + ".args"
 
 	file,err := ioutil.ReadFile(filepath)
@@ -219,6 +241,11 @@ func Pattern(name string,sh RtShaderHandle) (Shader,error) {
 	rmantree := os.Getenv("RMANTREE")
 	if len(rmantree) == 0 {
 		return nil,fmt.Errorf("is RMANTREE set?")
+	}
+
+	debug := os.Getenv("DEBUG")
+	if debug == "testing" {
+		name = strings.Replace(name,"Pxr","Test",-1)
 	}
 
 	filepath := rmantree + "/lib/RIS/pattern/Args/" + name + ".args"

@@ -11,6 +11,8 @@ import (
 	. "github.com/mae-global/rigo/ri/handles"
 )
 
+/* TODO: add ArgsPage -- see PxrCamera as an example of use */
+
 const (
 	DefaultArgsSubPath = "/lib/RIS/" /* {shadertype}/Args */
 )
