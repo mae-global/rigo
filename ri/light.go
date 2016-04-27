@@ -1,5 +1,5 @@
-/* rigo/handles/handles.go */
-package handles
+/* rigo/ri/handles.go */
+package ri
 
 import (
 	"fmt"
@@ -20,6 +20,13 @@ func (l RtLightHandle) String() string {
 
 func (l RtLightHandle) Serialise() string {
 	return fmt.Sprintf("\"%s\"", string(l))
+}
+
+func (l RtLightHandle) Equal(o Rter) bool {
+	if other,ok := o.(RtLightHandle); ok {
+		return (other == l)
+	}
+	return false
 }
 
 /* LightHandler */

@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	. "github.com/mae-global/rigo/ri"
-	. "github.com/mae-global/rigo/ri/handles"
 )
 
 func DefaultFilePipe() *Pipe {

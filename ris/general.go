@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	. "github.com/mae-global/rigo/ri"
-	. "github.com/mae-global/rigo/ri/handles"
 )
 
 var (
@@ -27,6 +26,14 @@ type Param struct {
 	sync.RWMutex
 
 	/* TODO: add option hints dictionary here */
+}
+
+/* IsDefault is the param value same as the default */
+func (param *Param) IsDefault() bool {
+	param.RLock()
+	defer param.RUnlock()
+
+	return (param.Value.Equal(param.Default))
 }
 
 type GeneralShader struct {
@@ -79,7 +86,13 @@ func (g *GeneralShader) Write() (RtName,RtShaderHandle,[]Rter,[]Rter,[]Rter) {
 	args = append(args,RtToken(g.name))
 	
 	for _,param := range g.params {
-		param.RLock()
+		/* if the value is equal to the default value then we don't need to
+		 * write it out TODO: add a flag to control this */
+		if param.IsDefault() {
+			continue
+		}	
+
+		param.RLock()	
 
 		params = append(params,namespec(param.Name,param.Type))
 		values = append(values,param.Value)

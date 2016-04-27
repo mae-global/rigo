@@ -1,8 +1,7 @@
 package ris
 
 import (
-	. "github.com/mae-global/rigo/ri"
-	. "github.com/mae-global/rigo/ri/handles"
+	. "github.com/mae-global/rigo/ri"	
 	"fmt"
 )
 /* https://renderman.pixar.com/resources/current/RenderMan/devExamples.html */

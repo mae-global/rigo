@@ -1,5 +1,5 @@
-/* rigo/handles/handles.go */
-package handles
+/* rigo/ri/handles.go */
+package ri
 
 import (
 	"fmt"
@@ -19,6 +19,13 @@ func (l RtShaderHandle) String() string {
 
 func (l RtShaderHandle) Serialise() string {
 	return fmt.Sprintf("\"%s\"",string(l))
+}
+
+func (l RtShaderHandle) Equal(o Rter) bool {
+	if other,ok := o.(RtShaderHandle); ok {
+		return (other == l)
+	}
+	return false
 }
 
 

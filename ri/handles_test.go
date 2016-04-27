@@ -1,5 +1,5 @@
-/* rigo/handles/handles_test.go */
-package handles
+/* rigo/ri/handles_test.go */
+package ri
 
 import (
 	"testing"

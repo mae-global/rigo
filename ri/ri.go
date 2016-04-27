@@ -3,8 +3,6 @@ package ri
 import (
 	"fmt"
 	"strconv"
-
-	. "github.com/mae-global/rigo/ri/handles"
 )
 
 const USEDEBUG = false

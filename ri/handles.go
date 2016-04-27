@@ -1,11 +1,12 @@
-/* rigo/handles/handles.go */
-package handles
+/* rigo/ri/handles.go */
+package ri
 
 import (
 	"crypto/rand"
 	"io"
 	"encoding/hex"
 )
+
 
 func read(n int) (string,error) {
 

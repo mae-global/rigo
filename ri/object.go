@@ -1,5 +1,5 @@
-/* rigo/handles/handles.go */
-package handles
+/* rigo/ri/handles.go */
+package ri
 
 import (
 	"fmt"
@@ -20,6 +20,13 @@ func (l RtObjectHandle) String() string {
 
 func (l RtObjectHandle) Serialise() string {
 	return fmt.Sprintf("\"%s\"", string(l))
+}
+
+func (l RtObjectHandle) Equal(o Rter) bool {
+	if other,ok := o.(RtObjectHandle); ok {
+		return (other == l)
+	}
+	return false
 }
 
 /* ObjectHandler */

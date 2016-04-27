@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	. "github.com/mae-global/rigo/ri"
-	. "github.com/mae-global/rigo/ri/handles"
 	. "github.com/mae-global/rigo/ris"
 )
 

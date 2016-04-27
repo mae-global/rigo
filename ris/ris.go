@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	. "github.com/mae-global/rigo/ri/handles"
+	. "github.com/mae-global/rigo/ri"
 )
 
 var dashed = RtShaderHandle("-")

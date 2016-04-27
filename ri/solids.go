@@ -1,8 +1,5 @@
 package ri
 
-import (
-		. "github.com/mae-global/rigo/ri/handles"
-)
 
 /* SolidBegin */
 func (r *Ri) SolidBegin(operation RtToken) error {

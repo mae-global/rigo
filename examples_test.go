@@ -7,7 +7,6 @@ import (
 	"time"
 
 	. "github.com/mae-global/rigo/ri"
-	. "github.com/mae-global/rigo/ri/handles"
 
 	. "github.com/smartystreets/goconvey/convey"
 )

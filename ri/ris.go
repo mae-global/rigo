@@ -2,9 +2,6 @@ package ri
 
 /* RIS Procedures -- https://renderman.pixar.com/resources/current/RenderMan/risProcedures.html */
 
-import (
-	. "github.com/mae-global/rigo/ri/handles"
-)
 
 var dashed = RtShaderHandle("-")
 

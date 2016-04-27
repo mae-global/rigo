@@ -3,7 +3,6 @@ package rigo
 
 import (
 	. "github.com/mae-global/rigo/ri"
-	. "github.com/mae-global/rigo/ri/handles"
 )
 
 func DefaultPipeline(config *Configuration) (*Ri,*Pipe) {

@@ -56,6 +56,7 @@ func Test_NormalWidget(t *testing.T) {
 	})	
 }
 
+
 const normalwidget = `
 <args format="1.0">
 	<shaderType>
