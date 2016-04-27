@@ -147,7 +147,7 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 	}
 
 	if name == "Begin" {
-		fmt.Printf("PipeToFile Write, name=Begin...\n")
+		//fmt.Printf("PipeToFile Write, name=Begin...\n")
 		if p.file != nil {
 			return InError(ErrProtocolBotch)
 		}
@@ -159,7 +159,7 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 		}
 
 		f, err := os.Create(file)
-		fmt.Printf("\tfile %s created\n", file)
+		//fmt.Printf("\tfile %s created\n", file)
 		if err != nil {
 			return InError(err)
 		}
@@ -176,7 +176,7 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 	}
 
 	if name == "End" {
-		fmt.Printf("FileToPipe Write, name=End, p.File=%v\n", p.file)
+		//fmt.Printf("FileToPipe Write, name=End, p.File=%v\n", p.file)
 		if p.file == nil {
 			return InError(ErrProtocolBotch)
 		}

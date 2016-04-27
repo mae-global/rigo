@@ -147,11 +147,11 @@ ri := RI(ctx)
 ri.Begin("output/simple.rib")
 ri.Display("sphere.tif","file","rgb")
 ri.Format(320,240,1)
-ri.Projection(Perspective,RtString("fov"),RtFloat(30))
+ri.Projection(Perspective,RtToken("fov"),RtFloat(30))
 ri.Translate(0,0,6)
 ri.WorldBegin()
-	ri.LightSource("ambientlight",RtString("intensity"),RtFloat(0.5))
-	ri.LightSource("distantlight",RtString("intensity"),RtFloat(1.2),RtString("form"),RtIntArray{0,0,-6},RtString("to"),RtIntArray{0,0,0})
+	ri.LightSource("ambientlight",RtToken("intensity"),RtFloat(0.5))
+	ri.LightSource("distantlight",RtToken("intensity"),RtFloat(1.2),RtToken("from"),RtIntArray{0,0,-6},RtToken("to"),RtIntArray{0,0,0})
 	ri.Color(RtColor{1,0,0})
 	ri.Sphere(1,-1,1,360)
 ri.WorldEnd()
@@ -166,7 +166,7 @@ Projection "perspective" "fov" 30
 Translate 0 0 6
 WorldBegin 
 	LightSource "ambientlight" "light_09c84b71" "intensity" .2
-	LightSource "distantlight" "light_64f4dfbf" "intensity" 1.2 "form" [0 0 -6] "to" [0 0 0]
+	LightSource "distantlight" "light_64f4dfbf" "intensity" 1.2 "from" [0 0 -6] "to" [0 0 0]
 	Color [1 0 0]
 	Sphere 1 -1 1 360
 WorldEnd 
@@ -175,6 +175,10 @@ WorldEnd
 
 ##Roadmap
 
+- [ ] Regression tests
+  - [ ] Basic RIB outputs against expected
+  - [ ] Image Comparsion against expected -- tiffdiff
+  - [ ] RIB output comparsion from PRMan
 - [ ] Ability to run an output to an application from RiBegin
 - [x] ~~Structure block for recording context settings in RIB output~~ Moved to tools (outside of this package)
 - [x] ~~Basic RIB pipe~~

@@ -231,3 +231,4 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 
 	return r.Write(name, args, nlist)
 }
+

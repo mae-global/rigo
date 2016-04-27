@@ -11,10 +11,10 @@ import (
 func main() {
 
 	ri,_ := rigo.DefaultPipeline(&rigo.Configuration{PrettyPrint: true})
-	ri.Begin("./001.rib")
+	ri.Begin("./scene.rib")
 	ri.ArchiveRecord("structure","Scene regressions/001")
 	ri.ArchiveRecord("structure","Regression 001")
-	ri.Display("./001.tif","file","rgb")
+	ri.Display("./scene.tif","file","rgb")
 	ri.Format(300,300,1)
 	ri.Translate(0,0,6)
 	ri.WorldBegin()
