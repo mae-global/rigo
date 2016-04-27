@@ -142,7 +142,7 @@ pipe := DefaultFilePipe()
 /* use a custom unique generator with a prefix for the light handles */
 lights := NewPrefixLightUniqueGenerator("light_")
 	
-ctx := NewContext(pipe,lights,nil,&Configuration{PrettyPrint:true})
+ctx := NewContext(pipe,lights,nil,nil,&Configuration{PrettyPrint:true})
 ri := RI(ctx)
 ri.Begin("output/simple.rib")
 ri.Display("sphere.tif","file","rgb")
