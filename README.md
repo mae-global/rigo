@@ -1,4 +1,4 @@
-#RiGO  	![license](https://img.shields.io/github/license/mae-global/rigo.svg] ![status](https://img.shields.io/travis/mae-global/rigo.svg) ![version](https://img.shields.io/badge/version-0-red.svg)
+#RiGO  	![license](https://img.shields.io/github/license/mae-global/rigo.svg) ![status](https://img.shields.io/travis/mae-global/rigo.svg) ![version](https://img.shields.io/badge/version-0-red.svg)
 
 Implementation of the RenderMan Interface for the Go programming language. This is currently 
 based on Pixar's RenderMan Specification version 3.2.1 (November 2005). This implementation 
