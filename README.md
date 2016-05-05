@@ -165,7 +165,7 @@ Format 320 240 1
 Projection "perspective" "fov" 30
 Translate 0 0 6
 WorldBegin 
-	LightSource "ambientlight" "light_09c84b71" "intensity" .2
+	LightSource "ambientlight" "light_09c84b71" "intensity" .5
 	LightSource "distantlight" "light_64f4dfbf" "intensity" 1.2 "from" [0 0 -6] "to" [0 0 0]
 	Color [1 0 0]
 	Sphere 1 -1 1 360
