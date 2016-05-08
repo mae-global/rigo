@@ -8,6 +8,8 @@ import (
 	"strings"
 	"fmt"
 	"io"
+
+	"github.com/mae-global/rigo/ri"
 )
 
 type TestTokenWriter struct {
@@ -49,7 +51,8 @@ func (w *TestTokenWriter) Print(show bool) string {
 			if token.Type == Tokeniser {
 				tag = "tokeniser"
 			}
-			out += fmt.Sprintf("%04d:%03d\t--\t%30s\t\t\t(%s)\n",token.Line,token.Pos,token.Word,tag)
+			out += fmt.Sprintf("%04d:%03d --%20s\t(%s)\tL:%10s\tRi:%10s\n",
+													token.Line,token.Pos,token.Word,tag,token.Lex,token.RiType)
 			continue
 		}
 
@@ -57,7 +60,7 @@ func (w *TestTokenWriter) Print(show bool) string {
 			continue
 		}
 
-		out += fmt.Sprintf("%04d:%03d\t--\t%30s\n",token.Line,token.Pos,token.Word)
+		out += fmt.Sprintf("%04d:%03d --%20s\n",token.Line,token.Pos,token.Word)
 	}
 	return out
 }
@@ -72,6 +75,13 @@ func Test_Tokeniser(t *testing.T) {
 		So(err,ShouldBeNil)
 
 		fmt.Printf("\nRIB Example 0\n----------\n%s\n\n%s\n",RIBExample0,tw.Print(false))
+	
+		tw1 := new(TestTokenWriter)
+		err = Lexer(tw,tw1,ri.RiBloomFilter())
+		So(err,ShouldBeNil)
+
+		fmt.Printf("\nLexer\n%s\n",tw1.Print(false))
+
 	})
 
 
@@ -82,13 +92,21 @@ func Test_Tokeniser(t *testing.T) {
 		So(err,ShouldBeNil)
 	//	So(tw.Count(),ShouldEqual,27)
 
-		fmt.Printf("\nRIB Example 1\n----------\n%s\n\n%s\n",RIBExample1,tw.Print(true))
+		fmt.Printf("\nRIB Example 1\n----------\n%s\n\n%s\n",RIBExample1,tw.Print(false))
+	
+		tw1 := new(TestTokenWriter)
+		err = Lexer(tw,tw1,ri.RiBloomFilter())
+		So(err,ShouldBeNil)
+
+		fmt.Printf("\nLexer\n%s\n",tw1.Print(false))
 	})
 }		
 
 
 const RIBExample0 = `##RenderMan RIB-Structure 1.1
 version 3.04
+##Scene "test"
+Sphere 1 -1 1 360
 `
 
 const RIBExample1 = `##RenderMan RIB-Structure 1.1
@@ -97,6 +115,7 @@ Display "sphere.tif" "file" "rgb"
 Format 320 240 1
 Translate 0 0 6
 WorldBegin
+Projection "perspective" "fov" 30.0
 Color [1 0 0]
 Sphere 1 -1 1 360
 WorldEnd`
