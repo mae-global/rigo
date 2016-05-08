@@ -142,6 +142,8 @@ type Ri struct {
 	RiContexter
 }
 
+func (r *Ri) BloomFilter() *BloomFilter { return RiBloomFilter() }
+
 /* User special func for client libraries to write to */
 func (r *Ri) User(w RterWriter) error {
 	if w == nil {

@@ -42,7 +42,9 @@ func main() {
 	ri.Tokens = make([]string,0)
 
 	hashes := make(map[string][]int,0)
-	
+
+	/* add 'version' */
+	hashes["version"] = Hash("version")
 
 	/* very crude parsing here */
 	for i,line := range lines {

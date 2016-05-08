@@ -4,25 +4,100 @@ package rib
 import (
 	"testing"
 	. "github.com/smartystreets/goconvey/convey"
+
+	"strings"
+	"fmt"
+	"io"
 )
 
-func Test_SimpleParse(t *testing.T) {
+type TestTokenWriter struct {
+	tokens []Token
+	position int
+}
 
-	Convey("Simple Parser",t,func() {
-		
-		So(len(RIBExample1),ShouldEqual,169)
-		So(Parse([]byte(RIBExample1)),ShouldBeNil)
-		
+func (w *TestTokenWriter) Write(t Token) {
+	if w.tokens == nil {
+		w.tokens = make([]Token,0)
+	}
+	w.tokens = append(w.tokens,t)
+}
+
+func (w *TestTokenWriter) Read() (Token,error) {
+	if w.tokens == nil || len(w.tokens) == 0 {
+		return EmptyToken,io.EOF
+	}
+	if w.position >= len(w.tokens) {
+		return EmptyToken,io.EOF
+	}
+	t := w.tokens[w.position]
+	w.position++
+	return t,nil
+}
+
+func (w *TestTokenWriter) Count() int {
+	if w.tokens == nil {
+		return 0
+	}
+	return len(w.tokens)
+}
+
+func (w *TestTokenWriter) Print(show bool) string {
+	out := ""
+	for _,token := range w.tokens {
+		if !show {
+			tag := "content"
+			if token.Type == Tokeniser {
+				tag = "tokeniser"
+			}
+			out += fmt.Sprintf("%04d:%03d\t--\t%30s\t\t\t(%s)\n",token.Line,token.Pos,token.Word,tag)
+			continue
+		}
+
+		if token.Type == Tokeniser {
+			continue
+		}
+
+		out += fmt.Sprintf("%04d:%03d\t--\t%30s\n",token.Line,token.Pos,token.Word)
+	}
+	return out
+}
+
+
+
+func Test_Tokeniser(t *testing.T) {
+
+	Convey("Tokeniser Example 0",t,func() {
+		tw := new(TestTokenWriter)
+		err := Tokenise(strings.NewReader(RIBExample0),tw)
+		So(err,ShouldBeNil)
+
+		fmt.Printf("\nRIB Example 0\n----------\n%s\n\n%s\n",RIBExample0,tw.Print(false))
 	})
-}	
+
+
+	Convey("Tokeniser Example 1",t,func() {
+
+		tw := new(TestTokenWriter)
+		err := Tokenise(strings.NewReader(RIBExample1),tw)
+		So(err,ShouldBeNil)
+	//	So(tw.Count(),ShouldEqual,27)
+
+		fmt.Printf("\nRIB Example 1\n----------\n%s\n\n%s\n",RIBExample1,tw.Print(true))
+	})
+}		
+
+
+const RIBExample0 = `##RenderMan RIB-Structure 1.1
+version 3.04
+`
 
 const RIBExample1 = `##RenderMan RIB-Structure 1.1
-version 3.04 
-Display "sphere.tif" "file" "rgb" 
-Format 320 240 1 
-Translate 0 0 6 
-WorldBegin  
-Color [1 0 0] 
-Sphere 1 -1 1 360 
+version 3.04
+Display "sphere.tif" "file" "rgb"
+Format 320 240 1
+Translate 0 0 6
+WorldBegin
+Color [1 0 0]
+Sphere 1 -1 1 360
 WorldEnd`
 	
