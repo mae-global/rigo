@@ -34,6 +34,6 @@ func (r *Ri) IfEnd() error {
 	return r.writef("IfEnd")
 }
 
-func (r *Ri) IfEndV() error {
+func (r *Ri) IfEndV(args,tokens,values []Rter) error {
 	return r.writef("IfEnd")
 }

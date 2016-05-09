@@ -13,11 +13,31 @@ func (r *Ri) MakeTexture(picturename, texturename RtString, swrap, twrap RtToken
 	return r.writef("MakeTexture", out...)
 }
 
+func (r *Ri) MakeTextureV(args,tokens,values []Rter) error {
+
+	out := make([]Rter,0)
+	out = append(out,args...)
+	out = append(out,PARAMETERLIST)
+	out = append(out,mix(tokens,values)...)
+	
+	return r.writef("MakeTexture", out...)
+}
+
 /* MakeLatLongEnvironment */
 func (r *Ri) MakeLatLongEnvironment(picturename, texturename RtString, filterfunc RtFilterFunc, swidth, twidth RtFloat, parameterlist ...Rter) error {
 
 	var out = []Rter{picturename, texturename, filterfunc, swidth, twidth, PARAMETERLIST}
 	out = append(out, parameterlist...)
+
+	return r.writef("MakeLatLongEnvironment", out...)
+}
+
+func (r *Ri) MakeLatLongEnvironmentV(args,tokens,values []Rter) error {
+
+	out := make([]Rter,0)
+	out = append(out,args...)
+	out = append(out,PARAMETERLIST)
+	out = append(out,mix(tokens,values)...)
 
 	return r.writef("MakeLatLongEnvironment", out...)
 }
@@ -31,11 +51,31 @@ func (r *Ri) MakeCubeFaceEnvironment(px, nx, py, ny, pz, nz, texturename RtStrin
 	return r.writef("MakeCubeFaceEnvironment", out...)
 }
 
+func (r *Ri) MakeCubeFaceEnvironmentV(args,tokens,values []Rter) error {
+
+	out := make([]Rter,0)
+	out = append(out,args...)
+	out = append(out,PARAMETERLIST)
+	out = append(out,mix(tokens,values)...)
+
+	return r.writef("MakeCubeFaceEnvironment", out...)
+}
+
 /* MakeShadow */
 func (r *Ri) MakeShadow(picturename, texturename RtString, parameterlist ...Rter) error {
 
 	var out = []Rter{picturename, texturename, PARAMETERLIST}
 	out = append(out, parameterlist...)
+
+	return r.writef("MakeShadow", out...)
+}
+
+func (r *Ri) MakeShadowV(args,tokens,values []Rter) error {
+
+	out := make([]Rter,0)
+	out = append(out,args...)
+	out = append(out,PARAMETERLIST)
+	out = append(out,mix(tokens,values)...)
 
 	return r.writef("MakeShadow", out...)
 }
@@ -63,6 +103,11 @@ func (r *Ri) ArchiveRecord(typeof RtToken, format RtString, args ...interface{})
 	return err
 }
 
+func (r *Ri) ArchiveRecordV(args,tokens,values []Rter) error {
+	/* FIXME */
+	return nil
+}
+
 /* ReadArchive */
 func (r *Ri) ReadArchive(name RtToken, callback RtArchiveCallbackFunc, parameterlist ...Rter) error {
 	/* FIXME, take care of callback ? */
@@ -71,3 +116,13 @@ func (r *Ri) ReadArchive(name RtToken, callback RtArchiveCallbackFunc, parameter
 
 	return r.writef("ReadArchive", out...)
 }
+
+func (r *Ri) ReadArchiveV(args,tokens,values []Rter) error {
+	/* FIXME */
+	return nil
+}
+
+
+
+
+

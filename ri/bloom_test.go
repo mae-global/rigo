@@ -23,7 +23,7 @@ func Test_BloomFilter(t *testing.T) {
 			f = f.Append(fmt.Sprintf("Alice In Wonderland"))
 			So(f,ShouldNotBeNil)
 
-			fmt.Printf("\n%s\n",f.Print())
+			//fmt.Printf("\n%s\n",f.Print())
 
 			So(f.IsMember("Alice In Wonderland"),ShouldBeTrue)
 			So(f.IsMember("Fred"),ShouldBeFalse)
@@ -35,7 +35,7 @@ func Test_BloomFilter(t *testing.T) {
 				So(f.IsMember("Fred"),ShouldBeFalse)
 			}
 
-			fmt.Printf("%s\n",f.Print())
+			//fmt.Printf("%s\n",f.Print())
 		})
 	})
 }
@@ -48,7 +48,7 @@ func Test_RiBloomFilter(t *testing.T) {
 
 		So(f.IsMember("Sphere"),ShouldBeTrue)
 		So(f.IsMember("Foobar"),ShouldBeFalse)
-		fmt.Printf("RiBloomFilter\n %s\n",f.Print())
+	//	fmt.Printf("RiBloomFilter\n %s\n",f.Print())
 	})
 }
 

@@ -102,13 +102,26 @@ func Test_Attributes(t *testing.T) {
 		So(ctx.BoundV([]Rter{RtBound{0,.5,0,.5,.9,1}},nil,nil), ErrorShouldEqual, `Bound [0 .5 0 .5 .9 1]`)
 
 		So(ctx.Detail(RtBound{10, 20, 42, 69, 0, 1}), ErrorShouldEqual, `Detail [10 20 42 69 0 1]`)
+		So(ctx.DetailV([]Rter{RtBound{10,20,42,69,0,1}},nil,nil), ErrorShouldEqual, `Detail [10 20 42 69 0 1]`)
+
 		So(ctx.DetailRange(0, 0, 10, 20), ErrorShouldEqual, `DetailRange [0 0 10 20]`)
+		So(ctx.DetailRangeV([]Rter{RtFloatArray{0,0,10,20}},nil,nil), ErrorShouldEqual, `DetailRange [0 0 10 20]`)		
+
 		So(ctx.GeometricApproximation("flatness", 2.5), ErrorShouldEqual, `GeometricApproximation "flatness" 2.5`)
+		So(ctx.GeometricApproximationV([]Rter{RtString("flatness"),RtFloat(2.5)},nil,nil), ErrorShouldEqual, `GeometricApproximation "flatness" 2.5`)
+
 		So(ctx.Orientation("lh"), ErrorShouldEqual, `Orientation "lh"`)
+		So(ctx.OrientationV([]Rter{RtString("lh")},nil,nil), ErrorShouldEqual, `Orientation "lh"`)
+
 		So(ctx.ReverseOrientation(), ErrorShouldEqual, `ReverseOrientation`)
+		So(ctx.ReverseOrientationV(nil,nil,nil), ErrorShouldEqual, `ReverseOrientation`)
+
 		So(ctx.Sides(2), ErrorShouldEqual, `Sides 2`)
+		So(ctx.SidesV([]Rter{RtFloat(2)},nil,nil), ErrorShouldEqual, `Sides 2`)
 
 		So(ctx.AttributeEnd(), ErrorShouldEqual, `AttributeEnd`)
+		So(ctx.AttributeEndV(nil,nil,nil), ErrorShouldEqual, `AttributeEnd`)
+
 		So(ctx.End(), ErrorShouldEqual, `End`)
 	})
 }
