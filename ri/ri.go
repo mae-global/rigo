@@ -134,48 +134,14 @@ func (b *TestContext) Shader(h RtShaderHandle) ShaderWriter {
 }
 
 func NewTest() *Ri {
-	return &Ri{&TestContext{0, 0, 0, 0, nil},nil}
+	return &Ri{&TestContext{0, 0, 0, 0, nil}}
 }
 
 /* Ri is the main interface */
 type Ri struct {
-	RiContexter
-	
-	lookup map[RtName]RtInt /* lookup ri function information, such as number of expected arguments */
+	RiContexter	
 }
 
-/* hook the lookup information */
-func (r *Ri) HookCallInfo() bool {
-	if r.lookup != nil {
-		return true
-	}
-
-	r.lookup = make(map[RtName]RtInt,0)
-
-	for i := 0; i < len(bloomFilterKeysData); i++ {
-		
-		name := RtName(bloomFilterKeysData[i])
-		args := RtInt(RiArgumentsData[i])
-
-		r.lookup[name] = args
-	}
-
-	return true
-}
-
-/* lookup Ri call information */
-func (r *Ri) LookupCallInfo(name RtName) (RtInt,error) {
-	if r.lookup == nil {
-		return -1,fmt.Errorf("Need to call Hook() first")
-	}
-
-	n,ok := r.lookup[name]
-	if ok {
-		return n,nil
-	}
-	return -1,fmt.Errorf("\"%s\" not found",name)
-}	
-	
 
 func (r *Ri) BloomFilter() *BloomFilter { return RiBloomFilter() }
 
