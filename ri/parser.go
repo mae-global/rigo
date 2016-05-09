@@ -54,7 +54,7 @@ func (w *RIBTokenIO) Print() string {
 }
 
 
-func ParseString(content string,out RterWriter) error {
+func ParseString(content string,writer RterWriter) error {
 
 	tw := new(RIBTokenIO)
 	if err := rib.Tokenise(strings.NewReader(content),tw); err != nil {			
@@ -114,10 +114,17 @@ func ParseString(content string,out RterWriter) error {
 					fmt.Printf("%s (%d) %d args, %d tokens & %d values\n",
 											currentfunc,params,len(args),len(tokens),len(values))
 
+					if writer != nil {
+						if err := writer.WriteTo(RtName(currentfunc),args,tokens,values); err != nil {
+							return err
+						}
+					}
+
 					currentfunc = ""
 					args = make([]Rter,0)
 					tokens = make([]Rter,0)
-					values = make([]Rter,0)							
+					values = make([]Rter,0)				
+					farray = make([]RtFloat,0)			
 					params = -1				
 				
 				}

@@ -21,8 +21,12 @@ type Rter interface {
 	Equal(Rter) bool
 }
 
+type RterReader interface {
+	ReadFrom() (RtName, []Rter, []Rter,[]Rter) 
+}
+
 type RterWriter interface {
-	Write() (RtName, []Rter, []Rter,[]Rter)
+	WriteTo(RtName,[]Rter,[]Rter,[]Rter) error
 }
 
 /* RtName internal use for RIB command names */

@@ -146,12 +146,12 @@ type Ri struct {
 func (r *Ri) BloomFilter() *BloomFilter { return RiBloomFilter() }
 
 /* User special func for client libraries to write to */
-func (r *Ri) User(w RterWriter) error {
-	if w == nil {
+func (r *Ri) User(reader RterReader) error {
+	if reader == nil {
 		return ErrBadArgument
 	}
 
-	name, args, tokens, values := w.Write()
+	name, args, tokens, values := reader.ReadFrom()
 	out := make([]Rter, len(args))
 	copy(out, args)
 	out = append(out, PARAMETERLIST)
@@ -160,7 +160,7 @@ func (r *Ri) User(w RterWriter) error {
 	return r.writef(name, out...)
 }
 
-func (r *Ri) UserV(name RtName,args,tokens,values []Rter) error {
+func (r *Ri) WriteTo(name RtName,args,tokens,values []Rter) error {
 	
 	out := make([]Rter,0)
 	out = append(out,args...)
