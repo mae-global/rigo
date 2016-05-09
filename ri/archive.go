@@ -17,6 +17,8 @@ func (r *Ri) ArchiveBegin(id RtToken, parameterlist ...Rter) (ArchiveWriter, err
 	return aw, r.writef("ArchiveBegin", list...)
 }
 
+
+
 func (r *Ri) ArchiveEnd(id RtToken) error {
 
 	if err := r.CloseRaw(id); err != nil {

@@ -47,6 +47,21 @@ func Test_Utilities(t *testing.T) {
 			So(count, ShouldEqual, 2)
 		})
 
+		Convey("Mix & Unmix",func() {
+			tokens := []Rter{RtToken("a"),RtToken("b")}
+			values := []Rter{RtFloat(0.1),RtFloat(0.2)}
+			params := mix(tokens,values)
+			So(len(params),ShouldEqual,4)
+			So(Serialise(params),ShouldEqual,`"a" .1 "b" .2`)
+
+			tokens1,values1 := unmix(params)
+			So(len(tokens1),ShouldEqual,len(tokens))
+			So(Serialise(tokens1),ShouldEqual,Serialise(tokens))
+			So(len(values1),ShouldEqual,len(values))
+			So(Serialise(values1),ShouldEqual,Serialise(values))
+		})
+
+		
 	})
 
 	list := []Rter{RtToken("test"), RtFloat(1.2), RtFloatArray{.1, .2, .3, .4}}

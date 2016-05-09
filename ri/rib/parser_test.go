@@ -51,8 +51,13 @@ func (w *TestTokenWriter) Print(show bool) string {
 			if token.Type == Tokeniser {
 				tag = "tokeniser"
 			}
-			out += fmt.Sprintf("%04d:%03d --%20s\t(%s)\tL:%10s\tRi:%10s\n",
-													token.Line,token.Pos,token.Word,tag,token.Lex,token.RiType)
+
+			ritype := token.RiType
+			if token.Error != nil {
+				ritype = token.Error.Error()
+			}
+			out += fmt.Sprintf("%04d:%03d --%30s\t(%s)\tL:%10s\tRi:%10s\n",
+													token.Line,token.Pos,token.Word,tag,token.Lex,ritype)
 			continue
 		}
 
@@ -60,14 +65,14 @@ func (w *TestTokenWriter) Print(show bool) string {
 			continue
 		}
 
-		out += fmt.Sprintf("%04d:%03d --%20s\n",token.Line,token.Pos,token.Word)
+		out += fmt.Sprintf("%04d:%03d --%30s\n",token.Line,token.Pos,token.Word)
 	}
 	return out
 }
 
 
 
-func Test_Tokeniser(t *testing.T) {
+func Test_TokeniserExample0(t *testing.T) {
 
 	Convey("Tokeniser Example 0",t,func() {
 		tw := new(TestTokenWriter)
@@ -82,8 +87,18 @@ func Test_Tokeniser(t *testing.T) {
 
 		fmt.Printf("\nLexer\n%s\n",tw1.Print(false))
 
-	})
+		tw2 := new(TestTokenWriter)
+		err = Parser(tw1,tw2)
+		So(err,ShouldBeNil)
 
+		fmt.Printf("\nParser\n%s\n",tw2.Print(false))
+
+	})
+}
+
+func Test_TokeniserExample1(t *testing.T) {
+
+	t.Skip()
 
 	Convey("Tokeniser Example 1",t,func() {
 
@@ -105,7 +120,8 @@ func Test_Tokeniser(t *testing.T) {
 
 const RIBExample0 = `##RenderMan RIB-Structure 1.1
 version 3.04
-##Scene "test"
+Projection "perspective" "fov" 30.0
+Color [1 0 0]
 Sphere 1 -1 1 360
 `
 
