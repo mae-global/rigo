@@ -22,7 +22,7 @@ type Rter interface {
 }
 
 type RterWriter interface {
-	Write() (RtName, []Rter, []Rter)
+	Write() (RtName, []Rter, []Rter,[]Rter)
 }
 
 /* RtName internal use for RIB command names */

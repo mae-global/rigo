@@ -134,13 +134,48 @@ func (b *TestContext) Shader(h RtShaderHandle) ShaderWriter {
 }
 
 func NewTest() *Ri {
-	return &Ri{&TestContext{0, 0, 0, 0, nil}}
+	return &Ri{&TestContext{0, 0, 0, 0, nil},nil}
 }
 
 /* Ri is the main interface */
 type Ri struct {
 	RiContexter
+	
+	lookup map[RtName]RtInt /* lookup ri function information, such as number of expected arguments */
 }
+
+/* hook the lookup information */
+func (r *Ri) HookCallInfo() bool {
+	if r.lookup != nil {
+		return true
+	}
+
+	r.lookup = make(map[RtName]RtInt,0)
+
+	for i := 0; i < len(bloomFilterKeysData); i++ {
+		
+		name := RtName(bloomFilterKeysData[i])
+		args := RtInt(RiArgumentsData[i])
+
+		r.lookup[name] = args
+	}
+
+	return true
+}
+
+/* lookup Ri call information */
+func (r *Ri) LookupCallInfo(name RtName) (RtInt,error) {
+	if r.lookup == nil {
+		return -1,fmt.Errorf("Need to call Hook() first")
+	}
+
+	n,ok := r.lookup[name]
+	if ok {
+		return n,nil
+	}
+	return -1,fmt.Errorf("\"%s\" not found",name)
+}	
+	
 
 func (r *Ri) BloomFilter() *BloomFilter { return RiBloomFilter() }
 
@@ -150,11 +185,21 @@ func (r *Ri) User(w RterWriter) error {
 		return ErrBadArgument
 	}
 
-	name, args, params := w.Write()
+	name, args, tokens, values := w.Write()
 	out := make([]Rter, len(args))
 	copy(out, args)
 	out = append(out, PARAMETERLIST)
-	out = append(out, params...)
+	out = append(out, mix(tokens,values)...)
+
+	return r.writef(name, out...)
+}
+
+func (r *Ri) UserV(name RtName,args,tokens,values []Rter) error {
+	
+	out := make([]Rter,0)
+	out = append(out,args...)
+	out = append(out,PARAMETERLIST)
+	out = append(out,mix(tokens,values)...)
 
 	return r.writef(name, out...)
 }

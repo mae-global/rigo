@@ -209,7 +209,7 @@ func Lexer(reader TokenReader,writer TokenWriter,filter BloomFilterer) error {
 		if token.Type == Content {
 			/* check if a member of ri */
 			if filter.IsMember(token.Word) {
-				fmt.Printf("Command found -- %s\n",token.Word)
+				//fmt.Printf("Command found -- %s\n",token.Word)
 						
 				token.Lex = Command
 				token.RiType = "func"
@@ -247,10 +247,11 @@ func Lexer(reader TokenReader,writer TokenWriter,filter BloomFilterer) error {
 
 func Parser(reader TokenReader, writer TokenWriter) error {
 
-	/* TODO: add a function lookup -- check the variables etc */
+	/* TODO: add a function lookup -- check the variables, all the types need to be passed on etc */
 
 	currentfunc := ""
 	variables := 0	
+	inarray := false
 
 	for {
 		token,err := reader.Read()
@@ -265,34 +266,48 @@ func Parser(reader TokenReader, writer TokenWriter) error {
 			continue
 		}
 
+		/* start of a new Ri function call */
 		if token.RiType == "func" {
 			if variables > 0 && currentfunc != "" {
-				writer.Write(Token{Word:fmt.Sprintf("vars %d for %s",variables,currentfunc),Line:0,Pos:0,
-													 Type:Tokeniser,RiType:"counter"})
+				writer.Write(Token{Word:fmt.Sprintf("%d",variables),Line:0,Pos:0,Type:Tokeniser,RiType:"counter"})
 			}
 
 			currentfunc = token.Word
 			variables = 0
 		}
 
-		if token.Type == Content && token.RiType == "number" {
-			if _,err := strconv.ParseFloat(token.Word,64); err != nil {
-				token.RiType = "number"
-				token.Error = err
-			} else {			
-				token.RiType = "float"
-			}
-			variables++
-		}	
+		/* pass all the arguments in the function call */
+		if token.Type == Content {
+
+			switch token.RiType {
+					case "number":
+						if _,err := strconv.ParseFloat(token.Word,64); err != nil {
+							token.RiType = "number"
+							token.Error = err
+						} else {			
+							token.RiType = "float"
+						}
+						if !inarray {
+							variables++
+						}
+					break
+					case "array_begin":
+						inarray = true
+					break
+					case "array_end":
+						inarray = false
+						variables++
+					break
+			}	
+		}
 
 		writer.Write(token)
 	}
-	writer.Write(Token{Word:fmt.Sprintf("vars %d for %s",variables,currentfunc),Line:0,Pos:0,
-										Type:Tokeniser,RiType:"counter"})
-
+	writer.Write(Token{Word:fmt.Sprintf("%d",variables),Line:0,Pos:0,Type:Tokeniser,RiType:"counter"})
 
 	return nil
 }
+
 
 
 
