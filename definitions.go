@@ -18,6 +18,7 @@ var (
 	ErrNotImplemented       = fmt.Errorf("Not Implemented")
 	ErrPipeDone             = fmt.Errorf("Pipe Done")
 	ErrEndOfLine            = fmt.Errorf("End of Line")
+	ErrSkipPipe             = fmt.Errorf("Skip Rest of Pipe")
 )
 
 type Pipe struct {
@@ -102,6 +103,10 @@ func (p *Pipe) Run(name RtName, args, list []Rter, info Info) error {
 				continue
 			}
 
+			if r.Err == ErrSkipPipe {
+				return nil
+			}
+
 			return r.Err
 		}
 
@@ -117,7 +122,7 @@ func (p *Pipe) Run(name RtName, args, list []Rter, info Info) error {
 			values = make([]Rter, len(r.Values))
 			copy(values, r.Values)
 		}
-		
+
 		/* TODO: this needs improving */
 		info.Depth = r.Info.Depth
 	}
@@ -145,9 +150,20 @@ func (p *Pipe) ToRaw() ArchiveWriter {
 	return nil
 }
 
+/* NewEmptyPipe -- does not include any issue fixes/used mainly for regression testing */
+func NewEmptyPipe() *Pipe {
+	pipe := Pipe{}
+	pipe.blocks = make([]Piper, 0)
+	return &pipe
+}
+
 func NewPipe() *Pipe {
 	pipe := Pipe{}
 	pipe.blocks = make([]Piper, 0)
+
+	/* add all the issue fixes here */
+	pipe.blocks = append(pipe.blocks, &PipeIssue0001Fix{false, false})
+
 	return &pipe
 }
 
@@ -158,6 +174,10 @@ type Result struct {
 	Values []Rter
 	Info   *Info
 	Err    error
+}
+
+func Skip() *Result {
+	return &Result{"", nil, nil, nil, nil, ErrSkipPipe}
 }
 
 func Done() *Result {
@@ -181,12 +201,12 @@ func EndOfLine() *Result {
 }
 
 type Info struct {
-	Name        string
-	Depth       int
-	Lights      uint /* TODO: not required anymore */
-	Objects     uint
-	Entity      bool
-	PrettyPrint bool
+	Name               string
+	Depth              int
+	Lights             uint /* TODO: not required anymore */
+	Objects            uint
+	Entity             bool
+	PrettyPrint        bool
 	PrettyPrintSpacing string /* -- defaults to \t character */
 }
 

@@ -9,14 +9,14 @@ import (
 )
 
 type Configuration struct {
-	Entity      bool
-	PrettyPrint bool
+	Entity             bool
+	PrettyPrint        bool
 	PrettyPrintSpacing string
 }
 
 type Context struct {
-	mux     sync.RWMutex
-	pipe    *Pipe
+	mux  sync.RWMutex
+	pipe *Pipe
 	/* TODO: replace individual handlers with a manager */
 	objects ObjectHandler
 	lights  LightHandler
@@ -33,7 +33,7 @@ func (ctx *Context) Write(name RtName, args, params, values []Rter) error {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
 	/* FIXME: add pipe check here */
-	return ctx.pipe.Run(name, args, Mix(params,values), ctx.Info)
+	return ctx.pipe.Run(name, args, Mix(params, values), ctx.Info)
 }
 
 func (ctx *Context) OpenRaw(id RtToken) (ArchiveWriter, error) {
@@ -162,5 +162,3 @@ func RIS(ctx RisContexter) *Ris {
 func RI(ctx RiContexter) *Ri {
 	return &Ri{ctx}
 }
-
-

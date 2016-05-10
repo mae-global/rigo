@@ -26,13 +26,13 @@ func EntityPipeline() (*Ri, *Pipe) {
 
 	pipe := DefaultFilePipe()
 
-	ctx := NewContext(pipe, nil, nil, nil, &Configuration{Entity: true,PrettyPrint:true})
+	ctx := NewContext(pipe, nil, nil, nil, &Configuration{Entity: true, PrettyPrint: true})
 
 	return RI(ctx), pipe
 }
 
 func CustomEntityPipeline(pipe *Pipe) *Ri {
 
-	ctx := NewContext(pipe, nil, nil, nil, &Configuration{Entity: true,PrettyPrint:true})
+	ctx := NewContext(pipe, nil, nil, nil, &Configuration{Entity: true, PrettyPrint: true})
 	return RI(ctx)
 }

@@ -93,9 +93,10 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 			//	fmt.Printf("Debug,Ri.writef token, class=%s,type=%s,name=%s,count=%d\n",cl,ty,nam,n)
 
 		} else {
+			/* convert all outputs of the parameterlist in
+			 * array types as per RIB standard */
 			if a, ok := r.(RtString); ok {
 				ar = RtStringArray{a}
-
 			}
 			if a, ok := r.(RtFloat); ok {
 				ar = RtFloatArray{a}

@@ -5,8 +5,9 @@ import (
 	"os"
 	"sort"
 	"strconv"
-	"time"
 	"strings"
+	"time"
+	"bytes"
 
 	. "github.com/mae-global/rigo/ri"
 )
@@ -28,13 +29,8 @@ type PipeTimer struct {
 	finish time.Time
 }
 
-func (p *PipeTimer) ToRaw() ArchiveWriter {
-	return nil
-}
-
-func (p PipeTimer) Name() string {
-	return "default-pipe-timer"
-}
+func (p *PipeTimer) ToRaw() ArchiveWriter {	return nil }
+func (p PipeTimer) Name() string { return "default-pipe-timer" }
 
 func (p *PipeTimer) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
 	switch string(name) {
@@ -49,26 +45,16 @@ func (p *PipeTimer) Pipe(name RtName, args, params, values []Rter, info Info) *R
 	return Done()
 }
 
-func (p *PipeTimer) String() string {
-	return fmt.Sprintf("pipe took %s", p.finish.Sub(p.start))
-}
-
-func (p *PipeTimer) Took() time.Duration {
-	return p.finish.Sub(p.start)
-}
+func (p *PipeTimer) String() string { return fmt.Sprintf("pipe took %s", p.finish.Sub(p.start)) }
+func (p *PipeTimer) Took() time.Duration {	return p.finish.Sub(p.start) }
 
 /* Pipe RI output to gathered states */
 type PipeToStats struct {
 	Stats map[RtName]int
 }
 
-func (p *PipeToStats) ToRaw() ArchiveWriter {
-	return nil
-}
-
-func (p PipeToStats) Name() string {
-	return "default-pipe-to-stats"
-}
+func (p *PipeToStats) ToRaw() ArchiveWriter {	return nil }
+func (p PipeToStats) Name() string { return "default-pipe-to-stats" }
 
 func (p *PipeToStats) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
 	if p.Stats == nil {
@@ -125,34 +111,59 @@ func (p *PipeToStats) String() string {
 }
 
 type PipeToPrettyPrint struct {
-	Depth int	
+	Depth int
 }
 
 func (p *PipeToPrettyPrint) ToRaw() ArchiveWriter { return nil }
-func (p *PipeToPrettyPrint) Name() string { return "default-pipe-to-pretty-print" }
-func (p *PipeToPrettyPrint) Pipe(name RtName,args,params,values []Rter,info Info) *Result {
+func (p *PipeToPrettyPrint) Name() string         { return "default-pipe-to-pretty-print" }
+func (p *PipeToPrettyPrint) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
 
 	if info.PrettyPrint {
-		
+
 		/* adjust the depth counter in info for any *Begin|*End calls */
-		if strings.HasSuffix(string(name),"Begin") && name != RtName("Begin") {
-			p.Depth ++
+		if strings.HasSuffix(string(name), "Begin") && name != RtName("Begin") {
+			p.Depth++
 		}
 
-		if strings.HasSuffix(string(name),"End") && name != RtName("End") {
-			p.Depth --
+		if strings.HasSuffix(string(name), "End") && name != RtName("End") {
+			p.Depth--
 			if p.Depth < 0 {
 				p.Depth = 0
 			}
-		}	
+		}
 	}
- 
+
 	info.Depth = p.Depth
 
 	return Next(name, args, params, values, info)
 }
 
+type PipeToDebugBuffer struct {
+	Buffer *bytes.Buffer
+}
+func (p *PipeToDebugBuffer) String() string { 
+	if p.Buffer == nil {
+		return ""
+	}
+	return string(p.Buffer.Bytes())
+}
 
+func (p *PipeToDebugBuffer) ToRaw() ArchiveWriter { return nil }
+func (p *PipeToDebugBuffer) Name() string { return "default-pipe-to-buffer" }
+func (p *PipeToDebugBuffer) Pipe(name RtName,args,params,values []Rter,info Info) *Result {
+
+	list := Mix(params,values)
+
+	if p.Buffer == nil {
+		p.Buffer = bytes.NewBuffer(nil)
+	}
+	if p.Buffer.Len() > 0 {
+		p.Buffer.Write([]byte(" "))
+	}
+
+	p.Buffer.Write([]byte(name.Serialise() + " " + Serialise(args) + " " + Serialise(list)))
+	return Done()
+}
 
 
 /* Pipe RI output to file */
@@ -167,9 +178,7 @@ func (p *PipeToFile) ToRaw() ArchiveWriter {
 	return p.file
 }
 
-func (p PipeToFile) Name() string {
-	return "default-pipe-to-file"
-}
+func (p PipeToFile) Name() string { return "default-pipe-to-file" }
 
 func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
 
@@ -229,7 +238,7 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 	if name != "##" {
 		prefix := ""
 		if info.PrettyPrint {
-			prefix += strings.Repeat(info.PrettyPrintSpacing,info.Depth)
+			prefix += strings.Repeat(info.PrettyPrintSpacing, info.Depth)
 		}
 
 		if _, err := p.file.Write([]byte(prefix + name.Serialise() + " " + Serialise(args) + " " + Serialise(list) + "\n")); err != nil {
@@ -244,9 +253,9 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 	return Done()
 }
 
-type FilterStringHandles struct {}
-	/* FIXME: this should actually be a filter */
+type FilterStringHandles struct{}
 
+/* FIXME: this should actually be a filter */
 
 func (p *FilterStringHandles) ToRaw() ArchiveWriter {
 	return nil

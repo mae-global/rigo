@@ -19,7 +19,7 @@ func Test_ExampleD14(t *testing.T) {
 		frames := 2
 		cuser, err := user.Current()
 		So(err, ShouldBeNil)
-	
+
 		ri, pipe := DefaultPipeline(&Configuration{PrettyPrint: true})
 		ri.Begin("output/exampleD14.rib")
 		ri.ArchiveRecord("structure", "Scene Bouncing Ball")
