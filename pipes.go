@@ -227,13 +227,9 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 	}
 
 	if name != "##" {
-
-		/* TODO: change this to a configurable scheme, N-spaces or \t character etc */
 		prefix := ""
 		if info.PrettyPrint {
-			for i := 0; i < info.Depth; i++ {
-				prefix += "\t"
-			}
+			prefix += strings.Repeat(info.PrettyPrintSpacing,info.Depth)
 		}
 
 		if _, err := p.file.Write([]byte(prefix + name.Serialise() + " " + Serialise(args) + " " + Serialise(list) + "\n")); err != nil {
