@@ -175,10 +175,6 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 
 	list := Mix(params, values)
 
-	if info.Formal {
-		name = name.Trim("Ri")
-	}
-
 	if name == "Begin" {
 		//fmt.Printf("PipeToFile Write, name=Begin...\n")
 		if p.file != nil {
