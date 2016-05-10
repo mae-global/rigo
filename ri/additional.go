@@ -20,19 +20,16 @@ func (r *Ri) DisplayChannel(channel RtToken, parameterlist ...Rter) error {
 
 /* EditAttributeBegin */
 func (r *Ri) EditAttributeBegin(name RtToken) error {
-	defer func() { r.Depth(1) }()
 	return r.writef("EditAttributeBegin", name)
 }
 
 /* EditAttributeEnd */
 func (r *Ri) EditAttributeEnd() error {
-	r.Depth(-1)
 	return r.writef("EditAttributeEnd")
 }
 
 /* EditBegin */
 func (r *Ri) EditBegin(name RtToken, parameterlist ...Rter) error {
-	defer func() { r.Depth(1) }()
 
 	list := []Rter{name, PARAMETERLIST}
 	list = append(list, parameterlist...)
@@ -42,12 +39,10 @@ func (r *Ri) EditBegin(name RtToken, parameterlist ...Rter) error {
 
 /* EditEnd */
 func (r *Ri) EditEnd() error {
-	r.Depth(-1)
 	return r.writef("EditEnd")
 }
 
 func (r *Ri) EditWorldBegin(name RtToken, parameterlist ...Rter) error {
-	defer func() { r.Depth(1) }()
 
 	list := []Rter{name, PARAMETERLIST}
 	list = append(list, parameterlist...)
@@ -57,7 +52,7 @@ func (r *Ri) EditWorldBegin(name RtToken, parameterlist ...Rter) error {
 
 /* EditWorldEnd */
 func (r *Ri) EditWorldEnd() error {
-	r.Depth(-1)
+
 	return r.writef("EditWorldEnd")
 }
 
@@ -132,13 +127,11 @@ func (r *Ri) Procedural2(subdividefunc RtProc2SubdivFunc, boundfunc RtProc2Bound
 
 /* ResourceBegin */
 func (r *Ri) ResourceBegin() error {
-	defer func() { r.Depth(1) }()
 	return r.writef("ResourceBegin")
 }
 
 /* ResourceEnd */
 func (r *Ri) ResourceEnd() error {
-	r.Depth(-1)
 	return r.writef("ResourceEnd")
 }
 

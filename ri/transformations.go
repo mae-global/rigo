@@ -57,12 +57,10 @@ func (r *Ri) CoordSysTransform(name RtToken) error {
 
 /* TransformBegin Push the current transformation */
 func (r *Ri) TransformBegin() error {
-	defer func() { r.Depth(1) }()
 	return r.writef("TransformBegin")
 }
 
 /* TransformEnd Pop the current transformation */
 func (r *Ri) TransformEnd() error {
-	r.Depth(-1)
 	return r.writef("TransformEnd")
 }

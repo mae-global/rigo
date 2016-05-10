@@ -33,12 +33,10 @@ func (r *Ri) Geometry(typeof RtToken, parameterlist ...Rter) error {
 
 /* MotionBegin */
 func (r *Ri) MotionBegin(n RtInt, t ...RtFloat) error {
-	defer func() { r.Depth(1) }()
 	return r.writef("MotionBegin", RtFloatArray(t))
 }
 
 /* MotionEnd */
 func (r *Ri) MotionEnd() error {
-	r.Depth(-1)
 	return r.writef("MotionEnd")
 }

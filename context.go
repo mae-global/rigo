@@ -10,13 +10,13 @@ import (
 
 type Configuration struct {
 	Entity      bool
-	Formal      bool
 	PrettyPrint bool
 }
 
 type Context struct {
 	mux     sync.RWMutex
 	pipe    *Pipe
+	/* TODO: replace individual handlers with a manager */
 	objects ObjectHandler
 	lights  LightHandler
 	shaders ShaderHandler
@@ -31,9 +31,7 @@ type Context struct {
 func (ctx *Context) Write(name RtName, args, list []Rter) error {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
-	if ctx.Formal {
-		name = name.Prefix("Ri")
-	}
+	/* FIXME: add pipe check here */
 	return ctx.pipe.Run(name, args, list, ctx.Info)
 }
 
@@ -75,12 +73,6 @@ func (ctx *Context) CloseRaw(id RtToken) error {
 	delete(ctx.files, id)
 
 	return nil
-}
-
-func (ctx *Context) Depth(d int) {
-	ctx.mux.Lock()
-	defer ctx.mux.Unlock()
-	ctx.Info.Depth += d /* TODO: this is a little clunky */
 }
 
 func (ctx *Context) ShaderHandle() (RtShaderHandle, error) {
@@ -143,7 +135,7 @@ func NewContext(pipe *Pipe, lights LightHandler, objects ObjectHandler, shaders 
 		pipe = DefaultFilePipe()
 	}
 	if config == nil {
-		config = &Configuration{Entity: false, Formal: false, PrettyPrint: false}
+		config = &Configuration{Entity: false, PrettyPrint: false}
 	}
 	if lights == nil {
 		lights = NewLightNumberGenerator()
@@ -155,7 +147,7 @@ func NewContext(pipe *Pipe, lights LightHandler, objects ObjectHandler, shaders 
 		shaders = NewShaderNumberGenerator()
 	}
 
-	ctx := &Context{pipe: pipe, lights: lights, objects: objects, shaders: shaders, Info: Info{Name: "", Entity: config.Entity, Formal: config.Formal, PrettyPrint: config.PrettyPrint}}
+	ctx := &Context{pipe: pipe, lights: lights, objects: objects, shaders: shaders, Info: Info{Name: "", Entity: config.Entity, PrettyPrint: config.PrettyPrint}}
 	ctx.cache = make(map[RtShaderHandle]Shader, 0)
 	return ctx
 }

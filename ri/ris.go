@@ -29,6 +29,7 @@ func (r *Ri) Integrator(name RtToken, handle RtShaderHandle, parameterlist ...Rt
 	oparams := make([]Rter, 0)
 	ovalues := make([]Rter, 0)
 
+	/* FIXME: convert to unmix() */
 	flipflop := false
 	for _, param := range parameterlist {
 		if !flipflop {
@@ -84,6 +85,7 @@ func (r *Ri) Bxdf(name RtToken, handle RtShaderHandle, parameterlist ...Rter) er
 	oparams := make([]Rter, 0)
 	ovalues := make([]Rter, 0)
 
+	/* FIXME: convert to unmix() */
 	flipflop := false
 	for _, param := range parameterlist {
 		if !flipflop {
@@ -129,6 +131,7 @@ func (r *Ri) Pattern(name RtToken, handle RtShaderHandle, parameterlist ...Rter)
 	oparams := make([]Rter, 0)
 	ovalues := make([]Rter, 0)
 
+	/* FIXME: convert to unmix() */
 	flipflop := false
 	for _, param := range parameterlist {
 		if !flipflop {

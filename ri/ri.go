@@ -11,7 +11,7 @@ type RiContexter interface {
 	Write(RtName, []Rter, []Rter) error
 	OpenRaw(RtToken) (ArchiveWriter, error)
 	CloseRaw(RtToken) error
-	Depth(int)
+	//Depth(int)
 	LightHandle() (RtLightHandle, error)
 	CheckLightHandle(RtLightHandle) error
 	ObjectHandle() (RtObjectHandle, error)
@@ -84,9 +84,10 @@ func (b *TestContext) CloseRaw(id RtToken) error {
 	return nil
 }
 
+/*
 func (b *TestContext) Depth(d int) {
 	b.depth += d
-}
+}*/
 
 func (b *TestContext) LightHandle() (RtLightHandle, error) {
 	h := RtLightHandle(fmt.Sprintf("%d", b.lights))

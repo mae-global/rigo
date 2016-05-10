@@ -13,19 +13,16 @@ func (r *Ri) End() error {
 
 /* FrameBegin mark the beginning of a single frame of an animated sequenece */
 func (r *Ri) FrameBegin(frame RtInt) error {
-	defer func() { r.Depth(1) }()
 	return r.writef("FrameBegin", frame)
 }
 
 /* FrameEnd mark the end of a single frame of an animated sequence */
 func (r *Ri) FrameEnd() error {
-	r.Depth(-1)
 	return r.writef("FrameEnd")
 }
 
 /* WorldBegin is invoked, all rendering options are frozen */
 func (r *Ri) WorldBegin(args ...RtAnnotation) error {
-	defer func() { r.Depth(1) }()
 	if len(args) > 1 {
 		return ErrBadParamlist
 	}
@@ -34,7 +31,6 @@ func (r *Ri) WorldBegin(args ...RtAnnotation) error {
 
 /* WorldEnd */
 func (r *Ri) WorldEnd(args ...RtAnnotation) error {
-	r.Depth(-1)
 	if len(args) > 1 {
 		return ErrBadParamlist
 	}

@@ -2,13 +2,11 @@ package ri
 
 /* SolidBegin */
 func (r *Ri) SolidBegin(operation RtToken) error {
-	defer func() { r.Depth(1) }()
 	return r.writef("SolidBegin", operation)
 }
 
 /* SolidEnd */
 func (r *Ri) SolidEnd() error {
-	r.Depth(-1)
 	return r.writef("SolidEnd")
 }
 
@@ -18,13 +16,11 @@ func (r *Ri) ObjectBegin() (RtObjectHandle, error) {
 	if err != nil {
 		return oh, err
 	}
-	defer func() { r.Depth(1) }()
 	return oh, r.writef("ObjectBegin", oh)
 }
 
 /* ObjectEnd */
 func (r *Ri) ObjectEnd() error {
-	r.Depth(-1)
 	return r.writef("ObjectEnd")
 }
 

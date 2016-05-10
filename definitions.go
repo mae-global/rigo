@@ -117,6 +117,9 @@ func (p *Pipe) Run(name RtName, args, list []Rter, info Info) error {
 			values = make([]Rter, len(r.Values))
 			copy(values, r.Values)
 		}
+		
+		/* TODO: this needs improving */
+		info.Depth = r.Info.Depth
 	}
 
 	p.blocks = nblocks
@@ -180,7 +183,7 @@ func EndOfLine() *Result {
 type Info struct {
 	Name        string
 	Depth       int
-	Lights      uint
+	Lights      uint /* TODO: not required anymore */
 	Objects     uint
 	Entity      bool
 	Formal      bool

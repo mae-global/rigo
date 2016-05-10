@@ -15,7 +15,7 @@ func DefaultPipeline(config *Configuration) (*Ri, *Pipe) {
 func StrictPipeline() (*Ri, *Pipe) {
 
 	pipe := NewPipe()
-	pipe.Append(&PipeTimer{}).Append(&PipeToStats{}).Append(&FilterStringHandles{}).Append(&PipeToFile{})
+	pipe.Append(&PipeTimer{}).Append(&PipeToStats{}).Append(&FilterStringHandles{}).Append(&PipeToPrettyPrint{}).Append(&PipeToFile{})
 
 	ctx := NewContext(pipe, NewLightNumberGenerator(), NewObjectNumberGenerator(), NewShaderNumberGenerator(), nil)
 
@@ -26,13 +26,13 @@ func EntityPipeline() (*Ri, *Pipe) {
 
 	pipe := DefaultFilePipe()
 
-	ctx := NewContext(pipe, nil, nil, nil, &Configuration{Entity: true, Formal: false})
+	ctx := NewContext(pipe, nil, nil, nil, &Configuration{Entity: true,PrettyPrint:true})
 
 	return RI(ctx), pipe
 }
 
 func CustomEntityPipeline(pipe *Pipe) *Ri {
 
-	ctx := NewContext(pipe, nil, nil, nil, &Configuration{Entity: true, Formal: false})
+	ctx := NewContext(pipe, nil, nil, nil, &Configuration{Entity: true,PrettyPrint:true})
 	return RI(ctx)
 }

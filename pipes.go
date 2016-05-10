@@ -6,13 +6,15 @@ import (
 	"sort"
 	"strconv"
 	"time"
+	"strings"
 
 	. "github.com/mae-global/rigo/ri"
 )
 
+/* TODO: move defualt and null to presets/or delete */
 func DefaultFilePipe() *Pipe {
 	pipe := NewPipe()
-	return pipe.Append(&PipeTimer{}).Append(&PipeToStats{}).Append(&PipeToFile{})
+	return pipe.Append(&PipeTimer{}).Append(&PipeToStats{}).Append(&PipeToPrettyPrint{}).Append(&PipeToFile{})
 }
 
 func NullPipe() *Pipe {
@@ -36,11 +38,11 @@ func (p PipeTimer) Name() string {
 
 func (p *PipeTimer) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
 	switch string(name) {
-	case "Begin", "RiBegin":
+	case "Begin":
 		p.start = time.Now()
 		p.finish = p.start
 		break
-	case "End", "RiEnd":
+	case "End":
 		p.finish = time.Now()
 		break
 	}
@@ -122,6 +124,37 @@ func (p *PipeToStats) String() string {
 	return out + "]\n"
 }
 
+type PipeToPrettyPrint struct {
+	Depth int	
+}
+
+func (p *PipeToPrettyPrint) ToRaw() ArchiveWriter { return nil }
+func (p *PipeToPrettyPrint) Name() string { return "default-pipe-to-pretty-print" }
+func (p *PipeToPrettyPrint) Pipe(name RtName,args,params,values []Rter,info Info) *Result {
+
+	if info.PrettyPrint {
+		
+		/* adjust the depth counter in info for any *Begin|*End calls */
+		if strings.HasSuffix(string(name),"Begin") && name != RtName("Begin") {
+			p.Depth ++
+		}
+
+		if strings.HasSuffix(string(name),"End") && name != RtName("End") {
+			p.Depth --
+			if p.Depth < 0 {
+				p.Depth = 0
+			}
+		}	
+	}
+ 
+	info.Depth = p.Depth
+
+	return Next(name, args, params, values, info)
+}
+
+
+
+
 /* Pipe RI output to file */
 type PipeToFile struct {
 	file *os.File
@@ -198,6 +231,7 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 	}
 
 	if name != "##" {
+
 		/* TODO: change this to a configurable scheme, N-spaces or \t character etc */
 		prefix := ""
 		if info.PrettyPrint {
@@ -218,9 +252,9 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 	return Done()
 }
 
-type FilterStringHandles struct {
+type FilterStringHandles struct {}
 	/* FIXME: this should actually be a filter */
-}
+
 
 func (p *FilterStringHandles) ToRaw() ArchiveWriter {
 	return nil

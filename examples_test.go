@@ -19,9 +19,8 @@ func Test_ExampleD14(t *testing.T) {
 		frames := 2
 		cuser, err := user.Current()
 		So(err, ShouldBeNil)
-
-		/* create a formal version of the RIB output to the pipe, RiBegin,RiEnd... instead of Begin,End... */
-		ri, pipe := DefaultPipeline(&Configuration{Formal: true, PrettyPrint: true})
+	
+		ri, pipe := DefaultPipeline(&Configuration{PrettyPrint: true})
 		ri.Begin("output/exampleD14.rib")
 		ri.ArchiveRecord("structure", "Scene Bouncing Ball")
 		ri.ArchiveRecord("structure", "Creator %s", Author)

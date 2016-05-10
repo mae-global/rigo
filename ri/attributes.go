@@ -2,7 +2,7 @@ package ri
 
 /* AttributeBegin push the current set of attributes, you can add a single annotation */
 func (r *Ri) AttributeBegin(args ...RtAnnotation) error {
-	defer func() { r.Depth(1) }()
+
 	if len(args) > 1 {
 		return ErrBadParamlist
 	}
@@ -11,7 +11,7 @@ func (r *Ri) AttributeBegin(args ...RtAnnotation) error {
 
 /* AttributeEnd pop the current set of attributes */
 func (r *Ri) AttributeEnd(args ...RtAnnotation) error {
-	r.Depth(-1)
+
 	if len(args) > 1 {
 		return ErrBadParamlist
 	}
@@ -160,3 +160,4 @@ func (r *Ri) ReverseOrientation() error {
 func (r *Ri) Sides(sides RtInt) error {
 	return r.writef("Sides", sides)
 }
+
