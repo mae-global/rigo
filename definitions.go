@@ -186,8 +186,8 @@ type Info struct {
 	Lights      uint /* TODO: not required anymore */
 	Objects     uint
 	Entity      bool
-	Formal      bool
 	PrettyPrint bool
+	PrettyPrintSpacing string /* -- defaults to \t character */
 }
 
 func (info Info) Copy() *Info {
@@ -197,8 +197,8 @@ func (info Info) Copy() *Info {
 	n.Lights = info.Lights
 	n.Objects = info.Objects
 	n.Entity = info.Entity
-	n.Formal = info.Formal
 	n.PrettyPrint = info.PrettyPrint
+	n.PrettyPrintSpacing = info.PrettyPrintSpacing
 	return &n
 }
 

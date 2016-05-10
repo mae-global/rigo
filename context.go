@@ -11,6 +11,7 @@ import (
 type Configuration struct {
 	Entity      bool
 	PrettyPrint bool
+	PrettyPrintSpacing string
 }
 
 type Context struct {
@@ -135,7 +136,7 @@ func NewContext(pipe *Pipe, lights LightHandler, objects ObjectHandler, shaders 
 		pipe = DefaultFilePipe()
 	}
 	if config == nil {
-		config = &Configuration{Entity: false, PrettyPrint: false}
+		config = &Configuration{Entity: false, PrettyPrint: false, PrettyPrintSpacing: "\t"}
 	}
 	if lights == nil {
 		lights = NewLightNumberGenerator()
@@ -147,7 +148,9 @@ func NewContext(pipe *Pipe, lights LightHandler, objects ObjectHandler, shaders 
 		shaders = NewShaderNumberGenerator()
 	}
 
-	ctx := &Context{pipe: pipe, lights: lights, objects: objects, shaders: shaders, Info: Info{Name: "", Entity: config.Entity, PrettyPrint: config.PrettyPrint}}
+	info := Info{Name: "", Entity: config.Entity, PrettyPrint: config.PrettyPrint, PrettyPrintSpacing: config.PrettyPrintSpacing}
+
+	ctx := &Context{pipe: pipe, lights: lights, objects: objects, shaders: shaders, Info: info}
 	ctx.cache = make(map[RtShaderHandle]Shader, 0)
 	return ctx
 }
@@ -159,3 +162,5 @@ func RIS(ctx RisContexter) *Ris {
 func RI(ctx RiContexter) *Ri {
 	return &Ri{ctx}
 }
+
+

@@ -40,9 +40,9 @@ func (t *MyTimer) Pipe(name RtName,args,params,values []Rter,info Info) *Result 
 	return Done()
 }
 
-/* Construct a pipeline, including our timer, piping RIB output to file */
+/* Construct a pipeline, including our timer, piping pretty-printed RIB output to file */
 pipe := NewPipe()
-pipe.Append(&MyTimer{}).Append(&PipeToFile{})
+pipe.Append(&MyTimer{}).Append(&PipeToPrettyPrint{}).Append(&PipeToFile{})
 
 ri := CustomEntityPipeline(pipe)
 
