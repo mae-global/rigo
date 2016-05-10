@@ -139,9 +139,8 @@ func NewTest() *Ri {
 
 /* Ri is the main interface */
 type Ri struct {
-	RiContexter	
+	RiContexter
 }
-
 
 func (r *Ri) BloomFilter() *BloomFilter { return RiBloomFilter() }
 
@@ -155,17 +154,17 @@ func (r *Ri) User(reader RterReader) error {
 	out := make([]Rter, len(args))
 	copy(out, args)
 	out = append(out, PARAMETERLIST)
-	out = append(out, mix(tokens,values)...)
+	out = append(out, mix(tokens, values)...)
 
 	return r.writef(name, out...)
 }
 
-func (r *Ri) WriteTo(name RtName,args,tokens,values []Rter) error {
-	
-	out := make([]Rter,0)
-	out = append(out,args...)
-	out = append(out,PARAMETERLIST)
-	out = append(out,mix(tokens,values)...)
+func (r *Ri) WriteTo(name RtName, args, tokens, values []Rter) error {
+
+	out := make([]Rter, 0)
+	out = append(out, args...)
+	out = append(out, PARAMETERLIST)
+	out = append(out, mix(tokens, values)...)
 
 	return r.writef(name, out...)
 }
@@ -244,4 +243,3 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 
 	return r.Write(name, args, nlist)
 }
-

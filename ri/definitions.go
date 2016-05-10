@@ -22,11 +22,11 @@ type Rter interface {
 }
 
 type RterReader interface {
-	ReadFrom() (RtName, []Rter, []Rter,[]Rter) 
+	ReadFrom() (RtName, []Rter, []Rter, []Rter)
 }
 
 type RterWriter interface {
-	WriteTo(RtName,[]Rter,[]Rter,[]Rter) error
+	WriteTo(RtName, []Rter, []Rter, []Rter) error
 }
 
 /* RtName internal use for RIB command names */

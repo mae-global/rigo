@@ -3,23 +3,23 @@ package rigo
 import (
 	"fmt"
 	"testing"
-	
+
 	. "github.com/mae-global/rigo/ri"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func Test_RIBExamples(t *testing.T) {
 
-	Convey("RIB examples",t,func() {
-		
-		ri,pipe := DefaultPipeline(&Configuration{PrettyPrint: true})
-		ri.Begin("output/ribexample0.rib")	/* FIXME, should be in ParseString */
+	Convey("RIB examples", t, func() {
 
-		So(ParseString(RIBExample0,ri),ShouldBeNil)
+		ri, pipe := DefaultPipeline(&Configuration{PrettyPrint: true})
+		ri.Begin("output/ribexample0.rib") /* FIXME, should be in ParseString */
 
-		So(ri.End(),ShouldBeNil) /* FIXME, should be in ParseString */
+		So(ParseString(RIBExample0, ri), ShouldBeNil)
 
-			/* output gathered stats */
+		So(ri.End(), ShouldBeNil) /* FIXME, should be in ParseString */
+
+		/* output gathered stats */
 		p := pipe.GetByName(PipeToStats{}.Name())
 		So(p, ShouldNotBeNil)
 		s, ok := p.(*PipeToStats)

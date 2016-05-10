@@ -9,12 +9,12 @@ func (r *Ri) Polygon(nvertices RtInt, parameterlist ...Rter) error {
 	return r.writef("Polygon", out...)
 }
 
-func (r *Ri) PolygonV(args,tokens,values []Rter) error {
+func (r *Ri) PolygonV(args, tokens, values []Rter) error {
 
-	out := make([]Rter,0)
+	out := make([]Rter, 0)
 	out = append(out, args...)
 	out = append(out, PARAMETERLIST)
-	out = append(out, mix(tokens,values)...)
+	out = append(out, mix(tokens, values)...)
 
 	return r.writef("Polygon", out...)
 }
@@ -28,12 +28,12 @@ func (r *Ri) GeneralPolygon(nloops RtInt, nvertices RtIntArray, parameterlist ..
 	return r.writef("GeneralPolygon", out...)
 }
 
-func (r *Ri) GeneralPolygonV(args,tokens,values []Rter) error {
+func (r *Ri) GeneralPolygonV(args, tokens, values []Rter) error {
 
-	out := make([]Rter,0)
+	out := make([]Rter, 0)
 	out = append(out, args...)
 	out = append(out, PARAMETERLIST)
-	out = append(out, mix(tokens,values)...)
+	out = append(out, mix(tokens, values)...)
 
 	return r.writef("GeneralPolygon", out...)
 }
@@ -47,12 +47,12 @@ func (r *Ri) PointsPolygons(npolys RtInt, nvertices RtIntArray, vertices RtIntAr
 	return r.writef("PointsPolygon", out...)
 }
 
-func (r *Ri) PointsPolygonsV(args,tokens,values []Rter) error {
+func (r *Ri) PointsPolygonsV(args, tokens, values []Rter) error {
 
-	out := make([]Rter,0)
-	out = append(out,args...)
-	out = append(out,PARAMETERLIST)
-	out = append(out,mix(tokens,values)...)
+	out := make([]Rter, 0)
+	out = append(out, args...)
+	out = append(out, PARAMETERLIST)
+	out = append(out, mix(tokens, values)...)
 
 	return r.writef("PointsPolygon", out...)
 }
@@ -65,15 +65,12 @@ func (r *Ri) PointsGeneralPolygons(nploys RtInt, nloops, nvertices, vertices RtI
 	return r.writef("PointsGeneralPolygons", out...)
 }
 
-func (r *Ri) PointsGeneralPolygonsV(args,tokens,values []Rter) error {
+func (r *Ri) PointsGeneralPolygonsV(args, tokens, values []Rter) error {
 
-	out := make([]Rter,0)
-	out = append(out,args...)
-	out = append(out,PARAMETERLIST)
-	out = append(out,mix(tokens,values)...)
+	out := make([]Rter, 0)
+	out = append(out, args...)
+	out = append(out, PARAMETERLIST)
+	out = append(out, mix(tokens, values)...)
 
 	return r.writef("PointsGeneralPolygons", out...)
 }
-
-
-

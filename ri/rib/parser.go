@@ -2,8 +2,8 @@
 package rib
 
 import (
-	"io"
 	"fmt"
+	"io"
 	"strconv"
 )
 
@@ -20,30 +20,30 @@ type TokenType byte
 const (
 	Tokeniser TokenType = 0
 	Content   TokenType = 1
-) 
+)
 
 type TokenLex byte
 
 func (l TokenLex) String() string {
 	switch l {
-		case Command:
-			return "command"
+	case Command:
+		return "command"
 		break
-		case ArgToken:
-			return "token"
+	case ArgToken:
+		return "token"
 		break
-		case ArgOp:
-			return "op"
+	case ArgOp:
+		return "op"
 		break
 	}
 	return "unknown"
 }
 
 const (
-	Unknown			TokenLex = 0
-	Command 		TokenLex = 1
-	ArgToken		TokenLex = 2
-	ArgOp				TokenLex = 3
+	Unknown  TokenLex = 0
+	Command  TokenLex = 1
+	ArgToken TokenLex = 2
+	ArgOp    TokenLex = 3
 )
 
 /* tokeniser -> lexer -> parser ~~> run through ri */
@@ -53,7 +53,7 @@ type Token struct {
 	Line int
 	Pos  int
 
-	Type TokenType
+	Type   TokenType
 	RiType string
 
 	Lex TokenLex
@@ -63,26 +63,26 @@ type Token struct {
 	/* TODO: add parser information here */
 }
 
-var EmptyToken = Token{Word:"",Line:-1,Pos:-1,Type:Tokeniser}
+var EmptyToken = Token{Word: "", Line: -1, Pos: -1, Type: Tokeniser}
 
 type TokenWriter interface {
 	Write(Token)
 }
 
 type TokenReader interface {
-	Read() (Token,error)
+	Read() (Token, error)
 }
 
-func Tokenise(reader io.Reader,writer TokenWriter) error {
+func Tokenise(reader io.Reader, writer TokenWriter) error {
 
-	buf := make([]byte,DefaultBufferSize)
+	buf := make([]byte, DefaultBufferSize)
 	line := 0
 	pos := 0
 	word := ""
 	withinliteral := false
 
 	for {
-		n,err := reader.Read(buf)
+		n, err := reader.Read(buf)
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -90,20 +90,20 @@ func Tokenise(reader io.Reader,writer TokenWriter) error {
 			return err
 		}
 
-		for _,c := range buf[:n] {
-			pos ++
-			
+		for _, c := range buf[:n] {
+			pos++
+
 			if c == '"' {
 				if len(word) > 0 {
-					writer.Write(Token{Word:word,Line:line,Pos:pos,Type:Content})
+					writer.Write(Token{Word: word, Line: line, Pos: pos, Type: Content})
 					word = ""
 				}
 
 				withinliteral = !withinliteral
 				if !withinliteral {
-					writer.Write(Token{Word:"_end-lit_",Line:line,Pos:pos,Type:Tokeniser})
+					writer.Write(Token{Word: "_end-lit_", Line: line, Pos: pos, Type: Tokeniser})
 				} else {
-					writer.Write(Token{Word:"_begin-lit_",Line:line,Pos:pos,Type:Tokeniser})				
+					writer.Write(Token{Word: "_begin-lit_", Line: line, Pos: pos, Type: Tokeniser})
 				}
 
 				continue
@@ -111,17 +111,17 @@ func Tokenise(reader io.Reader,writer TokenWriter) error {
 
 			if c == '#' && !withinliteral {
 				if len(word) > 0 {
-					writer.Write(Token{Word:word,Line:line,Pos:pos,Type:Content})
+					writer.Write(Token{Word: word, Line: line, Pos: pos, Type: Content})
 					word = ""
 				}
-				writer.Write(Token{Word:"_comment_",Line:line,Pos:pos,Type:Tokeniser})
+				writer.Write(Token{Word: "_comment_", Line: line, Pos: pos, Type: Tokeniser})
 				continue
 			}
 
 			if c == ' ' || c == '\t' && !withinliteral {
 				if len(word) > 0 {
-					writer.Write(Token{Word:word,Line:line,Pos:pos,Type:Content})
-					writer.Write(Token{Word:"_space_",Line:line,Pos:pos,Type:Tokeniser})
+					writer.Write(Token{Word: word, Line: line, Pos: pos, Type: Content})
+					writer.Write(Token{Word: "_space_", Line: line, Pos: pos, Type: Tokeniser})
 					word = ""
 				}
 				continue
@@ -130,47 +130,45 @@ func Tokenise(reader io.Reader,writer TokenWriter) error {
 				line++
 				pos = 0
 				if len(word) > 0 {
-					writer.Write(Token{Word:word,Line:line,Pos:pos,Type:Content})
-					writer.Write(Token{Word:"_newline_",Line:line,Pos:pos,Type:Tokeniser})
+					writer.Write(Token{Word: word, Line: line, Pos: pos, Type: Content})
+					writer.Write(Token{Word: "_newline_", Line: line, Pos: pos, Type: Tokeniser})
 					word = ""
 				}
 				continue
 			}
 			if c == '[' || c == ']' && !withinliteral {
 				if len(word) > 0 {
-					writer.Write(Token{Word:word,Line:line,Pos:pos,Type:Content})
-					writer.Write(Token{Word:"_space_",Line:line,Pos:pos,Type:Tokeniser})
+					writer.Write(Token{Word: word, Line: line, Pos: pos, Type: Content})
+					writer.Write(Token{Word: "_space_", Line: line, Pos: pos, Type: Tokeniser})
 					word = ""
 				}
-				writer.Write(Token{Word:string(c),Line:line,Pos:pos,Type:Content})
-				writer.Write(Token{Word:"_space_",Line:line,Pos:pos,Type:Tokeniser})
+				writer.Write(Token{Word: string(c), Line: line, Pos: pos, Type: Content})
+				writer.Write(Token{Word: "_space_", Line: line, Pos: pos, Type: Tokeniser})
 				continue
 			}
-						
+
 			word += string(c)
 		}
-	//	if len(word) > 0 {
+		//	if len(word) > 0 {
 		//	writer.Write(Token{Word:word,Line:line,Pos:pos,Type:Content})
 		//}
 
-		writer.Write(Token{Word:"_block_",Line:line,Pos:pos,Type:Tokeniser})
+		writer.Write(Token{Word: "_block_", Line: line, Pos: pos, Type: Tokeniser})
 	}
 	if len(word) > 0 {
-		writer.Write(Token{Word:word,Line:line,Pos:pos,Type:Content})
+		writer.Write(Token{Word: word, Line: line, Pos: pos, Type: Content})
 	}
 
 	return nil
 }
 
-
-
-func Lexer(reader TokenReader,writer TokenWriter,filter BloomFilterer) error {
+func Lexer(reader TokenReader, writer TokenWriter, filter BloomFilterer) error {
 
 	iscomment := false
 	isliteral := false
 
 	for {
-		token,err := reader.Read()
+		token, err := reader.Read()
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -181,27 +179,27 @@ func Lexer(reader TokenReader,writer TokenWriter,filter BloomFilterer) error {
 		if token.Type == Tokeniser {
 
 			switch token.Word {
-				case "_space_":
+			case "_space_":
 
 				break
-				case "_newline_":
-					iscomment = false
+			case "_newline_":
+				iscomment = false
 				break
-				case "_begin-lit_":
-					isliteral = true
+			case "_begin-lit_":
+				isliteral = true
 				break
-				case "_end-lit_":
-					isliteral = false
+			case "_end-lit_":
+				isliteral = false
 				break
-				case "_block_":
+			case "_block_":
 
 				break
-				case "_comment_":
-					iscomment = true
+			case "_comment_":
+				iscomment = true
 				break
 			}
-			
-		//	fmt.Printf("iscomment=%v, isliteral=%v\n",iscomment,isliteral)
+
+			//	fmt.Printf("iscomment=%v, isliteral=%v\n",iscomment,isliteral)
 			writer.Write(token)
 
 		}
@@ -210,7 +208,7 @@ func Lexer(reader TokenReader,writer TokenWriter,filter BloomFilterer) error {
 			/* check if a member of ri */
 			if filter.IsMember(token.Word) {
 				//fmt.Printf("Command found -- %s\n",token.Word)
-						
+
 				token.Lex = Command
 				token.RiType = "func"
 
@@ -219,25 +217,25 @@ func Lexer(reader TokenReader,writer TokenWriter,filter BloomFilterer) error {
 
 				if iscomment {
 					token.RiType = "comment"
-				} else {			
-				
+				} else {
+
 					switch token.Word {
-						case "[":
-							token.RiType = "array_begin"
+					case "[":
+						token.RiType = "array_begin"
 						break
-						case "]":
-							token.RiType = "array_end"
+					case "]":
+						token.RiType = "array_end"
 						break
-						default:
-							if isliteral  {
-								token.RiType = "token"
-							} else {
-								token.RiType = "number"
-							}
+					default:
+						if isliteral {
+							token.RiType = "token"
+						} else {
+							token.RiType = "number"
+						}
 						break
 					}
 					/* -- */
-				} 
+				}
 			}
 			writer.Write(token)
 		}
@@ -250,18 +248,18 @@ func Parser(reader TokenReader, writer TokenWriter) error {
 	/* TODO: add a function lookup -- check the variables, all the types need to be passed on etc */
 
 	currentfunc := ""
-	variables := 0	
+	variables := 0
 	inarray := false
 
 	for {
-		token,err := reader.Read()
+		token, err := reader.Read()
 		if err != nil {
 			if err == io.EOF {
 				break
 			}
 			return err
 		}
-		
+
 		if token.Type == Tokeniser {
 			continue
 		}
@@ -269,7 +267,7 @@ func Parser(reader TokenReader, writer TokenWriter) error {
 		/* start of a new Ri function call */
 		if token.RiType == "func" {
 			if variables > 0 && currentfunc != "" {
-				writer.Write(Token{Word:fmt.Sprintf("%d",variables),Line:0,Pos:0,Type:Tokeniser,RiType:"counter"})
+				writer.Write(Token{Word: fmt.Sprintf("%d", variables), Line: 0, Pos: 0, Type: Tokeniser, RiType: "counter"})
 			}
 
 			currentfunc = token.Word
@@ -280,38 +278,30 @@ func Parser(reader TokenReader, writer TokenWriter) error {
 		if token.Type == Content {
 
 			switch token.RiType {
-					case "number":
-						if _,err := strconv.ParseFloat(token.Word,64); err != nil {
-							token.RiType = "number"
-							token.Error = err
-						} else {			
-							token.RiType = "float"
-						}
-						if !inarray {
-							variables++
-						}
-					break
-					case "array_begin":
-						inarray = true
-					break
-					case "array_end":
-						inarray = false
-						variables++
-					break
-			}	
+			case "number":
+				if _, err := strconv.ParseFloat(token.Word, 64); err != nil {
+					token.RiType = "number"
+					token.Error = err
+				} else {
+					token.RiType = "float"
+				}
+				if !inarray {
+					variables++
+				}
+				break
+			case "array_begin":
+				inarray = true
+				break
+			case "array_end":
+				inarray = false
+				variables++
+				break
+			}
 		}
 
 		writer.Write(token)
 	}
-	writer.Write(Token{Word:fmt.Sprintf("%d",variables),Line:0,Pos:0,Type:Tokeniser,RiType:"counter"})
+	writer.Write(Token{Word: fmt.Sprintf("%d", variables), Line: 0, Pos: 0, Type: Tokeniser, RiType: "counter"})
 
 	return nil
 }
-
-
-
-
-
-
-
-

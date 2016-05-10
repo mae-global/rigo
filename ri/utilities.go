@@ -155,35 +155,25 @@ func reducev(fv []RtFloat) string {
 	return out
 }
 
-func mix(tokens,values []Rter) []Rter {
-	out := make([]Rter,0)
+func mix(tokens, values []Rter) []Rter {
+	out := make([]Rter, 0)
 	for i := 0; i < len(tokens); i++ {
-		out = append(out,tokens[i])
-		out = append(out,values[i])
+		out = append(out, tokens[i])
+		out = append(out, values[i])
 	}
 	return out
 }
 
-func unmix(params []Rter) ([]Rter,[]Rter) {
-	tokens := make([]Rter,0)
-	values := make([]Rter,0)
+func unmix(params []Rter) ([]Rter, []Rter) {
+	tokens := make([]Rter, 0)
+	values := make([]Rter, 0)
 
 	for i := 0; i < len(params); i++ {
-		if i % 2 == 0 {
-			tokens = append(tokens,params[i])
+		if i%2 == 0 {
+			tokens = append(tokens, params[i])
 		} else {
-			values = append(values,params[i])
+			values = append(values, params[i])
 		}
 	}
-	return tokens,values
+	return tokens, values
 }
-
-
-
-
-
-
-
-
-
-

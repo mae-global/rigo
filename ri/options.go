@@ -5,10 +5,9 @@ func (r *Ri) Declare(name, declaration RtString) error {
 	return r.writef("Declare", name, declaration)
 }
 
-func (r *Ri) DeclareV(args,tokens,values []Rter) error {
-	return r.writef("Declare",args...)
+func (r *Ri) DeclareV(args, tokens, values []Rter) error {
+	return r.writef("Declare", args...)
 }
-
 
 /* Option render programs may have additional implementation-specific options. */
 func (r *Ri) Option(name RtToken, parameterlist ...Rter) error {
@@ -18,12 +17,12 @@ func (r *Ri) Option(name RtToken, parameterlist ...Rter) error {
 	return r.writef("Option", out...)
 }
 
-func (r *Ri) OptionV(args,tokens,values []Rter) error {
+func (r *Ri) OptionV(args, tokens, values []Rter) error {
 
-	out := make([]Rter,0)
-	out = append(out,args...)
-	out = append(out,PARAMETERLIST)
-	out = append(out,mix(tokens,values)...)
+	out := make([]Rter, 0)
+	out = append(out, args...)
+	out = append(out, PARAMETERLIST)
+	out = append(out, mix(tokens, values)...)
 	return r.writef("Option", out...)
 }
 
@@ -36,13 +35,13 @@ func (r *Ri) Attribute(name RtToken, parameterlist ...Rter) error {
 	return r.writef("Attribute", out...)
 }
 
-func (r *Ri) AttributeV(args,tokens,values []Rter) error {
+func (r *Ri) AttributeV(args, tokens, values []Rter) error {
 
-	out := make([]Rter,0)
-	out = append(out,args...)
-	out = append(out,PARAMETERLIST)
-	out = append(out,mix(tokens,values)...)
-	return r.writef("Attribute",out...)
+	out := make([]Rter, 0)
+	out = append(out, args...)
+	out = append(out, PARAMETERLIST)
+	out = append(out, mix(tokens, values)...)
+	return r.writef("Attribute", out...)
 }
 
 /* Geometry */
@@ -54,13 +53,13 @@ func (r *Ri) Geometry(typeof RtToken, parameterlist ...Rter) error {
 	return r.writef("Geometry", out...)
 }
 
-func (r *Ri) GeometryV(args,tokens,values []Rter) error {
-	
-	out := make([]Rter,0)
-	out = append(out,args...)
-	out = append(out,PARAMETERLIST)
-	out = append(out,mix(tokens,values)...)
-	return r.writef("Geometry",out...)
+func (r *Ri) GeometryV(args, tokens, values []Rter) error {
+
+	out := make([]Rter, 0)
+	out = append(out, args...)
+	out = append(out, PARAMETERLIST)
+	out = append(out, mix(tokens, values)...)
+	return r.writef("Geometry", out...)
 }
 
 /* MotionBegin */
@@ -69,7 +68,7 @@ func (r *Ri) MotionBegin(n RtInt, t ...RtFloat) error {
 	return r.writef("MotionBegin", RtFloatArray(t))
 }
 
-func (r *Ri) MotionBeginV(args,tokens,values []Rter) error {
+func (r *Ri) MotionBeginV(args, tokens, values []Rter) error {
 	defer func() { r.Depth(1) }()
 	return r.writef("MotionBegin", args...)
 }
@@ -80,10 +79,7 @@ func (r *Ri) MotionEnd() error {
 	return r.writef("MotionEnd")
 }
 
-func (r *Ri) MotionEndV(args,tokens,values []Rter) error {
+func (r *Ri) MotionEndV(args, tokens, values []Rter) error {
 	r.Depth(-1)
 	return r.writef("MotionEnd")
 }
-
-
-
