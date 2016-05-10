@@ -1,5 +1,14 @@
 package ri
 
+/* Camera */
+func (r *Ri) Camera(name RtToken, parameterlist ...Rter) error {
+
+	list := []Rter{name,PARAMETERLIST}
+	list = append(list,parameterlist...)
+
+	return r.writef("Camera", list...)
+}
+
 /* Deformation */
 func (r *Ri) Deformation(name RtToken, parameterlist ...Rter) error {
 
