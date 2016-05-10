@@ -372,6 +372,28 @@ func (p RtPointArray) Equal(o Rter) bool {
 	return false
 }
 
+/* RtInternal */
+type RtInterval [2]RtFloat
+
+func (i RtInterval) Type() string {
+	return "interval"
+}
+
+func (i RtInterval) String() string {
+	return i.Serialise()
+}
+
+func (i RtInterval) Serialise() string {
+	return fmt.Sprintf("%s %s", reduce(i[0]), reduce(i[1]))
+}
+
+func (i RtInterval) Equal(o Rter) bool {
+	if other, ok := o.(RtInterval); ok {
+		return (other[0] == i[0] && other[1] == i[1])
+	}
+	return false
+}
+
 /* RtVector */
 type RtVector [3]RtFloat
 
@@ -679,6 +701,50 @@ func (s RtProcSubdivFunc) Equal(o Rter) bool {
 	return false
 }
 
+/* RtProc2SubdivFunc */
+type RtProc2SubdivFunc string
+
+func (s RtProc2SubdivFunc) Type() string {
+	return "proc2subdivfunc"
+}
+
+func (s RtProc2SubdivFunc) String() string {
+	return s.Serialise()
+}
+
+func (s RtProc2SubdivFunc) Serialise() string {
+	return fmt.Sprintf("\"%s\"", string(s))
+}
+
+func (s RtProc2SubdivFunc) Equal(o Rter) bool {
+	if other, ok := o.(RtProc2SubdivFunc); ok {
+		return (other == s)
+	}
+	return false
+}
+
+/* RtProc2BoundFunc */
+type RtProc2BoundFunc string
+
+func (s RtProc2BoundFunc) Type() string {
+	return "proc2boundfunc"
+}
+
+func (s RtProc2BoundFunc) String() string {
+	return s.Serialise()
+}
+
+func (s RtProc2BoundFunc) Serialise() string {
+	return fmt.Sprintf("\"%s\"", string(s))
+}
+
+func (s RtProc2BoundFunc) Equal(o Rter) bool {
+	if other, ok := o.(RtProc2BoundFunc); ok {
+		return (other == s)
+	}
+	return false
+}
+
 /* RtProcFreeFunc */
 type RtProcFreeFunc string
 
@@ -755,11 +821,17 @@ const (
 )
 
 const (
-	BoxFilter        RtFilterFunc = "box"
-	TriangleFilter   RtFilterFunc = "triangle"
-	CatmullRomFilter RtFilterFunc = "catmull-rom"
-	GaussianFilter   RtFilterFunc = "gaussian"
-	SincFilter       RtFilterFunc = "sinc"
+	BesselFilter              RtFilterFunc = "bessel"
+	BlackmanHarrisFilter      RtFilterFunc = "blackman-harris"
+	BoxFilter                 RtFilterFunc = "box"
+	TriangleFilter            RtFilterFunc = "triangle"
+	DiskFilter                RtFilterFunc = "disk"
+	CatmullRomFilter          RtFilterFunc = "catmull-rom"
+	GaussianFilter            RtFilterFunc = "gaussian"
+	MitchellFilter            RtFilterFunc = "mitchell"
+	LanczosFilter             RtFilterFunc = "lanczos"
+	SeperableCatmullRomFilter RtFilterFunc = "seperable-catmull-rom"
+	SincFilter                RtFilterFunc = "sinc"
 
 	ReadArchiveCallback RtArchiveCallbackFunc = "ReadArchive"
 
@@ -770,6 +842,12 @@ const (
 	ProcDelayedReadArchive RtProcSubdivFunc = "DelayedReadArchive"
 	ProcRunProgram         RtProcSubdivFunc = "RunProgram"
 	ProcDynamicLoad        RtProcSubdivFunc = "DynamicLoad"
+
+	Proc2DelayedReadArchive RtProc2SubdivFunc = "DelayedReadArchive"
+	Proc2DynamicLoad        RtProc2SubdivFunc = "DynamicLoad"
+
+	SimpleBound RtProc2BoundFunc = "Bound"
+	DSOBound    RtProc2BoundFunc = "DSOBound"
 
 	ProcFree RtProcFreeFunc = "free"
 

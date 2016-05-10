@@ -21,17 +21,11 @@ type MyTimer struct {
 	finish time.Time
 }
 
-func (t *MyTimer) ToRaw() ArchiveWriter {
-	return nil
-}
+func (t *MyTimer) ToRaw() ArchiveWriter {	return nil }
 
-func (t MyTimer) Name() string {
-	return "mytimer"
-}
+func (t MyTimer) Name() string {	return "mytimer" }
 
-func (t *MyTimer) Took() time.Duration {
-	return t.finish.Sub(t.start)
-}
+func (t *MyTimer) Took() time.Duration { 	return t.finish.Sub(t.start) }
 
 func (t *MyTimer) Pipe(name RtName,args,params,values []Rter,info Info) *Result {
 	switch string(name) {
@@ -160,6 +154,7 @@ ri.End()
 
 ```
 ##RenderMan RIB-Structure 1.1
+version 3.04
 Display "sphere.tif" "file" "rgb"
 Format 320 240 1
 Projection "perspective" "fov" 30
@@ -193,12 +188,16 @@ WorldEnd
 	- [ ] Per call checking
 	- [ ] Parameterlist checking
 - [ ] RIB parser
-- [ ] RIS
+  - [x] ~~Basic Syntax Parsing~~
+  - [ ] Ri type determination
+  - [ ] Token checking
+  - [ ] Error checking
+- [x] RIS
   - [x] ~~Args Parser~~
   - [x] ~~Shader loader~~
   - [x] ~~Param~~
   - [x] ~~Widget~~
-  - [ ] Ri intergration 
+  - [x] ~~Ri intergration~~ 
 - [ ] Call wrapping for Ri[call]Begin/Ri[call]End pairs
 - [x] ~~Call Fragments~~ 
 - [ ] Documentation/Examples
