@@ -679,6 +679,30 @@ func (s RtFilterFunc) Equal(o Rter) bool {
 	return false
 }
 
+
+/* RtErrorHandler */
+type RtErrorHandler string
+
+func (s RtErrorHandler) Type() string {
+	return "errorhandler"
+}
+
+func (s RtErrorHandler) String() string {
+	return s.Serialise()
+}
+
+func (s RtErrorHandler) Serialise() string {
+	return fmt.Sprintf("\"%s\"",string(s))
+}
+
+func (s RtErrorHandler) Equal(o Rter) bool {
+	if other,ok := o.(RtErrorHandler); ok {
+		return (other == s)
+	}
+	return false
+}
+
+
 /* RtProcSubdivFunc subdivision function */
 type RtProcSubdivFunc string
 
@@ -832,6 +856,10 @@ const (
 	LanczosFilter             RtFilterFunc = "lanczos"
 	SeperableCatmullRomFilter RtFilterFunc = "seperable-catmull-rom"
 	SincFilter                RtFilterFunc = "sinc"
+
+	ErrorIgnore								RtErrorHandler = "ignore"
+	ErrorPrint								RtErrorHandler = "print"
+	ErrorAbort								RtErrorHandler = "abort"
 
 	ReadArchiveCallback RtArchiveCallbackFunc = "ReadArchive"
 

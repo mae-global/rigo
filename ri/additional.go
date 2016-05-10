@@ -64,11 +64,7 @@ func (r *Ri) EnableLightFilter(light RtLightHandle, filter RtToken, onoff RtBool
 	return r.writef("EnableLightFilter", list...)
 }
 
-/* ErrorHandler -- FIXME
-func (r *Ri) ErrorHandler(handler RtErrorHandler) error {
 
-
-}*/
 
 /* HierarchicalSubdivisionMesh */
 func (r *Ri) HierarchicalSubdivisionMesh(mask RtToken, nf RtInt, nverts, verts RtIntArray, nt RtInt, tags RtTokenArray,

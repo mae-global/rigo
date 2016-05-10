@@ -29,11 +29,11 @@ type Context struct {
 	Info
 }
 
-func (ctx *Context) Write(name RtName, args, list []Rter) error {
+func (ctx *Context) Write(name RtName, args, params, values []Rter) error {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
 	/* FIXME: add pipe check here */
-	return ctx.pipe.Run(name, args, list, ctx.Info)
+	return ctx.pipe.Run(name, args, Mix(params,values), ctx.Info)
 }
 
 func (ctx *Context) OpenRaw(id RtToken) (ArchiveWriter, error) {
