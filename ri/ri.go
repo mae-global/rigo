@@ -24,17 +24,29 @@ type Ri struct {
 	RiContexter
 }
 
+func (r *Ri) BloomFilter() *BloomFilter { return RiBloomFilter() }
+
 /* User special func for client libraries to write to */
-func (r *Ri) User(w RterWriter) error {
-	if w == nil {
+func (r *Ri) User(reader RterReader) error {
+	if reader == nil {
 		return ErrBadArgument
 	}
 
-	name, args, params := w.Write()
+	name, args, tokens, values := reader.ReadFrom()
 	out := make([]Rter, len(args))
 	copy(out, args)
 	out = append(out, PARAMETERLIST)
-	out = append(out, params...)
+	out = append(out, Mix(tokens, values)...)
+
+	return r.writef(name, out...)
+}
+
+func (r *Ri) WriteTo(name RtName, args, tokens, values []Rter) error {
+
+	out := make([]Rter, 0)
+	out = append(out, args...)
+	out = append(out, PARAMETERLIST)
+	out = append(out, Mix(tokens, values)...)
 
 	return r.writef(name, out...)
 }
@@ -110,6 +122,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	if USEDEBUG && len(nlist) > 0 {
 		args = append(args, DEBUGBARRIER)
 	}
+
 
 	params,values := Unmix(nlist)
 
