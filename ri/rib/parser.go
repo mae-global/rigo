@@ -11,6 +11,11 @@ type BloomFilterer interface {
 	IsMember(...string) bool
 }
 
+/* Porous Bloom Filter, basically accepts everything as a member */
+type PorousBloomFilter struct {}
+func (p PorousBloomFilter) IsMember(all ...string) bool {	return true }
+
+
 const (
 	DefaultBufferSize int = 512
 )

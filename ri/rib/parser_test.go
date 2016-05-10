@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-
-	"github.com/mae-global/rigo/ri"
 )
 
 type TestTokenWriter struct {
@@ -80,7 +78,7 @@ func Test_TokeniserExample0(t *testing.T) {
 		fmt.Printf("\nRIB Example 0\n----------\n%s\n\n%s\n", RIBExample0, tw.Print(false))
 
 		tw1 := new(TestTokenWriter)
-		err = Lexer(tw, tw1, ri.RiBloomFilter())
+		err = Lexer(tw, tw1, PorousBloomFilter{})
 		So(err, ShouldBeNil)
 
 		fmt.Printf("\nLexer\n%s\n", tw1.Print(false))
@@ -108,7 +106,7 @@ func Test_TokeniserExample1(t *testing.T) {
 		fmt.Printf("\nRIB Example 1\n----------\n%s\n\n%s\n", RIBExample1, tw.Print(false))
 
 		tw1 := new(TestTokenWriter)
-		err = Lexer(tw, tw1, ri.RiBloomFilter())
+		err = Lexer(tw, tw1, PorousBloomFilter{})
 		So(err, ShouldBeNil)
 
 		fmt.Printf("\nLexer\n%s\n", tw1.Print(false))
