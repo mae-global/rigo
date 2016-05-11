@@ -125,10 +125,12 @@ func NewContext(pipe *Pipe,mgr HandleManagerer,config *Configuration) *Context {
 	return ctx
 }
 
+/* Wrap the RIS interface */
 func RIS(ctx RisContexter) *Ris {
 	return &Ris{ctx}
 }
 
+/* Wrap the RI interface */
 func RI(ctx RiContexter) *Ri {
 	return &Ri{ctx}
 }

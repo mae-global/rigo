@@ -6,6 +6,7 @@ import (
 	. "github.com/mae-global/rigo/ri"
 )
 
+
 /* HandleManager -- Collects all the handle management */
 type HandleManagerer interface {
 	
@@ -25,15 +26,17 @@ type HandleManagerer interface {
 
 type HandleManager struct {
 	mux sync.RWMutex
+
 	objects 	ObjectHandler
 	lights 		LightHandler
 	shaders 	ShaderHandler
 }
 
+
 func (mgr *HandleManager) LightHandle() (RtLightHandle,error) {
 	mgr.mux.Lock()
 	defer mgr.mux.Unlock()
-	return mgr.lights.Generate()
+	return mgr.lights.Generate()	
 }
 
 func (mgr *HandleManager) CheckLightHandle(h RtLightHandle) error {
@@ -85,7 +88,11 @@ func NewHandleManager(object ObjectHandler,light LightHandler,shader ShaderHandl
 	mgr.lights  = light
 	mgr.shaders = shader
 
+
 	return mgr
 }
+
+
+
 
 

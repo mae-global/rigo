@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 	"bytes"
@@ -138,6 +137,31 @@ func (p *PipeToPrettyPrint) Pipe(name RtName, args, params, values []Rter, info 
 	return Next(name, args, params, values, info)
 }
 
+/* example of callbacks for light handle usage */ 
+type LightHandlerCallback func(RtName,RtLightHandle)
+
+type PipeHookHandleCallback struct {
+	LightHandler LightHandlerCallback	
+}
+
+func (p *PipeHookHandleCallback) ToRaw() ArchiveWriter { return nil }
+func (p *PipeHookHandleCallback) Name() string         { return "default-pipe-hook-handle-callback" }
+func (p *PipeHookHandleCallback) Pipe(name RtName,args,params,values []Rter,info Info) *Result {
+
+	/* go through all the args and check for RtLightHandle */
+	if p.LightHandler != nil {
+		for _,arg := range args {
+			if lh,ok := arg.(RtLightHandle); ok {
+				p.LightHandler(name,lh)
+			}
+		}
+	}
+
+	return Done()
+}
+
+
+
 type PipeToDebugBuffer struct {
 	Buffer *bytes.Buffer
 }
@@ -253,54 +277,6 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 	return Done()
 }
 
-type FilterStringHandles struct{}
-
-/* FIXME: this should actually be a filter */
-
-func (p *FilterStringHandles) ToRaw() ArchiveWriter {
-	return nil
-}
-
-func (p FilterStringHandles) Name() string {
-	return "default-filter-string-handles"
-}
-
-func (p *FilterStringHandles) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
-
-	/* TODO: add filter to only those proceedures the include light and object handles */
-
-	args1 := make([]Rter, len(args))
-
-	for i := 0; i < len(args); i++ {
-		if lh, ok := args[i].(RtLightHandle); ok {
-			id, err := strconv.Atoi(string(lh))
-			if err != nil {
-				return InError(err)
-			}
-			args1[i] = RtInt(id)
-			continue
-		}
-		if oh, ok := args[i].(RtObjectHandle); ok {
-			id, err := strconv.Atoi(string(oh))
-			if err != nil {
-				return InError(err)
-			}
-			args1[i] = RtInt(id)
-			continue
-		}
-		if sh, ok := args[i].(RtShaderHandle); ok {
-			id, err := strconv.Atoi(string(sh))
-			if err != nil {
-				return InError(err)
-			}
-			args1[i] = RtInt(id)
-			continue
-		}
-		args1[i] = args[i]
-	}
-
-	return Next(name, args1, params, values, info)
-}
 
 
 
