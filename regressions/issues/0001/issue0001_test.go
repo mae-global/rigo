@@ -20,7 +20,7 @@ func Test_Issue0001(t *testing.T) {
 			pipe := rigo.NewEmptyPipe()
 			pipe.Append(buf)
 	
-			ctx := rigo.NewContext(pipe, nil, nil, nil, &rigo.Configuration{PrettyPrint: false})
+			ctx := rigo.NewContext(pipe, nil, &rigo.Configuration{PrettyPrint: false})
 			ri := rigo.RI(ctx)
 			ri.Begin("issue0001.rib") 
 
@@ -36,7 +36,7 @@ func Test_Issue0001(t *testing.T) {
 			pipe := rigo.NewEmptyPipe()
 			pipe.Append(new(rigo.PipeIssue0001Fix)).Append(buf)
 
-			ctx := rigo.NewContext(pipe,nil,nil,nil,&rigo.Configuration{PrettyPrint: false})
+			ctx := rigo.NewContext(pipe,nil,&rigo.Configuration{PrettyPrint: false})
 			ri := rigo.RI(ctx)
 			ri.Begin("issue0001.rib")
 
