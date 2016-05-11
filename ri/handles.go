@@ -18,7 +18,7 @@ func read(n int) (string, error) {
 }
 
 func readExample(n int) string {
-	example := []byte("abcdefghijklnmopqrstuvw123456789") /* FIXME, should use a sha512 string instead */
+	example := []byte("abcdefghijklnmopqrstuvwxyzABCDEFGHIJKLNMOPQRSTUVWXYZ0123456789") 
 	if n >= len(example) {
 		n = len(example) - 1
 	}

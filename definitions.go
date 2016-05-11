@@ -26,6 +26,29 @@ type Pipe struct {
 	sync.Mutex
 }
 
+/* List -- get all the names of each pipe block */
+func (p *Pipe) List() []string {
+
+	list := make([]string,0)
+
+	for _,b := range p.blocks {
+		list = append(list,b.Name())
+	}
+	return list
+}
+
+func (p *Pipe) String() string {
+
+	out := ""
+	for _,b := range p.blocks {
+		if len(out) > 0 {
+			out += "--> "
+		}
+		out += b.Name()
+	}
+	return out
+} 
+
 func (p *Pipe) Last() Piper {
 	p.Lock()
 	defer p.Unlock()
