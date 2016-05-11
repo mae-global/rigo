@@ -119,7 +119,8 @@ func (p *PipeToPrettyPrint) Name() string         { return "default-pipe-to-pret
 func (p *PipeToPrettyPrint) Pipe(name RtName, args, params, values []Rter, info Info) *Result {
 
 	if info.PrettyPrint {
-
+		info.Depth = p.Depth
+	
 		/* adjust the depth counter in info for any *Begin|*End calls */
 		if strings.HasSuffix(string(name), "Begin") && name != RtName("Begin") {
 			p.Depth++
@@ -130,10 +131,9 @@ func (p *PipeToPrettyPrint) Pipe(name RtName, args, params, values []Rter, info 
 			if p.Depth < 0 {
 				p.Depth = 0
 			}
+			info.Depth = p.Depth
 		}
 	}
-
-	info.Depth = p.Depth
 
 	return Next(name, args, params, values, info)
 }
@@ -301,3 +301,6 @@ func (p *FilterStringHandles) Pipe(name RtName, args, params, values []Rter, inf
 
 	return Next(name, args1, params, values, info)
 }
+
+
+

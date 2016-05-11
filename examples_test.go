@@ -184,7 +184,9 @@ func Test_SimpleExample(t *testing.T) {
 		/* use a custom unique generator with a prefix for the light handles */
 		lights := NewPrefixLightUniqueGenerator("light_")
 
-		ctx := NewContext(pipe, lights, nil, nil, &Configuration{PrettyPrint: true})
+		mgr := NewHandleManager(nil,lights,nil)
+
+		ctx := NewContext(pipe, mgr, &Configuration{PrettyPrint: true})
 		ri := RI(ctx)
 		ri.Begin("output/exampleSimple.rib")
 		ri.Display("sphere.tif", "file", "rgb")
@@ -226,7 +228,9 @@ func Test_SimpleExampleWithConditionals(t *testing.T) {
 		/* use a custom unique generator with a prefix for the light handles */
 		lights := NewPrefixLightUniqueGenerator("light_")
 
-		ctx := NewContext(pipe, lights, nil, nil, &Configuration{PrettyPrint: true})
+		mgr := NewHandleManager(nil,lights,nil)
+
+		ctx := NewContext(pipe, mgr, &Configuration{PrettyPrint: true})
 		ri := RI(ctx)
 		ri.Begin("output/exampleConditionals.rib")
 		ri.Display("sphere.tif", "file", "rgb")
@@ -266,7 +270,9 @@ func Test_SimpleExampleWithConditionals(t *testing.T) {
 
 		fmt.Printf("%s%s", s, t)
 	})
-}
+}	
+
+
 
 const hello_world = `
 package main
@@ -341,7 +347,9 @@ func Benchmark_SimpleExampleUniqueHandlers(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		pipe := NullPipe()
-		ctx := NewContext(pipe, NewLightUniqueGenerator(), nil, nil, nil)
+		mgr := NewHandleManager(nil,NewLightUniqueGenerator(),nil)
+	
+		ctx := NewContext(pipe, mgr, nil)
 		ri := RI(ctx)
 		ri.Begin("simple.rib")
 		ri.Display("sphere.tif", "file", "rgb")

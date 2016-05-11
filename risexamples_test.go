@@ -22,7 +22,7 @@ func Test_RISExamples(t *testing.T) {
 			pipe := DefaultFilePipe()
 			So(pipe, ShouldNotBeNil)
 
-			ctx := NewContext(pipe, nil, nil, nil, &Configuration{PrettyPrint: true})
+			ctx := NewContext(pipe, nil, &Configuration{PrettyPrint: true})
 			ri := RI(ctx)
 
 			ri.Begin("output/risBxdfPxrConstant.rib")
