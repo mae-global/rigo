@@ -186,4 +186,12 @@ func Unmix(list []Rter) ([]Rter, []Rter) {
 	return params, values
 }
 
+func ParsePrototypes(stream string) (RtName,[]Rter) {
+
+	/* TODO */
+	return RtName("-"),[]Rter{}
+}
+
+
+
 
