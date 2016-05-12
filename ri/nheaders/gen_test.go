@@ -43,9 +43,7 @@ func Test_ParseCPrototype(t *testing.T) {
 		for i,l := range prototypes {
 			fmt.Printf("[%03d] \"%s\"\n",i,l)
 		}
-		So(concat(prototypes),ShouldEqual,`NuPatch int nu int uorder float_array uknot float umin float umax int nv int vorder float_array vknot float vmin float vmax ...`)
-
-
+		So(concat(prototypes),ShouldEqual,`NuPatch int nu int uorder float[] uknot float umin float umax int nv int vorder float[] vknot float vmin float vmax ...`)
 
 		prototypes = ParseCPrototype(`RiIlluminate(RtLightHandle light, RtBoolean onoff)`)
 
