@@ -2,6 +2,7 @@ package ri
 
 import (
 	"fmt"
+
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
 )
@@ -61,8 +62,27 @@ func Test_Utilities(t *testing.T) {
 			So(Serialise(values1), ShouldEqual, Serialise(values))
 		})
 
+		Convey("ParsePrototype",func() {
+
+			proto := ParsePrototype("Shader token name token handle ...")
+
+			fmt.Printf("%s\n",proto)
+
+			So(string(proto.Name),ShouldEqual,"Shader")
+			So(len(proto.Arguments),ShouldEqual,2)
+			So(proto.Parameterlist,ShouldBeTrue)
+			
+			proto = ParsePrototype("Illuminate lighthandle light boolean onoff")
+			fmt.Printf("%s\n",proto)
+
+			So(string(proto.Name),ShouldEqual,"Illuminate")
+			So(len(proto.Arguments),ShouldEqual,2)
+			So(proto.Parameterlist,ShouldBeFalse)
+		})
+
 	})
 
+	/*
 	list := []Rter{RtToken("test"), RtFloat(1.2), RtFloatArray{.1, .2, .3, .4}}
 	if t, ok := list[0].(RtToken); ok {
 		fmt.Printf("token %s\n", t)
@@ -72,6 +92,6 @@ func Test_Utilities(t *testing.T) {
 	}
 	if t, ok := list[2].(RtFloatArray); ok {
 		fmt.Printf("float array len=%d %s\n", len(t), t)
-	}
+	}*/
 
 }

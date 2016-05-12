@@ -186,10 +186,149 @@ func Unmix(list []Rter) ([]Rter, []Rter) {
 	return params, values
 }
 
-func ParsePrototypes(stream string) (RtName,[]Rter) {
+type PrototypeArgument struct {
+	Type string
+	Example Rter
+	Name string
+}
 
-	/* TODO */
-	return RtName("-"),[]Rter{}
+func (p *PrototypeArgument) String() string {
+	return fmt.Sprintf("name=\"%s\", type=\"%s\", example=%s",p.Name,p.Type,p.Example)
+} 
+
+type PrototypeInformation struct {
+	Name RtName 
+	Arguments []*PrototypeArgument
+	Parameterlist bool
+}
+
+func (p *PrototypeInformation) String() string {
+	out := fmt.Sprintf("PrototypeInformation \"%s\", parameterlist=%v\n",p.Name,p.Parameterlist)
+	if len(p.Arguments) > 0 {
+		out += fmt.Sprintf("\t%d arguments\n",len(p.Arguments))
+		for i,arg := range p.Arguments {
+			out += fmt.Sprintf("\t\t[%03d] \"%s\" -- type=\"%s\", example=%s\n",i,arg.Name,arg.Type,arg.Example)
+		}
+	}
+	return out
+}
+	
+
+func ParsePrototype(stream string) *PrototypeInformation {
+
+	list := strings.Split(stream," ")
+	if len(list) == 0 {
+		return &PrototypeInformation{Name:RtName(stream)}
+	}
+
+	proto := &PrototypeInformation{}
+	
+	proto.Name = RtName(list[0])
+	proto.Arguments = make([]*PrototypeArgument,0)	
+
+	var arg *PrototypeArgument
+
+	/* example :- "Shader token name token handle ..." */	
+	var r Rter
+	for i := 1; i < len(list); i++ {
+		r = nil
+
+		switch list[i] {
+			case "string":
+				r = RtString("string")
+			break
+			case "string[]":
+				r = RtStringArray{}
+			break
+			case "float":
+				r = RtFloat(1)
+			break
+			case "float[]":
+				r = RtFloatArray{1,2,3}
+			break
+			case "int":
+				r = RtInt(1)
+			break
+			case "int[]":
+				r = RtIntArray{1,2,3}
+			break
+			case "token":
+				r = RtToken("name")
+			break
+			case "lighthandle":
+				r = RtLightHandle("light")
+			break
+			case "objecthandle":
+				r = RtObjectHandle("object")
+			break
+			case "filterfunc":
+				r = BesselFilter
+			break
+			case "boolean":
+				r = RtBoolean(true)
+			break
+			case "color":
+				r = RtColor{1,1,1}
+			break
+			case "point":
+				r = RtPoint{1,1,1}
+			break
+			case "point[]":
+				r = RtPointArray{}
+			break
+			case "basis":
+				r = RtBasis{}
+			break
+			case "bound":
+				r = RtBound{}
+			break
+			case "matrix":
+				r = RtMatrix{}
+			break
+			case "pointer":
+				r = RtStringArray{}
+			break
+			case "procsubdivfunc":
+				r = ProcDelayedReadArchive
+			break
+			case "procfreefunc":
+				r = ProcFree
+			break
+			case "proc2subdivfunc":
+				r = Proc2DelayedReadArchive
+			break
+			case "...":
+				r = PARAMETERLIST
+			break
+		}
+
+		if r == nil {
+			/* then it is a name */
+			fmt.Printf("list[i]:proto.Name=\"%s\" = %s\n",proto.Name,list[i])
+			arg.Name = list[i]
+		} else {
+
+			if arg != nil && len(arg.Type) > 0 {
+				proto.Arguments = append(proto.Arguments,arg)
+				arg = new(PrototypeArgument)
+			}
+
+			if r == PARAMETERLIST {
+				
+				proto.Parameterlist = true
+				continue
+			}
+
+			arg = new(PrototypeArgument)
+			arg.Type = list[i]
+			arg.Example = r
+		}
+	}
+	if arg != nil && len(arg.Type) > 0 {
+		proto.Arguments = append(proto.Arguments,arg)
+	}	
+	
+	return proto
 }
 
 

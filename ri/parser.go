@@ -71,13 +71,17 @@ func ParseString(content string, writer RterWriter) error {
 	}
 
 	/* create the lookup table for the function information */
-	lookup := make(map[RtName]RtInt, 0)
+
+/*	lookup := make(map[RtName]RtInt, 0)
+
 	for i := 0; i < len(bloomFilterKeysData); i++ {
 		name := RtName(bloomFilterKeysData[i])
 		args := RtInt(RiArgumentsData[i])
 
 		lookup[name] = args
-	}
+	} */
+
+	lookup := RiPrototypes()
 
 	fmt.Printf("\n%s\n\n", tw2.Print())
 
@@ -128,8 +132,8 @@ func ParseString(content string, writer RterWriter) error {
 
 			/* start new func, lookup the information required */
 			currentfunc = token.Word
-			if v, ok := lookup[RtName(currentfunc)]; ok {
-				params = int(v)
+			if proto, ok := lookup[RtName(currentfunc)]; ok {
+				params = len(proto.Arguments)
 			}
 			break
 

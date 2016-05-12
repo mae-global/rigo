@@ -105,16 +105,17 @@ func main() {
 	}
 
 	buffer = strings.Split(buf,";")
-	
 
+	
 	for i,line := range buffer {
 		if strings.Contains(line,"Ri") {
 			prototypes := ParseCPrototype(line)
 			if len(prototypes) == 0 {
 				continue
 			}
+			
 			name := prototypes[0]
-			if name[(len(name) - 1)] == 'V' {
+			if name[(len(name) - 1)] == 'V' || name == "GetContext" || name == "Context" || name == "ErrorHandler" {
 				continue
 			}
 			fmt.Printf("[%5d] -- \"%s\"\n",i,strings.Join(prototypes," "))
@@ -122,6 +123,10 @@ func main() {
 			hashes[name] = Hash(name)			
 		}
 	}
+	
+
+
+	fmt.Printf("\n\n")
 
 	size := 128
 	step := size
@@ -301,7 +306,9 @@ func RiBloomFilter() *BloomFilter {
 	return &BloomFilter{bits,PrototypesBloomFilterKeys}
 }
 
-func RiPrototypes() map[RtName][]Rter {
+
+
+func RiPrototypes() map[RtName]*PrototypeInformation {
 
 	statements := make([]string,0)
 
@@ -315,14 +322,14 @@ func RiPrototypes() map[RtName][]Rter {
 		}
 	}
 
-	out := make(map[RtName][]Rter,0)
+	out := make(map[RtName]*PrototypeInformation,0)
 
 	for _,statement := range statements {
-		name,stream := ParsePrototype(statement)
-		out[name] = stream
+		proto := ParsePrototype(statement)
+		out[proto.Name] = proto
 	}
 
-	return out
+	return out 
 }	
 
 /* EOF */
@@ -340,14 +347,14 @@ func ParseCPrototype(line string) []string {
 	
 	line = strings.Replace(line,"char*","RtString",-1)
 	line = strings.Replace(line,"char *","RtString",-1)
-	line = strings.Replace(line,"RtFloat*","RtFloat_Array",-1)
-	line = strings.Replace(line,"RtFloat *","RtFloat_Array",-1)
-	line = strings.Replace(line,"RtInt*","RtInt_Array",-1)
-	line = strings.Replace(line,"RtInt *","RtInt_Array",-1)
-	line = strings.Replace(line,"RtPoint*","RtPoint_Array",-1)
-	line = strings.Replace(line,"RtPoint *","RtPoint_Array",-1)
-	line = strings.Replace(line,"RtToken *","RtToken_Array",-1)
-	line = strings.Replace(line,"RtToken*","RtToken_Array",-1)
+	line = strings.Replace(line,"RtFloat*","RtFloat[]",-1)
+	line = strings.Replace(line,"RtFloat *","RtFloat[]",-1)
+	line = strings.Replace(line,"RtInt*","RtInt[]",-1)
+	line = strings.Replace(line,"RtInt *","RtInt[]",-1)
+	line = strings.Replace(line,"RtPoint*","RtPoint[]",-1)
+	line = strings.Replace(line,"RtPoint *","RtPoint[]",-1)
+	line = strings.Replace(line,"RtToken *","RtToken[]",-1)
+	line = strings.Replace(line,"RtToken*","RtToken[]",-1)
 
 	/* Drunken C Parsing */
 	for _,c := range line {

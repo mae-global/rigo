@@ -4,7 +4,7 @@ func (r *Ri) Begin(name RtString) error {
 	if err := r.writef("Begin", name); err != nil {
 		return err
 	}
-	return r.writef("version", Version)
+	return r.writef("version", RIBVersion)
 }
 
 func (r *Ri) End() error {
