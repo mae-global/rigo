@@ -304,7 +304,7 @@ func ParsePrototype(stream string) *PrototypeInformation {
 
 		if r == nil {
 			/* then it is a name */
-			fmt.Printf("list[i]:proto.Name=\"%s\" = %s\n",proto.Name,list[i])
+		//	fmt.Printf("list[i]:proto.Name=\"%s\" = %s\n",proto.Name,list[i])
 			arg.Name = list[i]
 		} else {
 
