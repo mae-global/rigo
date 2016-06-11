@@ -225,14 +225,7 @@ func Lexer(reader TokenReader, writer TokenWriter, filter BloomFilterer) error {
 		}
 
 		if token.Type == Content {
-			/* check if a member of ri */
-			if filter.IsMember(token.Word) {
-				//fmt.Printf("Command found -- %s\n",token.Word)
-
-				token.Lex = Command
-				token.RiType = "func"
-
-			} else {
+	
 				token.Lex = ArgOp
 
 				if iscomment {
@@ -250,12 +243,25 @@ func Lexer(reader TokenReader, writer TokenWriter, filter BloomFilterer) error {
 						if isliteral {
 							token.RiType = "token"
 						} else {
-							token.RiType = "number"
+
+							_,err := strconv.ParseFloat(token.Word,64)
+							if err == nil {
+								token.RiType = "number"
+							} else {
+								if filter.IsMember(token.Word) {
+										token.Lex = Command
+										token.RiType = "func"
+								} else {
+
+									/* FIXME: unknown */
+								}							
+
+							}							
 						}
 						break
 					}
 					/* -- */
-				}
+				
 			}
 			writer.Write(token)
 		}

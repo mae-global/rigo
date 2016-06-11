@@ -106,7 +106,7 @@ func ParseString(content string, writer RterWriter) error {
 				fmt.Printf("%s (%d) %d args, %d tokens & %d values\n",
 										proto.Name, len(proto.Arguments), len(args), len(tokens), len(values))
 
-				/* Due to the dumbness of the parse we now correct the parser with the prototype information */			
+				/* Due to the dumbness of the parser we now correct the parser with the prototype information */			
 				nargs,ntokens,nvalues,err := CorrectParser(proto,args,tokens,values)
 				if err != nil {
 					return err
@@ -141,9 +141,9 @@ func ParseString(content string, writer RterWriter) error {
 				farray = append(farray, RtFloat(f))
 				if !isarray {
 					if len(args) >= len(proto.Arguments) {
-						values = append(values, RtFloatArray(farray))
+						values = append(values, RtFloat(f)) //RtFloatArray(farray))
 					} else {
-						args = append(args, RtFloatArray(farray))
+						args = append(args, RtFloat(f)) //RtFloatArray(farray))
 					}
 				}
 			}
@@ -238,6 +238,7 @@ func CorrectParser(proto *PrototypeInformation, args []Rter, tokens []Rter, valu
 					/* check that v is singular then add -- otherwise in error */
 					if len(v) != 1 {
 						fmt.Printf("v = %v\n",v)
+						fmt.Printf("args = %v\n",args)
 						return nil,nil,nil,fmt.Errorf("Invalid Type %s(%s) -- expecting singular float but have %d floats",
 																					proto.Name,arg0.Name,len(v))
 					}
