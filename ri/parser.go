@@ -111,19 +111,28 @@ func parse(reader io.Reader, writer RterWriter) error {
 				/* FIXME: remove the debug printing */
 				fmt.Printf("%s (%d) %d args, %d tokens & %d values\n",
 										proto.Name, len(proto.Arguments), len(args), len(tokens), len(values))
+				fmt.Printf("tokens = %v, values = %v\n",tokens,values)
+
 
 				/* Due to the dumbness of the parser we now correct the parser with the prototype information */			
 				nargs,ntokens,nvalues,err := CorrectParser(proto,args,tokens,values)
+
 				if err != nil {
 					return err
 				}
 				
 				/* Write out */
 				if writer != nil {
+
+					if len(ntokens) != len(nvalues) {
+						return fmt.Errorf("Tokens - Values mismatch, %d tokens != %d values",len(ntokens),len(nvalues))
+					}
+
 					if err := writer.WriteTo(proto.Name, nargs, ntokens, nvalues); err != nil {
 						return err
 					}
 				}
+		
 
 				/* Reset ready for next function */
 				args = make([]Rter, 0)
@@ -182,7 +191,7 @@ func parse(reader io.Reader, writer RterWriter) error {
 	if proto != nil { /* write to out with the current */
 
 		/* FIXME: remove the debug printing */
-		fmt.Printf("%s (%d) %d args, %d tokens & %d values\n",
+		fmt.Printf("T %s (%d) %d args, %d tokens & %d values\n",
 								proto.Name, len(proto.Arguments), len(args), len(tokens), len(values))
 
 		/* Due to the dumbness of the parser we now correct the parser with the prototype information */			
@@ -248,7 +257,11 @@ func CorrectParser(proto *PrototypeInformation, args []Rter, tokens []Rter, valu
 				case "string":
 					nargs = append(nargs,RtString(string(v)))
 				break
-				
+				case "lighthandle":
+					nargs = append(nargs,RtLightHandle(string(v)))
+				break			
+
+	
 				default:
 					return nil,nil,nil,fmt.Errorf("Invalid Type -- \"%s\" (%s), should be \"%s\"",arg1.Type(),arg1,arg0.Type)
 				break
@@ -261,7 +274,9 @@ func CorrectParser(proto *PrototypeInformation, args []Rter, tokens []Rter, valu
 					case "float":
 						nargs = append(nargs,v)
 					break					
-
+					case "int":
+						nargs = append(nargs,v)
+					break
 					/* TODO add rest here */
 					default:
 						return nil,nil,nil,fmt.Errorf("Invalid Type -- \"%s\" (%s), should be \"%s\"",arg1.Type(),arg1,arg0.Type)
@@ -286,6 +301,7 @@ func CorrectParser(proto *PrototypeInformation, args []Rter, tokens []Rter, valu
 				case "float[]":
 					nargs = append(nargs,v)
 				break
+			
 				/* TODO add rest here */
 				default:
 					return nil,nil,nil,fmt.Errorf("Invalid Type -- \"%s\" (%s), should be \"%s\"",arg1.Type(),arg1,arg0.Type)

@@ -1,7 +1,7 @@
 /* machine generated
  * build tool version 0
- * generated on 2016-05-12 08:58:04.770611958 +0000 UTC
- * source /opt/pixar/RenderManProServer-20.8/include/ri.h
+ * generated on 2016-06-11 15:05:29.887698232 +0000 UTC
+ * source tmp/ri.h
  * RiVersion 5
  */
 

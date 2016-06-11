@@ -167,6 +167,49 @@ WorldBegin
 WorldEnd 
 ```
 
+Using the RIB parser to flatten the pretty printer. 
+
+```
+pipe := DefaultFilePipe()
+
+lights := NewPrefixLightUniqueGenerator("light_")
+
+ctx := NewContext(pipe,lights,nil,nil,&Configuration{PrettyPrint:false})
+ri := RI(ctx)
+ri.Begin("output/simple_flatten.rib")
+
+f,_ := os.Open("output/simple.rib")
+defer f.Close()
+ri.ParseRIB(f)
+
+ri.End()
+```
+
+```
+##RenderMan RIB-Structure 1.1
+version 3.04
+Display "sphere.tif" "file" "rgb"
+Format 320 240 1
+Projection "perspective" "fov" 30
+Translate 0 0 6
+WorldBegin 
+LightSource "ambientlight" "light_09c84b71" "intensity" .5
+LightSource "distantlight" "light_64f4dfbf" "intensity" 1.2 "from" [0 0 -6] "to" [0 0 0]
+Color [1 0 0]
+Sphere 1 -1 1 360
+WorldEnd 
+```
+
+
+
+
+
+
+
+
+
+
+
 
 ##Roadmap
 

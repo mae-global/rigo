@@ -2,6 +2,7 @@ package rigo
 
 import (
 	"fmt"
+	"os"
 	"os/user"
 	"testing"
 	"time"
@@ -216,6 +217,21 @@ func Test_SimpleExample(t *testing.T) {
 		So(ok, ShouldBeTrue)
 
 		fmt.Printf("%s%s", s, t)
+	})
+
+	Convey("Simple Example Flattened",t,func() {
+
+		pipe := DefaultFilePipe()
+		
+		ctx := NewContext(pipe,nil,&Configuration{PrettyPrint:false})
+		ri := RI(ctx)
+		ri.Begin("output/exampleSimpleFlattened.rib")
+
+		f,err := os.Open("output/exampleSimple.rib")
+		So(err,ShouldBeNil)		
+		defer f.Close()
+		So(ri.ParseRIB(f),ShouldBeNil)
+		ri.End()
 	})
 }
 
