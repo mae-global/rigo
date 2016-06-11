@@ -4,8 +4,6 @@ import (
 	"testing"
 	
 	"github.com/mae-global/rigo"
-	. "github.com/mae-global/rigo/ri"
-	
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -24,9 +22,9 @@ func Test_Issue0001(t *testing.T) {
 			ri := rigo.RI(ctx)
 			ri.Begin("issue0001.rib") 
 
-			So(ParseString(RIBExample, ri), ShouldBeNil)
+			So(ri.ParseRIBString(RIBExample), ShouldBeNil)
 			So(ri.End(), ShouldBeNil) 
-			So(buf.String(),ShouldEqual,`Begin "issue0001.rib"  version 3.04  version [3.04]  End  `)		
+			So(buf.String(),ShouldEqual,`Begin "issue0001.rib"  version 3.04  version 3.04  End  `)		
 		})
 	
 		Convey("Fix",func() {
@@ -40,7 +38,7 @@ func Test_Issue0001(t *testing.T) {
 			ri := rigo.RI(ctx)
 			ri.Begin("issue0001.rib")
 
-			So(ParseString(RIBExample,ri), ShouldBeNil)
+			So(ri.ParseRIBString(RIBExample), ShouldBeNil)
 			So(ri.End(),ShouldBeNil)
 			So(buf.String(),ShouldEqual,`Begin "issue0001.rib"  version 3.04  End  `)
 		})
@@ -49,6 +47,5 @@ func Test_Issue0001(t *testing.T) {
 
 const RIBExample = `##RenderMan RIB-Structure 1.1
 version 3.04
-End
 `
 
