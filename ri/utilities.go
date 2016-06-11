@@ -212,7 +212,7 @@ func (p *PrototypeInformation) String() string {
 	}
 	return out
 }
-	
+
 
 func ParsePrototype(stream string) *PrototypeInformation {
 
@@ -230,6 +230,8 @@ func ParsePrototype(stream string) *PrototypeInformation {
 
 	/* example :- "Shader token name token handle ..." */	
 	var r Rter
+	flipflop := true
+
 	for i := 1; i < len(list); i++ {
 		r = nil
 
@@ -254,6 +256,9 @@ func ParsePrototype(stream string) *PrototypeInformation {
 			break
 			case "token":
 				r = RtToken("name")
+			break
+			case "tokenarray":
+				r = RtTokenArray{}
 			break
 			case "lighthandle":
 				r = RtLightHandle("light")
@@ -302,9 +307,10 @@ func ParsePrototype(stream string) *PrototypeInformation {
 			break
 		}
 
-		if r == nil {
+		if !flipflop {
+
 			/* then it is a name */
-		//	fmt.Printf("list[i]:proto.Name=\"%s\" = %s\n",proto.Name,list[i])
+		  fmt.Printf("list[i]:proto.Name=\"%s\" = %s\n",proto.Name,list[i])
 			arg.Name = list[i]
 		} else {
 
@@ -316,17 +322,22 @@ func ParsePrototype(stream string) *PrototypeInformation {
 			if r == PARAMETERLIST {
 				
 				proto.Parameterlist = true
-				continue
-			}
+				
+			} else {
 
-			arg = new(PrototypeArgument)
-			arg.Type = list[i]
-			arg.Example = r
+				arg = new(PrototypeArgument)
+				arg.Type = list[i]
+				arg.Example = r
+			}
 		}
+
+		flipflop = !flipflop
 	}
 	if arg != nil && len(arg.Type) > 0 {
 		proto.Arguments = append(proto.Arguments,arg)
 	}	
+
+	
 	
 	return proto
 }

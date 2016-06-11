@@ -17,7 +17,13 @@ func Test_ParseString(t *testing.T) {
 
 const RIBExample0 = `##RenderMan RIB-Structure 1.1
 version 3.04
-Projection "perspective" "fov" 30.0
+Declare "d" "uniform point"
+Option "limits" "bucketsize" [6 6]
+Projection "perspective" "float fov" [30.0]
 Color [1 0 0]
-Sphere 1 -1 1 360
+AttributeBegin
+	Attribute "identifier" "shadinggroup" ["tophalf"]
+	Surface "plastic" 
+	Sphere 1 -1 1 360
+AttributeEnd
 `

@@ -7,6 +7,10 @@ import (
 	"strconv"
 )
 
+var (
+	ErrTokenIsEmpty error = fmt.Errorf("Token Is Empty")
+)
+
 type BloomFilterer interface {
 	IsMember(...string) bool
 }
@@ -65,7 +69,18 @@ type Token struct {
 
 	Error error
 	/* TODO: add lexical information here */
-	/* TODO: add parser information here */
+	/* TODO: add parser information here */	
+}
+
+func (t Token) IsEmpty() bool {
+	if t.Error == ErrTokenIsEmpty {
+		return true
+	}
+	return false
+}
+
+func (t Token) Empty() {
+	t.Error = ErrTokenIsEmpty
 }
 
 var EmptyToken = Token{Word: "", Line: -1, Pos: -1, Type: Tokeniser}
@@ -250,11 +265,12 @@ func Lexer(reader TokenReader, writer TokenWriter, filter BloomFilterer) error {
 
 func Parser(reader TokenReader, writer TokenWriter) error {
 
-	/* TODO: add a function lookup -- check the variables, all the types need to be passed on etc */
-
 	currentfunc := ""
 	variables := 0
 	inarray := false
+	isliteral := false
+
+	var wtoken Token
 
 	for {
 		token, err := reader.Read()
@@ -266,11 +282,23 @@ func Parser(reader TokenReader, writer TokenWriter) error {
 		}
 
 		if token.Type == Tokeniser {
+			switch token.Word {
+				case "_begin-lit_":
+					isliteral = true
+				break
+				case "_end-lit_":
+					isliteral = false
+					if !wtoken.IsEmpty() {
+						writer.Write(wtoken)
+						wtoken.Empty()
+					}
+				break
+			}
 			continue
 		}
 
 		/* start of a new Ri function call */
-		if token.RiType == "func" {
+/*		if token.RiType == "func" {
 			if variables > 0 && currentfunc != "" {
 				writer.Write(Token{Word: fmt.Sprintf("%d", variables), Line: 0, Pos: 0, Type: Tokeniser, RiType: "counter"})
 			}
@@ -278,35 +306,63 @@ func Parser(reader TokenReader, writer TokenWriter) error {
 			currentfunc = token.Word
 			variables = 0
 		}
-
+*/
 		/* pass all the arguments in the function call */
-		if token.Type == Content {
+	//	if token.Type == Content {
 
 			switch token.RiType {
-			case "number":
-				if _, err := strconv.ParseFloat(token.Word, 64); err != nil {
-					token.RiType = "number"
-					token.Error = err
-				} else {
-					token.RiType = "float"
-				}
-				if !inarray {
-					variables++
-				}
-				break
-			case "array_begin":
-				inarray = true
-				break
-			case "array_end":
-				inarray = false
-				variables++
-				break
-			}
-		}
+				case "func":
+					if variables > 0 && currentfunc != "" {
+						writer.Write(Token{Word: fmt.Sprintf("%d", variables), Line: 0, Pos: 0, Type: Tokeniser, RiType: "counter"})
+					}
 
-		writer.Write(token)
+					currentfunc = token.Word
+					variables = 0
+
+					writer.Write(token)
+				break
+				case "number":
+					if _, err := strconv.ParseFloat(token.Word, 64); err != nil {
+						token.RiType = "number"
+						token.Error = err
+					} else {
+						token.RiType = "float"
+					}
+					if !inarray {
+						variables++
+					}
+					writer.Write(token)
+					break
+				case "array_begin":
+					inarray = true
+					writer.Write(token)
+					break
+				case "array_end":
+					inarray = false
+					variables++
+					writer.Write(token)			
+				break
+				case "token":
+					if isliteral {
+						if !wtoken.IsEmpty() {
+							wtoken = token
+						} else {
+							wtoken.Word += " " + token.Word
+						}
+					} else {
+						writer.Write(token)
+					}
+				break
+				}
+			//}
+
+		//writer.Write(token)
 	}
 	writer.Write(Token{Word: fmt.Sprintf("%d", variables), Line: 0, Pos: 0, Type: Tokeniser, RiType: "counter"})
 
 	return nil
 }
+
+
+
+

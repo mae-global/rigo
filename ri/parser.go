@@ -53,6 +53,7 @@ func (w *RIBTokenIO) Print() string {
 	return out
 }
 
+/* ParseString */
 func ParseString(content string, writer RterWriter) error {
 
 	tw := new(RIBTokenIO)
@@ -70,29 +71,19 @@ func ParseString(content string, writer RterWriter) error {
 		return err
 	}
 
-	/* create the lookup table for the function information */
-
-/*	lookup := make(map[RtName]RtInt, 0)
-
-	for i := 0; i < len(bloomFilterKeysData); i++ {
-		name := RtName(bloomFilterKeysData[i])
-		args := RtInt(RiArgumentsData[i])
-
-		lookup[name] = args
-	} */
 
 	lookup := RiPrototypes()
 
 	fmt.Printf("\n%s\n\n", tw2.Print())
 
-	currentfunc := ""
 	args := make([]Rter, 0)
 	tokens := make([]Rter, 0)
 	values := make([]Rter, 0)
-	params := -1 /* parameterlist starts at? */
-
+	
 	farray := make([]RtFloat, 0)
 	isarray := false
+	
+	var proto *PrototypeInformation
 
 	for {
 		token, err := tw2.Read()
@@ -109,31 +100,37 @@ func ParseString(content string, writer RterWriter) error {
 
 		switch token.RiType {
 		case "func":
-			if currentfunc != "" { /* write to out with the current */
+			if proto != nil { /* write to out with the current */
 
 				/* FIXME: remove the debug printing */
 				fmt.Printf("%s (%d) %d args, %d tokens & %d values\n",
-					currentfunc, params, len(args), len(tokens), len(values))
+										proto.Name, len(proto.Arguments), len(args), len(tokens), len(values))
 
+				/* Due to the dumbness of the parse we now correct the parser with the prototype information */			
+				nargs,ntokens,nvalues,err := CorrectParser(proto,args,tokens,values)
+				if err != nil {
+					return err
+				}
+				
+				/* Write out */
 				if writer != nil {
-					if err := writer.WriteTo(RtName(currentfunc), args, tokens, values); err != nil {
+					if err := writer.WriteTo(proto.Name, nargs, ntokens, nvalues); err != nil {
 						return err
 					}
 				}
 
-				currentfunc = ""
+				/* Reset ready for next function */
 				args = make([]Rter, 0)
 				tokens = make([]Rter, 0)
 				values = make([]Rter, 0)
 				farray = make([]RtFloat, 0)
-				params = -1
-
 			}
 
 			/* start new func, lookup the information required */
-			currentfunc = token.Word
-			if proto, ok := lookup[RtName(currentfunc)]; ok {
-				params = len(proto.Arguments)
+			if p, ok := lookup[RtName(token.Word)]; ok {
+					proto = p						
+			} else {
+				return fmt.Errorf("unknown function [\"%s\"]",token.Word)
 			}
 			break
 
@@ -143,7 +140,7 @@ func ParseString(content string, writer RterWriter) error {
 			} else {
 				farray = append(farray, RtFloat(f))
 				if !isarray {
-					if len(args) >= params {
+					if len(args) >= len(proto.Arguments) {
 						values = append(values, RtFloatArray(farray))
 					} else {
 						args = append(args, RtFloatArray(farray))
@@ -153,7 +150,7 @@ func ParseString(content string, writer RterWriter) error {
 			break
 
 		case "token":
-			if len(args) >= params {
+			if len(args) >= len(proto.Arguments) {
 				tokens = append(tokens, RtToken(token.Word))
 			} else {
 				args = append(args, RtToken(token.Word))
@@ -167,17 +164,103 @@ func ParseString(content string, writer RterWriter) error {
 
 		case "array_end":
 			isarray = false
-			if len(args) >= params {
+			if len(args) >= len(proto.Arguments) {
 				values = append(values, RtFloatArray(farray))
 			} else {
 				args = append(args, RtFloatArray(farray))
 			}
 			break
 		}
-
 	}
 
 	return nil
 }
 
+func CorrectParser(proto *PrototypeInformation, args []Rter, tokens []Rter, values []Rter) ([]Rter,[]Rter,[]Rter,error) {
+
+	if len(args) != len(proto.Arguments) {
+		fmt.Printf("%s\n",proto)
+		return nil,nil,nil,fmt.Errorf("Invalid count of arguments (%d != %d) for \"%s\"",len(proto.Arguments),len(args),proto.Name)
+	}
+
+	if len(tokens) > 0 || len(values) > 0 {
+		if !proto.Parameterlist {
+			fmt.Printf("%s\n",proto)
+			return nil,nil,nil,fmt.Errorf("\"%s\" has no parameterlist list",proto.Name)
+		}
+	}
+
+	nargs := make([]Rter,0)
+
+	/* go through the arguments first and correct types as needed */	
+	for i := 0; i < len(proto.Arguments); i++ {
+
+		arg0 := proto.Arguments[i]
+		arg1 := args[i]
+
+		/* types are decomposed into these basic types; RtToken, RtFloat and RtFloatArray */
+		switch arg1.Type() {
+			case "token": 
+				v := arg1.(RtToken)
+
+				switch arg0.Type {
+				case "token":
+					nargs = append(nargs,v)	
+				break
+				case "string":
+					nargs = append(nargs,RtString(string(v)))
+				break
+				
+				default:
+					return nil,nil,nil,fmt.Errorf("Invalid Type -- \"%s\" (%s), should be \"%s\"",arg1.Type(),arg1,arg0.Type)
+				break
+			}
+			break
+			case "float":
+				v := arg1.(RtFloat)
+				
+				switch arg0.Type {
+					case "float":
+						nargs = append(nargs,v)
+					break					
+
+					/* TODO add rest here */
+					default:
+						return nil,nil,nil,fmt.Errorf("Invalid Type -- \"%s\" (%s), should be \"%s\"",arg1.Type(),arg1,arg0.Type)
+					break
+				}
+			break
+			case "float[]":
+				v := arg1.(RtFloatArray)
+
+				switch arg0.Type {
+				case "float":
+					/* check that v is singular then add -- otherwise in error */
+					if len(v) != 1 {
+						fmt.Printf("v = %v\n",v)
+						return nil,nil,nil,fmt.Errorf("Invalid Type %s(%s) -- expecting singular float but have %d floats",
+																					proto.Name,arg0.Name,len(v))
+					}
+					
+					nargs = append(nargs,RtFloat(v[0]))
+				break				
+				case "float[]":
+					nargs = append(nargs,v)
+				break
+				/* TODO add rest here */
+				default:
+					return nil,nil,nil,fmt.Errorf("Invalid Type -- \"%s\" (%s), should be \"%s\"",arg1.Type(),arg1,arg0.Type)
+				break
+			}
+			break
+		}
+		
+	}	
+	/* go through the parameterlist list is present and attempt to correct the types */
+
+
+	return nargs,tokens,values,nil
+}
+
+  
 

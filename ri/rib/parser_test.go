@@ -94,7 +94,7 @@ func Test_TokeniserExample0(t *testing.T) {
 
 func Test_TokeniserExample1(t *testing.T) {
 
-	t.Skip()
+	//t.Skip()
 
 	Convey("Tokeniser Example 1", t, func() {
 
@@ -126,7 +126,9 @@ Display "sphere.tif" "file" "rgb"
 Format 320 240 1
 Translate 0 0 6
 WorldBegin
-Projection "perspective" "fov" 30.0
+Projection "perspective" "float fov" 30.0
 Color [1 0 0]
 Sphere 1 -1 1 360
 WorldEnd`
+
+

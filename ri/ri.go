@@ -19,6 +19,7 @@ type RiContexter interface {
 	Shader(RtShaderHandle) ShaderWriter
 }
 
+
 /* Ri is the main interface */
 type Ri struct {
 	RiContexter

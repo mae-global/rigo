@@ -110,7 +110,7 @@ func (i RtInt) Equal(o Rter) bool {
 type RtIntArray []RtInt
 
 func (a RtIntArray) Type() string {
-	return "[]int"
+	return "int[]"
 }
 
 func (a RtIntArray) String() string {
@@ -169,7 +169,7 @@ func (f RtFloat) Equal(o Rter) bool {
 type RtFloatArray []RtFloat
 
 func (a RtFloatArray) Type() string {
-	return "[]float"
+	return "float[]"
 }
 
 func (a RtFloatArray) String() string {
@@ -228,7 +228,7 @@ func (s RtToken) Equal(o Rter) bool {
 type RtTokenArray []RtToken
 
 func (a RtTokenArray) Type() string {
-	return "[]token"
+	return "token[]"
 }
 
 func (a RtTokenArray) String() string {
@@ -341,7 +341,7 @@ func (p RtPoint) Equal(o Rter) bool {
 type RtPointArray []RtPoint
 
 func (p RtPointArray) Type() string {
-	return "[]point"
+	return "point[]"
 }
 
 func (p RtPointArray) String() string {
@@ -628,7 +628,7 @@ func (s RtString) Equal(o Rter) bool {
 type RtStringArray []RtString
 
 func (a RtStringArray) Type() string {
-	return "[]string"
+	return "string[]"
 }
 
 func (a RtStringArray) String() string {
