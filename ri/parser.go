@@ -9,6 +9,14 @@ import (
 	"github.com/mae-global/rigo/ri/rib"
 )
 
+func (ri *Ri) ParseRIBString(content string) error {
+	return parse(strings.NewReader(content),ri)
+}
+
+func (ri *Ri) ParseRIB(reader io.Reader) error {
+	return parse(reader,ri)
+}
+
 type RIBTokenIO struct {
 	tokens   []rib.Token
 	position int
@@ -53,11 +61,10 @@ func (w *RIBTokenIO) Print() string {
 	return out
 }
 
-/* ParseString */
-func ParseString(content string, writer RterWriter) error {
+func parse(reader io.Reader, writer RterWriter) error {
 
 	tw := new(RIBTokenIO)
-	if err := rib.Tokenise(strings.NewReader(content), tw); err != nil {
+	if err := rib.Tokenise(reader, tw); err != nil {
 		return err
 	}
 
@@ -70,7 +77,6 @@ func ParseString(content string, writer RterWriter) error {
 	if err := rib.Parser(tw1, tw2); err != nil {
 		return err
 	}
-
 
 	lookup := RiPrototypes()
 
@@ -172,9 +178,41 @@ func ParseString(content string, writer RterWriter) error {
 			break
 		}
 	}
+	/* tail */
+	if proto != nil { /* write to out with the current */
+
+		/* FIXME: remove the debug printing */
+		fmt.Printf("%s (%d) %d args, %d tokens & %d values\n",
+								proto.Name, len(proto.Arguments), len(args), len(tokens), len(values))
+
+		/* Due to the dumbness of the parser we now correct the parser with the prototype information */			
+		nargs,ntokens,nvalues,err := CorrectParser(proto,args,tokens,values)
+		if err != nil {
+			return err
+		}
+				
+		/* Write out */
+		if writer != nil {
+			if err := writer.WriteTo(proto.Name, nargs, ntokens, nvalues); err != nil {
+				return err
+			}
+		}
+	}
 
 	return nil
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 func CorrectParser(proto *PrototypeInformation, args []Rter, tokens []Rter, values []Rter) ([]Rter,[]Rter,[]Rter,error) {
 

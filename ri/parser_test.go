@@ -3,13 +3,14 @@ package ri
 import (
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+	"strings"
 )
 
 func Test_ParseString(t *testing.T) {
 
 	Convey("Parse RIB string", t, func() {
 
-		err := ParseString(RIBExample0, nil)
+		err := parse(strings.NewReader(RIBExample0), nil)
 		So(err, ShouldBeNil)
 
 	})
