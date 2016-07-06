@@ -215,7 +215,7 @@ func (p *PipeToFile) Pipe(name RtName, args, params, values []Rter, info Info) *
 		}
 		file := "out.rib"
 		if len(args) > 0 {
-			if t, ok := args[0].(RtString); ok {
+			if t, ok := args[0].(RtToken); ok {
 				file = string(t)
 			}
 		}

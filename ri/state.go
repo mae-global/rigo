@@ -1,6 +1,6 @@
 package ri
 
-func (r *Ri) Begin(name RtString) error {
+func (r *Ri) Begin(name RtToken) error {
 	if err := r.writef("Begin", name); err != nil {
 		return err
 	}
