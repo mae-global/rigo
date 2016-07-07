@@ -1,6 +1,8 @@
 package ri
 
-
+import (
+	"fmt"
+)
 
 const USEDEBUG = false
 
@@ -79,8 +81,24 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 		copy(list, parameterlist[para+1:])
 	}
 
-	/* expand any Rtattr (attributes) present */
+	/* expand any RterArray present */
 	nlist := make([]Rter,0)
+	for _,ele := range list {
+		if ele.Type() == "rter[]" {
+			if attr,ok := ele.(RterArray); ok {
+				fmt.Printf("rter[] size %d\n",len(attr))
+				nlist = append(nlist,attr...)
+			}
+		} else {
+			nlist = append(nlist,ele)
+		}
+	}
+
+	list = make([]Rter,len(nlist))
+	copy(list,nlist)
+
+	/* expand any Rtattr (attributes) present */
+	nlist = make([]Rter,0)
 	for _,ele := range list {
 		if ele.Type() == "attribute" {
 			if attr,ok := ele.(Rtattr); ok {

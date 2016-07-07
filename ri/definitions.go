@@ -33,6 +33,26 @@ type RterWriter interface {
 	WriteTo(RtName, []Rter, []Rter, []Rter) error
 }
 
+
+type RterArray []Rter 
+
+func (s RterArray) Type() string {
+	return "rter[]"
+}
+
+func (s RterArray) String() string {
+	return ""
+}
+
+func (s RterArray) Serialise() string {
+	return ""
+}
+
+func (s RterArray) Equal(o Rter) bool {
+	return false
+}
+
+
 /* RtName internal use for RIB command names */
 type RtName string
 
