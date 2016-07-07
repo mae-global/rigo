@@ -44,7 +44,7 @@ func (r *Ri) PointsPolygons(npolys RtInt, nvertices RtIntArray, vertices RtIntAr
 	/* NOTE: we don't need npolys in the RIB output */
 	var out = []Rter{nvertices, vertices, PARAMETERLIST}
 	out = append(out, parameterlist...)
-	return r.writef("PointsPolygon", out...)
+	return r.writef("PointsPolygons", out...)
 }
 
 func (r *Ri) PointsPolygonsV(args, tokens, values []Rter) error {
@@ -54,7 +54,7 @@ func (r *Ri) PointsPolygonsV(args, tokens, values []Rter) error {
 	out = append(out, PARAMETERLIST)
 	out = append(out, Mix(tokens, values)...)
 
-	return r.writef("PointsPolygon", out...)
+	return r.writef("PointsPolygons", out...)
 }
 
 /* PointsGeneralPolygons */

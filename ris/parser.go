@@ -65,6 +65,12 @@ type ArgsParam struct {
 	Connectable string `xml:"connectable,attr"`
 }
 
+type ArgsOutput struct {
+	XMLName xml.Name `xml:"output"`
+	Name		string		`xml:"name,attr"`
+	Tags ArgsTags `xml:"tags"`
+}
+
 type ArgsRfmdata struct {
 	XMLName xml.Name `xml:"rfmdata"`
 
@@ -76,6 +82,7 @@ type Args struct {
 	XMLName xml.Name       `xml:"args"`
 	Shader  ArgsShaderType `xml:"shaderType"`
 	Params  []ArgsParam    `xml:"param"`
+	Outputs []ArgsOutput	 `xml:"output"`
 	Rfmdata ArgsRfmdata    `xml:"rfmdata"`
 
 	Format string `xml:"format,attr"`
@@ -107,6 +114,16 @@ func Parse(name string, handle RtShaderHandle, data []byte) (Shader, error) {
 
 	general := NewGeneralShader(RtName(shader), RtToken(name),
 		RtToken(args.Rfmdata.NodeId), RtString(args.Rfmdata.Classification), handle)
+
+	for _, output := range args.Outputs {
+		op := Output{Name:RtToken(output.Name)}
+		op.Types = make([]RtToken,0)
+		for _,t := range output.Tags.Tags {
+			op.Types = append(op.Types,RtToken(t.Value))
+		}
+
+		general.outputs = append(general.outputs,op)
+	}		
 
 	for _, param := range args.Params {
 

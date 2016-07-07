@@ -45,7 +45,7 @@ func Test_RIS(t *testing.T) {
 			pattern, err := Pattern("PxrBlend", "-")
 			So(err, ShouldBeNil)
 			So(pattern, ShouldNotBeNil)
-
 		})
+
 	})
 }

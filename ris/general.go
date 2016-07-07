@@ -22,10 +22,17 @@ type Param struct {
 	Widget  RtToken
 	Help    RtString
 	Value   Rter
+	
 
+	ref RtString
 	sync.RWMutex
 
 	/* TODO: add option hints dictionary here */
+}
+
+type Output struct {
+	Name RtToken
+	Types []RtToken
 }
 
 /* IsDefault is the param value same as the default */
@@ -44,11 +51,13 @@ type GeneralShader struct {
 	handle         RtShaderHandle
 
 	params []*Param
+	outputs []Output
 }
 
 func NewGeneralShader(shadertype RtName, name, nodeid RtToken, classification RtString, handle RtShaderHandle) *GeneralShader {
 	g := &GeneralShader{shadertype: shadertype, name: name, nodeid: nodeid, classification: classification, handle: handle}
 	g.params = make([]*Param, 0)
+	g.outputs = make([]Output,0)	
 	return g
 }
 
@@ -77,6 +86,10 @@ func namespec(name, typeof RtToken) RtToken {
 	return RtToken(string(typeof) + " " + string(name))
 }
 
+func refnamespec(name,typeof RtToken) RtToken {
+	return RtToken(fmt.Sprintf("reference %s %s",string(typeof),string(name)))
+}
+
 func (g *GeneralShader) Write() (RtName, RtShaderHandle, []Rter, []Rter, []Rter) {
 
 	args := make([]Rter, 0)
@@ -96,6 +109,12 @@ func (g *GeneralShader) Write() (RtName, RtShaderHandle, []Rter, []Rter, []Rter)
 
 		params = append(params, namespec(param.Name, param.Type))
 		values = append(values, param.Value)
+
+		/* override with reference */
+		if param.ref != "" {
+			params = append(params, refnamespec(param.Name,param.Type))
+			values = append(values, param.ref)
+		}
 
 		param.RUnlock()
 	}
@@ -216,6 +235,20 @@ func (g *GeneralShader) SetValue(name RtToken, value Rter) error {
 	return fmt.Errorf("Unknown parameter %s", name)
 }
 
+func (g *GeneralShader) SetReferencedValue(name RtToken, value RtString) error {
+
+	for _, param := range g.params {
+		if param.Name == name {
+			param.Lock()
+			defer param.Unlock()
+
+			param.ref = value
+			return nil
+		}
+	}
+	return fmt.Errorf("Unknown parameter %s",name)
+}
+
 func (g *GeneralShader) Value(name RtToken) Rter {
 
 	for _, param := range g.params {
@@ -228,3 +261,16 @@ func (g *GeneralShader) Value(name RtToken) Rter {
 	}
 	return nil
 }
+
+func (g *GeneralShader) ReferenceOutput(name RtToken) RtString {
+	
+	for _, output := range g.outputs {
+		if output.Name == name {
+			return RtString(fmt.Sprintf("%s:%s",string(g.handle),string(name)))
+		}
+	}
+	return ""
+}
+		
+
+

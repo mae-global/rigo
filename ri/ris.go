@@ -123,9 +123,11 @@ func (r *Ri) Pattern(name RtToken, handle RtShaderHandle, parameterlist ...Rter)
 		return r.writef("Pattern", list...)
 	}
 
-	n, h, args, params, values := pattern.Write()
-	list := []Rter{n, h}
+	_, h, args, params, values := pattern.Write()
+
+	list := []Rter{}
 	list = append(list, args...)
+	list = append(list, h)
 	list = append(list, PARAMETERLIST)
 
 	oparams := make([]Rter, 0)

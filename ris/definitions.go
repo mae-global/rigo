@@ -42,5 +42,8 @@ type Shader interface {
 	Handle() RtShaderHandle
 
 	SetValue(name RtToken, value Rter) error
+	SetReferencedValue(name RtToken, value RtString) error
+	
 	Value(name RtToken) Rter
+	ReferenceOutput(name RtToken) RtString
 }

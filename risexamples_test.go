@@ -44,6 +44,19 @@ func Test_RISExamples(t *testing.T) {
 
 			/* wrap the context with the RIS interface */
 			ris := RIS(ctx)
+
+			/* first we setup a pattern RIS */
+			pattern, err := ris.Pattern("PxrHSL","-")
+			So(err,ShouldBeNil)
+			So(pattern,ShouldNotBeNil)
+			So(pattern.Name(),ShouldEqual,"PxrHSL")
+
+			w := pattern.Widget("inputRGB")
+			So(w,ShouldNotBeNil)
+			So(w.SetValue(RtColor{0,0,0.3}),ShouldBeNil)
+
+			ri.Pattern(pattern.Name(),pattern.Handle(),RtToken("inputRGB"),RtColor{0,0,0.3})
+
 			/* load the PxrConstant bxdf shader, $RMANTREE/lib/RIS/bxdf/Args/PxrConstant.args is parsed
 			 * for the constant shader.
 			 */
@@ -54,7 +67,7 @@ func Test_RISExamples(t *testing.T) {
 			/* we want to manipulate the emit color of the shader so we
 			 * ask the shader for the widget interface
 			 */
-			w := constant.Widget("emitColor")
+			w = constant.Widget("emitColor")
 			So(w, ShouldNotBeNil)
 
 			/* set the color via the widget; SetValue(Rter) */
@@ -81,6 +94,11 @@ func Test_RISExamples(t *testing.T) {
 			/* Here we over the shader again by including the emitColor inline; the constant.Handle()
 			 * includes the handle created for the shader */
 			ri.Bxdf("PxrConstant", constant.Handle(), RtToken("color emitColor"), RtColor{1, 0.25, 0.25})
+
+			/* now instead we can reference the pattern we set earlier and replace the emitColor with a reference */
+			refid := pattern.ReferenceOutput("resultRGB")
+			So(refid,ShouldEqual,fmt.Sprintf("%s:resultRGB",string(pattern.Handle())))
+			So(constant.SetReferencedValue("emitColor",refid),ShouldBeNil)
 
 			/* this is another way of writing our shader : using the emitColor that we actually set above */
 			ri.Bxdf(constant.Name(), constant.Handle())
