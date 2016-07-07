@@ -21,6 +21,10 @@ type Rter interface {
 	Equal(Rter) bool
 }
 
+type Rtattr interface {
+	Break() (RtToken,Rter)
+}
+
 type RterReader interface {
 	ReadFrom() (RtName, []Rter, []Rter, []Rter)
 }

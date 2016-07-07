@@ -79,7 +79,27 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 		copy(list, parameterlist[para+1:])
 	}
 
-	nlist := make([]Rter, len(list))
+	/* expand any Rtattr (attributes) present */
+	nlist := make([]Rter,0)
+	for _,ele := range list {
+		if ele.Type() == "attribute" {
+			if attr,ok := ele.(Rtattr); ok {
+				name,value := attr.Break()
+				nlist = append(nlist,name)
+				nlist = append(nlist,value)
+				continue
+			}	else {
+				return ErrBadArgument
+			}
+		}
+		
+		nlist = append(nlist,ele)
+	}
+
+	list = make([]Rter,len(nlist))
+	copy(list,nlist)
+
+	nlist = make([]Rter, len(list))
 
 	for i, r := range list {
 		ar := r

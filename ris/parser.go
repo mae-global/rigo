@@ -136,6 +136,8 @@ func Parse(name string, handle RtShaderHandle, data []byte) (Shader, error) {
 			min = RtFloat(0.0)
 			max = RtFloat(0.0)
 
+			param.Default = strings.Replace(param.Default,"f","",-1)
+
 			if len(param.Default) > 0 {
 				if f, err := strconv.ParseFloat(param.Default, 64); err != nil {
 					return nil, err
