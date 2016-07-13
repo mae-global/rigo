@@ -1,13 +1,15 @@
 package ri
 
+import (
+	"fmt"
+)
 
-const USEDEBUG = false
+const USEDEBUG = false /* FIXME: fails tests when true */
 
 type RiContexter interface {
 	Write(RtName, []Rter, []Rter, []Rter) error
 	OpenRaw(RtToken) (ArchiveWriter, error)
 	CloseRaw(RtToken) error
-	//Depth(int)
 	LightHandle() (RtLightHandle, error)
 	CheckLightHandle(RtLightHandle) error
 	ObjectHandle() (RtObjectHandle, error)
@@ -22,6 +24,7 @@ type RiContexter interface {
 /* Ri is the main interface */
 type Ri struct {
 	RiContexter
+	RiDictionarer
 }
 
 func (r *Ri) BloomFilter() *BloomFilter { return RiBloomFilter() }
@@ -119,6 +122,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	var class RtToken
 	var typeof RtToken
 	var count RtInt
+	var nameofparam RtToken
 
 
 	params,values := Unmix(list)
@@ -127,35 +131,60 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	}
 
 	nvalues := make([]Rter,0)
+	params2 := make([]RtToken,len(params))
+
+	var dict RiDictionarer
+	if r.RiDictionarer != nil {
+		dict = r.RiDictionarer
+	}
+
 
 	for i,param := range params {
 			token,ok := param.(RtToken)
 			if !ok {
 				return ErrBadArgument
 			}
-
-			class,typeof,_,count = ClassTypeNameCount(token) /* TODO: need to look up the token class and type via global dictionary */
+	
+			class,typeof,nameofparam,count = ClassTypeNameCount(token) /* TODO: need to look up the token class and type via global dictionary */
 			/* if class,typeof are not defined then should be in the dictionary, if not then error
 			 * otherwise if at least typeof then defined inline, class defaults to constant 
 			 */
+			params2[i] = token			
+
+			if dict != nil {
+				/* check if the token has been declared via ri.Declare(...)
+         * if so then replace the presumed inline specification 
+				 */
+				spec := dict.Lookup(nameofparam)
+				if spec != EmptyToken {
+					class,typeof,_,count = ClassTypeNameCount(spec)
+					params2[i] = spec				
+				}
+			}
+
 			value := values[i]
 			
 			if count == 1 { /* singular */
-				if string(typeof) != value.Type() {
+	
+				vtype := value.Type()
+				/* if some form of handle switch the type to string */
+				if vtype == "lighthandle" || vtype == "shaderhandle" || vtype == "objecthandle" {
+					vtype = "string"
+				}
+
+				if string(typeof) != vtype {
 					/* check for empty typeof information from the 
 					 * token, if so then use the type from the actual value.
            * NOTE, this should be an error?!
 					 */					
-					if string(typeof) == "" {
-						typeof = RtToken(value.Type())
-					} else if string(class) == "reference" {
+					if string(class) == "reference" {
 						/* if the class is reference then the type is not
              * indictive of what the value is, instead we
 						 * change it to the expected string type.
 						 */
 						typeof = RtToken("string")
 					} else {
-						return ErrBadArgument
+						return fmt.Errorf("%s -- %v",nameofparam,ErrBadArgument)
 					}
 				}
 
@@ -168,7 +197,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 							array = RtFloatArray{v}
 						
 						} else {
-							return ErrBadArgument
+							return fmt.Errorf("%s -- %v, expecting float",nameofparam,ErrBadArgument)
 						}
 					break
 					case "int":
@@ -176,7 +205,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 							array = RtIntArray{v}
 					
 						} else {
-							return ErrBadArgument
+							return fmt.Errorf("%s -- %v, expecting int",nameofparam,ErrBadArgument)
 						}
 					break
 					case "string":
@@ -184,7 +213,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 							array = RtStringArray{v}
 							
 						} else {
-							return ErrBadArgument
+							return fmt.Errorf("%s -- %v, expecting string",nameofparam,ErrBadArgument)
 						}
 					break
 					case "point":
@@ -192,7 +221,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 							array = RtPointArray{v}
 
 						} else {
-							return ErrBadArgument
+							return fmt.Errorf("%s -- %v, expecting point",nameofparam,ErrBadArgument)
 						}
 					break					
 					default:
@@ -204,7 +233,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 
 			} else {
 				if string(typeof) + "[]" != value.Type() {
-					return ErrBadArgument
+					return fmt.Errorf("%s -- %v, expecting array of %s[] but was %s",nameofparam,ErrBadArgument,string(typeof),value.Type())
 				}
 
 				switch value.Type() {
@@ -256,7 +285,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	}
 
 
-	return r.Write(name, args, params,nvalues)
+	return r.Write(name, args, params, nvalues) /* TODO, do something with params2 */
 }
 
 

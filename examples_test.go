@@ -306,7 +306,7 @@ func Test_ExampleArchive(t *testing.T) {
 
 		ri, pipe := DefaultPipeline(nil)
 		ri.Begin("output/exampleArchive.rib")
-		aw, err := ri.ArchiveBegin("test", RtToken("Content-Type"), RtString("application/go"))
+		aw, err := ri.ArchiveBegin("test", RtToken("string Content-Type"), RtString("application/go"))
 		So(err, ShouldBeNil)
 		So(aw, ShouldNotBeNil)
 

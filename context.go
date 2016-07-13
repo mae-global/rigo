@@ -27,7 +27,7 @@ type Context struct {
 }
 
 /* Write */
-func (ctx *Context) Write(name RtName,args,params,values []Rter) error {
+func (ctx *Context) Write(name RtName,args,params []Rter,values []Rter) error {
 	ctx.mux.Lock()
 	defer ctx.mux.Unlock()
 	return ctx.pipe.Run(name,args,Mix(params,values),ctx.Info)
@@ -132,7 +132,7 @@ func RIS(ctx RisContexter) *Ris {
 
 /* Wrap the RI interface */
 func RI(ctx RiContexter) *Ri {
-	return &Ri{ctx}
+	return &Ri{ctx,NewDictionary()}
 }
 
 

@@ -18,8 +18,10 @@ func Test_Surfaces(t *testing.T) {
 		So(ctx.SubdivisionMesh("catmull-clark", 5, RtIntArray{4, 4, 4, 4, 4, 4}, RtIntArray{0, 4, 3, 2, 5, 6, 1, 2, 3}, 1, RtTokenArray{"interpolateboundary"}, RtIntArray{0, 0}, RtIntArray{0}, RtFloatArray{0}),
 			ErrorShouldEqual, `SubdivisionMesh "catmull-clark" [4 4 4 4 4 4] [0 4 3 2 5 6 1 2 3] ["interpolateboundary"] [0 0] [0] [0]`)
 
-		So(ctx.Points(5, RtToken("P"), RtFloatArray{.5, -.5, -.5, 0, .5, 0, .5, 0}, RtToken("width"), RtFloatArray{.1, .12, .05, .02}), ErrorShouldEqual, `Points "P" [.5 -.5 -.5 0 .5 0 .5 0] "width" [.1 .12 .05 .02]`)
-		So(ctx.Curves("cubic", 4, RtIntArray{4}, "nonperiodic", RtToken("constantwidth"), RtFloat(0.1)), ErrorShouldEqual, `Curves "cubic" [4] "nonperiodic" "constantwidth" [.1]`)
+		So(ctx.Points(5, RtToken("float[8] P"), RtFloatArray{.5, -.5, -.5, 0, .5, 0, .5, 0}, RtToken("float[4] width"), RtFloatArray{.1, .12, .05, .02}), 
+									ErrorShouldEqual, `Points "float[8] P" [.5 -.5 -.5 0 .5 0 .5 0] "float[4] width" [.1 .12 .05 .02]`)
+
+		So(ctx.Curves("cubic", 4, RtIntArray{4}, "nonperiodic", RtToken("float constantwidth"), RtFloat(0.1)), ErrorShouldEqual, `Curves "cubic" [4] "nonperiodic" "float constantwidth" [.1]`)
 		So(ctx.Blobby(2, 6, RtIntArray{1001, 0, 1003, 0, 16, 0, 201}, 6, RtFloatArray{1.5, 0, 0, 0, 0, 1.5, 0, 0, 0, 0, 1.5, 0, 0, 0, 1}, 1, RtStringArray{"flat.zfile"}),
 			ErrorShouldEqual, `Blobby 2 [1.5 0 0 0 0 1.5 0 0 0 0 1.5 0 0 0 1] ["flat.zfile"]`)
 

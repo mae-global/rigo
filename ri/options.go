@@ -2,6 +2,13 @@ package ri
 
 /* Declare Declare the name and type of a variable */
 func (r *Ri) Declare(name, declaration RtString) error {
+	/* declare to the dictionary */
+	if r.RiDictionarer != nil {
+		if err := r.RiDictionarer.Declare(RtToken(string(declaration) + " " + string(name))); err != nil {
+			return err
+		}
+	}
+
 	return r.writef("Declare", name, declaration)
 }
 

@@ -15,7 +15,7 @@ func ClassTypeNameCount(t RtToken) (RtToken, RtToken, RtToken, RtInt) {
 
 	count := 1
 
-	ty := RtToken("")
+	ty := RtToken("string") /* default */
 
 	if len(p) == 2 { /* should be just type and name */
 
