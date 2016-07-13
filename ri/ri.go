@@ -134,7 +134,10 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 				return ErrBadArgument
 			}
 
-			class,typeof,_,count = ClassTypeNameCount(token)
+			class,typeof,_,count = ClassTypeNameCount(token) /* TODO: need to look up the token class and type via global dictionary */
+			/* if class,typeof are not defined then should be in the dictionary, if not then error
+			 * otherwise if at least typeof then defined inline, class defaults to constant 
+			 */
 			value := values[i]
 			
 			if count == 1 { /* singular */
