@@ -51,13 +51,13 @@ type GeneralShader struct {
 	handle         RtShaderHandle
 
 	params []*Param
-	outputs []Output
+	outputs []*Output
 }
 
 func NewGeneralShader(shadertype RtName, name, nodeid RtToken, classification RtString, handle RtShaderHandle) *GeneralShader {
 	g := &GeneralShader{shadertype: shadertype, name: name, nodeid: nodeid, classification: classification, handle: handle}
 	g.params = make([]*Param, 0)
-	g.outputs = make([]Output,0)	
+	g.outputs = make([]*Output,0)	
 	return g
 }
 
@@ -101,21 +101,19 @@ func (g *GeneralShader) Write() (RtName, RtShaderHandle, []Rter, []Rter, []Rter)
 	for _, param := range g.params {
 		/* if the value is equal to the default value then we don't need to
 		 * write it out TODO: add a flag to control this */
-		if param.IsDefault() {
+		if param.IsDefault() && param.ref == "" {
 			continue
 		}
 
 		param.RLock()
-
-		params = append(params, namespec(param.Name, param.Type))
-		values = append(values, param.Value)
-
 		/* override with reference */
 		if param.ref != "" {
 			params = append(params, refnamespec(param.Name,param.Type))
 			values = append(values, param.ref)
+		} else {
+			params = append(params, namespec(param.Name, param.Type))
+			values = append(values, param.Value)
 		}
-
 		param.RUnlock()
 	}
 
@@ -209,10 +207,17 @@ func (g *GeneralShader) Names() []RtToken {
 	return names
 }
 
+func (g *GeneralShader) Info() (RtInt,RtInt) {
+	return RtInt(len(g.params)),RtInt(len(g.outputs))
+}
+
 func (g *GeneralShader) NamesSpec() []RtToken {
-	names := make([]RtToken, len(g.params))
-	for i, param := range g.params {
-		names[i] = RtToken(string(param.Type) + " " + string(param.Name)) /* FIXME, this is not a complete spec : missing [n] */
+	names := make([]RtToken,0)
+	for _, param := range g.params {
+		names = append(names,RtToken(string(param.Type) + " " + string(param.Name))) /* FIXME, this is not a complete spec : missing [n] */
+	}
+	for _,param := range g.outputs {
+		names = append(names,RtToken("output " + string(param.Name) + " " + RtTokenArray(param.Types).String()))
 	}
 	return names
 }

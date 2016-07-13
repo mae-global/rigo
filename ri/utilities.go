@@ -10,7 +10,7 @@ import (
 func ClassTypeNameCount(t RtToken) (RtToken, RtToken, RtToken, RtInt) {
 	p := strings.Split(strings.TrimSpace(string(t)), " ")
 	if len(p) == 1 {
-		return "", "", t, 1
+		return "uniform", "", t, 1
 	}
 
 	count := 1
@@ -30,7 +30,7 @@ func ClassTypeNameCount(t RtToken) (RtToken, RtToken, RtToken, RtInt) {
 			}
 			ty = RtToken(parts[0])
 		}
-		return "", ty, RtToken(p[1]), RtInt(count)
+		return "uniform", ty, RtToken(p[1]), RtInt(count)
 	}
 
 	ty = RtToken(p[1])
@@ -45,6 +45,8 @@ func ClassTypeNameCount(t RtToken) (RtToken, RtToken, RtToken, RtInt) {
 	}
 	return RtToken(p[0]), ty, RtToken(p[2]), RtInt(count)
 }
+
+
 
 func serialise(parameterlist ...Rter) (string, error) {
 	out := ""

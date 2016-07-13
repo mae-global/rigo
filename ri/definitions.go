@@ -22,6 +22,7 @@ type Rter interface {
 }
 
 type Rtattr interface {
+	NameOf() RtName /* useful in caching systems */
 	Break() (RtToken,Rter)
 }
 

@@ -2,6 +2,7 @@
 package ris
 
 import (
+
 	"encoding/xml"
 	"fmt"
 	"strconv"
@@ -10,7 +11,6 @@ import (
 	. "github.com/mae-global/rigo/ri"
 )
 
-/* TODO: add ArgsPage -- see PxrCamera as an example of use */
 
 const (
 	DefaultArgsSubPath = "/lib/RIS/" /* {shadertype}/Args */
@@ -42,6 +42,7 @@ type ArgsString struct {
 	Name  string `xml:"name,attr"`
 	Value string `xml:"value,attr"`
 }
+
 
 type ArgsHintDict struct {
 	XMLName    xml.Name     `xml:"hintdict"`
@@ -78,9 +79,16 @@ type ArgsRfmdata struct {
 	Classification string `xml:"classification,attr"`
 }
 
+type ArgsPage struct {
+	XMLName xml.Name `xml:"page"`
+	Open 	string `xml:"open,attr"`
+	Params []ArgsParam `xml:"param"`
+}
+
 type Args struct {
 	XMLName xml.Name       `xml:"args"`
 	Shader  ArgsShaderType `xml:"shaderType"`
+	Pages   []ArgsPage 		 `xml:"page"`
 	Params  []ArgsParam    `xml:"param"`
 	Outputs []ArgsOutput	 `xml:"output"`
 	Rfmdata ArgsRfmdata    `xml:"rfmdata"`
@@ -115,17 +123,31 @@ func Parse(name string, handle RtShaderHandle, data []byte) (Shader, error) {
 	general := NewGeneralShader(RtName(shader), RtToken(name),
 		RtToken(args.Rfmdata.NodeId), RtString(args.Rfmdata.Classification), handle)
 
+
 	for _, output := range args.Outputs {
-		op := Output{Name:RtToken(output.Name)}
+		op := &Output{Name:RtToken(output.Name)}
 		op.Types = make([]RtToken,0)
 		for _,t := range output.Tags.Tags {
 			op.Types = append(op.Types,RtToken(t.Value))
 		}
-
+	
 		general.outputs = append(general.outputs,op)
 	}		
 
-	for _, param := range args.Params {
+	/* compress all params from global and pages togeather, TODO: this might be a problem later */
+	params := make([]ArgsParam,0)
+
+	for _,param := range args.Params {
+		params = append(params,param)
+	}
+
+	for _,page := range args.Pages {
+		for _,param := range page.Params {
+			params = append(params,param)
+		}
+	}
+
+	for _, param := range params {
 
 		var def Rter
 		var min Rter

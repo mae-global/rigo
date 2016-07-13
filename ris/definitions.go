@@ -32,6 +32,7 @@ type Shader interface {
 	Name() RtToken
 	NodeId() RtToken
 	Classifiation() RtString
+	Info() (RtInt,RtInt) /* param, output counts */
 
 	Widget(name RtToken) Widget
 	FirstWidget() Widget

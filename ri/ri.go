@@ -1,8 +1,5 @@
 package ri
 
-import (
-	"fmt"
-)
 
 const USEDEBUG = false
 
@@ -86,7 +83,6 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	for _,ele := range list {
 		if ele.Type() == "rter[]" {
 			if attr,ok := ele.(RterArray); ok {
-				fmt.Printf("rter[] size %d\n",len(attr))
 				nlist = append(nlist,attr...)
 			}
 		} else {
@@ -119,54 +115,145 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 
 	nlist = make([]Rter, len(list))
 
-	for i, r := range list {
-		ar := r
-		if i%2 == 0 {
-			_, ok := r.(RtToken)
+	
+	var class RtToken
+	var typeof RtToken
+	var count RtInt
+
+
+	params,values := Unmix(list)
+	if len(params) != len(values) {
+			return ErrBadArgument
+	}
+
+	nvalues := make([]Rter,0)
+
+	for i,param := range params {
+			token,ok := param.(RtToken)
 			if !ok {
 				return ErrBadArgument
 			}
 
-			//	cl,ty,nam,n := ClassTypeNameCount(t)
-			/* TODO: parse token, lookup class and type then check inputs of values */
-			//	fmt.Printf("Debug,Ri.writef token, class=%s,type=%s,name=%s,count=%d\n",cl,ty,nam,n)
+			class,typeof,_,count = ClassTypeNameCount(token)
+			value := values[i]
+			
+			if count == 1 { /* singular */
+				if string(typeof) != value.Type() {
+					/* check for empty typeof information from the 
+					 * token, if so then use the type from the actual value.
+           * NOTE, this should be an error?!
+					 */					
+					if string(typeof) == "" {
+						typeof = RtToken(value.Type())
+					} else if string(class) == "reference" {
+						/* if the class is reference then the type is not
+             * indictive of what the value is, instead we
+						 * change it to the expected string type.
+						 */
+						typeof = RtToken("string")
+					} else {
+						return ErrBadArgument
+					}
+				}
 
-		} else {
-			/* convert all outputs of the parameterlist in
-			 * array types as per RIB standard */
-			if a, ok := r.(RtString); ok {
-				ar = RtStringArray{a}
-			}
-			if a, ok := r.(RtFloat); ok {
-				ar = RtFloatArray{a}
-			}
-			if a, ok := r.(RtInt); ok {
-				ar = RtIntArray{a}
-			}
-			if a, ok := r.(RtToken); ok {
-				ar = RtTokenArray{a}
-			}
-			if a, ok := r.(RtPoint); ok {
-				ar = RtPointArray{a}
-			}
-		}
+				var array Rter
 
-		nlist[i] = ar
+				/* convert to array of that type */
+				switch value.Type() {
+					case "float":
+						if v,ok := value.(RtFloat); ok {
+							array = RtFloatArray{v}
+						
+						} else {
+							return ErrBadArgument
+						}
+					break
+					case "int":
+						if v,ok := value.(RtInt); ok {
+							array = RtIntArray{v}
+					
+						} else {
+							return ErrBadArgument
+						}
+					break
+					case "string":
+						if v,ok := value.(RtString); ok {
+							array = RtStringArray{v}
+							
+						} else {
+							return ErrBadArgument
+						}
+					break
+					case "point":
+						if v,ok := value.(RtPoint); ok {
+							array = RtPointArray{v}
+
+						} else {
+							return ErrBadArgument
+						}
+					break					
+					default:
+						array = value
+					break
+				}
+
+				nvalues = append(nvalues,array)
+
+			} else {
+				if string(typeof) + "[]" != value.Type() {
+					return ErrBadArgument
+				}
+
+				switch value.Type() {
+					case "float[]":
+						if array,ok := value.(RtFloatArray); ok {
+							if int(count) != len(array) {
+								return ErrBadArgument
+							}
+						} else {
+							return ErrBadArgument
+						}
+					break
+					case "int[]":
+						if array,ok := value.(RtIntArray); ok {
+							if int(count) != len(array) {
+								return ErrBadArgument
+							}
+						} else {
+							return ErrBadArgument
+						}
+					break
+					case "string[]":
+						if array,ok := value.(RtStringArray); ok {
+							if int(count) != len(array) {
+								return ErrBadArgument
+							}
+						} else {
+							return ErrBadArgument
+						}
+					break
+					case "point[]":
+						if array,ok := value.(RtPointArray); ok {
+							if int(count) != len(array) {
+								return ErrBadArgument
+							}
+						} else {
+							return ErrBadArgument
+						}
+					break
+				}
+
+				nvalues = append(nvalues,value)
+			}
 	}
 
-	/* tokens to values is unbalanced */
-	if len(nlist)%2 != 0 {
-		return ErrBadArgument
-	}
 
-	if USEDEBUG && len(nlist) > 0 {
+	if USEDEBUG && len(params) > 0 {
 		args = append(args, DEBUGBARRIER)
 	}
 
 
-	params,values := Unmix(nlist)
-
-	return r.Write(name, args, params,values)
+	return r.Write(name, args, params,nvalues)
 }
 
 
