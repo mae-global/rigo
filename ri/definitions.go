@@ -14,6 +14,16 @@ const (
 	Patch                 = 1
 )
 
+type RtError struct {
+	Code int
+	Severity int
+	Msg string
+}
+
+func (err RtError) String() string { return fmt.Sprintf("code %d, severity %d -- %s\n",err.Code,err.Severity,err.Msg) }
+func (err RtError) Error() error { return fmt.Errorf("%s",err.Msg) }
+
+
 type Rter interface {
 	String() string
 	Serialise() string
@@ -885,16 +895,13 @@ const (
 	LanczosFilter             RtFilterFunc = "lanczos"
 	SeperableCatmullRomFilter RtFilterFunc = "seperable-catmull-rom"
 	SincFilter                RtFilterFunc = "sinc"
-
-	ErrorIgnore								RtErrorHandler = "ignore"
-	ErrorPrint								RtErrorHandler = "print"
-	ErrorAbort								RtErrorHandler = "abort"
-
+	
 	ReadArchiveCallback RtArchiveCallbackFunc = "ReadArchive"
 
-	Uniform RtToken = "uniform"
-	Vertex  RtToken = "vertex"
-	Varying RtToken = "varying"
+	Uniform  RtToken = "uniform"
+	Vertex   RtToken = "vertex"
+	Varying  RtToken = "varying"
+	Constant RtToken = "constant"
 
 	ProcDelayedReadArchive RtProcSubdivFunc = "DelayedReadArchive"
 	ProcRunProgram         RtProcSubdivFunc = "RunProgram"

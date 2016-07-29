@@ -127,12 +127,12 @@ func NewContext(pipe *Pipe,mgr HandleManagerer,config *Configuration) *Context {
 
 /* Wrap the RIS interface */
 func RIS(ctx RisContexter) *Ris {
-	return &Ris{ctx}
+	return &Ris{ctx} /* TODO: add errorhandler to RIS as well */
 }
 
 /* Wrap the RI interface */
 func RI(ctx RiContexter) *Ri {
-	return &Ri{ctx,NewDictionary()}
+	return NewRi(ctx)
 }
 
 

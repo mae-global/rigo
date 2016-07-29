@@ -20,12 +20,27 @@ type RiContexter interface {
 	Shader(RtShaderHandle) ShaderWriter
 }
 
+type RtErrorHandlerFuncer interface {
+	Name() RtErrorHandler
+	Handle(err RtError) error
+}
 
 /* Ri is the main interface */
 type Ri struct {
 	RiContexter
 	RiDictionarer
+	errorhandler RtErrorHandlerFuncer
 }
+
+func NewRi(ctx RiContexter) *Ri {
+	
+	ri := new(Ri)
+	ri.RiContexter = ctx
+	ri.RiDictionarer = NewDictionary()
+	return ri
+}
+
+
 
 func (r *Ri) BloomFilter() *BloomFilter { return RiBloomFilter() }
 
@@ -57,6 +72,14 @@ func (r *Ri) WriteTo(name RtName, args, tokens, values []Rter) error {
 func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	if r.RiContexter == nil {
 		return ErrProtocolBotch
+	}
+
+	errfunc := func(code,severity int,err error) error { return err }
+
+	if r.errorhandler != nil {
+		errfunc = func(code,severity int,err error) error {
+				return r.errorhandler.Handle(RtError{code,severity,err.Error()})
+		}
 	}
 
 	para := -1
@@ -106,7 +129,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 				nlist = append(nlist,value)
 				continue
 			}	else {
-				return ErrBadArgument
+				return errfunc(1,1,ErrBadArgument)
 			}
 		}
 		
@@ -127,7 +150,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 
 	params,values := Unmix(list)
 	if len(params) != len(values) {
-			return ErrBadArgument
+			return errfunc(1,1,ErrBadArgument)
 	}
 
 	nvalues := make([]Rter,0)
@@ -142,7 +165,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 	for i,param := range params {
 			token,ok := param.(RtToken)
 			if !ok {
-				return ErrBadArgument
+				return errfunc(1,1,ErrBadArgument)
 			}
 	
 			class,typeof,nameofparam,count = ClassTypeNameCount(token) /* TODO: need to look up the token class and type via global dictionary */
@@ -184,7 +207,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 						 */
 						typeof = RtToken("string")
 					} else {
-						return fmt.Errorf("%s -- %v",nameofparam,ErrBadArgument)
+						return errfunc(1,1,fmt.Errorf("%s -- %v",nameofparam,ErrBadArgument))
 					}
 				}
 
@@ -197,7 +220,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 							array = RtFloatArray{v}
 						
 						} else {
-							return fmt.Errorf("%s -- %v, expecting float",nameofparam,ErrBadArgument)
+							return errfunc(1,1,fmt.Errorf("%s -- %v, expecting float",nameofparam,ErrBadArgument))
 						}
 					break
 					case "int":
@@ -205,7 +228,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 							array = RtIntArray{v}
 					
 						} else {
-							return fmt.Errorf("%s -- %v, expecting int",nameofparam,ErrBadArgument)
+							return errfunc(1,1,fmt.Errorf("%s -- %v, expecting int",nameofparam,ErrBadArgument))
 						}
 					break
 					case "string":
@@ -213,7 +236,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 							array = RtStringArray{v}
 							
 						} else {
-							return fmt.Errorf("%s -- %v, expecting string",nameofparam,ErrBadArgument)
+							return errfunc(1,1,fmt.Errorf("%s -- %v, expecting string",nameofparam,ErrBadArgument))
 						}
 					break
 					case "point":
@@ -221,7 +244,7 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 							array = RtPointArray{v}
 
 						} else {
-							return fmt.Errorf("%s -- %v, expecting point",nameofparam,ErrBadArgument)
+							return errfunc(1,1,fmt.Errorf("%s -- %v, expecting point",nameofparam,ErrBadArgument))
 						}
 					break					
 					default:
@@ -233,44 +256,44 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 
 			} else {
 				if string(typeof) + "[]" != value.Type() {
-					return fmt.Errorf("%s -- %v, expecting array of %s[] but was %s",nameofparam,ErrBadArgument,string(typeof),value.Type())
+					return errfunc(1,1,fmt.Errorf("%s -- %v, expecting array of %s[] but was %s",nameofparam,ErrBadArgument,string(typeof),value.Type()))
 				}
 
 				switch value.Type() {
 					case "float[]":
 						if array,ok := value.(RtFloatArray); ok {
 							if int(count) != len(array) {
-								return ErrBadArgument
+								return errfunc(1,1,ErrBadArgument)
 							}
 						} else {
-							return ErrBadArgument
+							return errfunc(1,1,ErrBadArgument)
 						}
 					break
 					case "int[]":
 						if array,ok := value.(RtIntArray); ok {
 							if int(count) != len(array) {
-								return ErrBadArgument
+								return errfunc(1,1,ErrBadArgument)
 							}
 						} else {
-							return ErrBadArgument
+							return errfunc(1,1,ErrBadArgument)
 						}
 					break
 					case "string[]":
 						if array,ok := value.(RtStringArray); ok {
 							if int(count) != len(array) {
-								return ErrBadArgument
+								return errfunc(1,1,ErrBadArgument)
 							}
 						} else {
-							return ErrBadArgument
+							return errfunc(1,1,ErrBadArgument)
 						}
 					break
 					case "point[]":
 						if array,ok := value.(RtPointArray); ok {
 							if int(count) != len(array) {
-								return ErrBadArgument
+								return errfunc(1,1,ErrBadArgument)
 							}
 						} else {
-							return ErrBadArgument
+							return errfunc(1,1,ErrBadArgument)
 						}
 					break
 				}
@@ -279,11 +302,9 @@ func (r *Ri) writef(name RtName, parameterlist ...Rter) error {
 			}
 	}
 
-
 	if USEDEBUG && len(params) > 0 {
 		args = append(args, DEBUGBARRIER)
 	}
-
 
 	return r.Write(name, args, params, nvalues) /* TODO, do something with params2 */
 }

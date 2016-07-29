@@ -343,7 +343,6 @@ func ParseCPrototype(line string) []string {
 	prototype := make([]string,0) /* {name,"type(class) token"...} */
 	var word string
 	var curtype string /* current type */
-//	var clstype string /* class type */
 	
 	line = strings.Replace(line,"char*","RtString",-1)
 	line = strings.Replace(line,"char *","RtString",-1)
@@ -390,9 +389,7 @@ func ParseCPrototype(line string) []string {
 		}
 		word += string(c)
 	}
-	
 
-//	fmt.Printf("%s\n",line)
 	return prototype
 }
 

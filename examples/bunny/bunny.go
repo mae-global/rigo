@@ -154,6 +154,7 @@ func main() {
 	ri.Format(RtInt(int(width * scale)),RtInt(int(height *scale)),1)
 
 	ri.ShadingRate(1) 
+	ri.ShadingInterpolation("smooth")
 		
 	ri.Attribute("trace",RtToken("int maxspeculardepth"),RtInt(3),RtToken("int displacements"),RtInt(1),
 											 RtToken("int maxdiffusedepth"),RtInt(3))
@@ -240,7 +241,7 @@ func main() {
 		ri.Illuminate(sky,true)
 
 		ri.AttributeBegin()
-			ri.Attribute("identifier",RtToken("string name"),RtString("hero"))
+			ri.Attribute("identifier",RtToken("name"),RtString("hero"))
 			ri.Attribute("visibility",RtToken("int camera"),RtInt(1),RtToken("int transmission"),RtInt(1))
 			ri.Translate(0,-2,0)
 			ri.Rotate(-125,0,1,0)
@@ -249,8 +250,10 @@ func main() {
 			ri.Bxdf(hero.Name(),hero.Handle())
 			ri.Scale(50,50,50)
 
-			ri.Procedural2("DelayedReadArchive2","SimpleBound",RtToken("string filename"),heroModel,
-										 RtToken("float[6] bound"),RtBound{-1,1,-1,1,-1,1})
+			if err := ri.Procedural2("DelayedReadArchive2","SimpleBound",RtToken("string filename"),heroModel,
+										 RtToken("float[6] bound"),RtFloatArray{-1,1,-1,1,-1,1}); err != nil {
+				panic(err.Error())
+			}
 
 		ri.AttributeEnd()
 	
@@ -282,7 +285,7 @@ func main() {
 			ri.Scale(20,20,20)
 
 			ri.Procedural2("DelayedReadArchive2","SimpleBound",RtToken("string filename"),bunnyModel,
-										 RtToken("float[6] bound"),RtBound{-1,1,-1,1,-1,1})
+										 RtToken("float[6] bound"),RtFloatArray{-1,1,-1,1,-1,1})
 
 		ri.AttributeEnd()
 		} /* end bunnies */

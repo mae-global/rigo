@@ -115,5 +115,5 @@ func (b *TestContext) Shader(h RtShaderHandle) ShaderWriter {
 }
 
 func NewTest() *Ri {
-	return &Ri{&TestContext{0, 0, 0, 0, nil},NewDictionary()}
+	return &Ri{&TestContext{0, 0, 0, 0, nil},NewDictionary(),nil}
 }

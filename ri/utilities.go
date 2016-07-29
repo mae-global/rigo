@@ -312,7 +312,6 @@ func ParsePrototype(stream string) *PrototypeInformation {
 		if !flipflop {
 
 			/* then it is a name */
-		//  fmt.Printf("list[i]:proto.Name=\"%s\" = %s\n",proto.Name,list[i])
 			arg.Name = list[i]
 		} else {
 
